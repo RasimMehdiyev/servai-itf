@@ -20,7 +20,7 @@ export default function AttentionPanel({ title, level, explanationTitle, explana
   return (
     <Card>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-        <h2 style={{ fontSize: 'clamp(16px,2vw,20px)', fontWeight: 700 }}>{title}</h2>
+        <h2 style={{ fontSize: 'clamp(20px,2.4vw,24px)', fontWeight: 700 }}>{title}</h2>
         {!isOk && <StatusChip label="Needs Attention" variant="warning" icon="⚠" />}
         {isOk && <StatusChip label="All Clear" variant="success" icon="✓" />}
       </div>

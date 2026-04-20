@@ -4,6 +4,7 @@ import ScreenContainer from '../../../components/layout/ScreenContainer'
 import FilterPills from '../../../components/ui/FilterPills'
 import PerformanceCard from '../components/PerformanceCard'
 import FailureList from '../components/FailureList'
+import HistoryCalendar from '../components/HistoryCalendar'
 import LoadingState from '../../../components/ui/LoadingState'
 import ErrorState from '../../../components/ui/ErrorState'
 import useHistorySummary from '../../../hooks/useHistorySummary'
@@ -26,7 +27,7 @@ export default function HistoryScreen() {
   const topRight = (
     <div className="gap-row">
       <span className="status-dot status-dot--live" />
-      <span style={{ color: 'var(--live-dot)', fontWeight: 600, fontSize: 'clamp(13px,1.6vw,14px)' }}>Live</span>
+      <span style={{ color: 'var(--live-dot)', fontWeight: 600, fontSize: 'clamp(16px,2.0vw,17px)' }}>Live</span>
     </div>
   )
 
@@ -51,6 +52,11 @@ export default function HistoryScreen() {
             <div className="mt-lg">
               <FailureList failures={data.topFailures} />
             </div>
+            {data.calendarDays && (
+              <div className="mt-lg">
+                <HistoryCalendar days={data.calendarDays} />
+              </div>
+            )}
           </>
         )}
       </ScreenContainer>
