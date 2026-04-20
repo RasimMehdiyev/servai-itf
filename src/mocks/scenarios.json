@@ -198,6 +198,55 @@
         "find_customer":   "10:09",
         "hand_item":       "10:11"
       }
+    },
+    "glass_lost": {
+      "label": "Lost the glass (pouring)",
+      "storeId": "ROBI",
+      "orderId": "3120",
+      "pipeline": [
+        { "key": "waiting_mode",     "title": "Waiting mode",                  "description": "Waiting for the customer to place a glass" },
+        { "key": "customer_detect",  "title": "Customer detected",             "description": "Customer detected near in front of the table" },
+        { "key": "glass_detect",     "title": "Glass detected",                "description": "Customer has placed a glass" },
+        { "key": "confirming",       "title": "Confirming",                    "description": "Waiting for the glass stability" },
+        { "key": "pouring_routine",  "title": "Starting the pouring routine",  "description": "Choosing a collision-free route" },
+        { "key": "lost_glass",       "title": "Lost the glass",                "description": "Glass position lost during pouring" },
+        { "key": "waiting_mode_2",   "title": "Waiting mode",                  "description": "Waiting for the customer to place a glass" }
+      ],
+      "attentionTitle": "Glass lost during pouring",
+      "attentionLevel": "needs_attention",
+      "explanationText": "The previously detected glass has either been removed or occluded.",
+      "explanationBullets": [
+        { "text": "Customer detected", "state": "completed" },
+        { "text": "Glass placed and confirmed", "state": "completed" },
+        { "text": "Glass lost — removed or occluded", "state": "warning" },
+        { "text": "Waiting for a new glass placement", "state": "pending" }
+      ],
+      "failAtStep": "lost_glass",
+      "failState": "warning",
+      "failDescription": "The previously detected glass has either been removed or occluded",
+      "alert": {
+        "imageUrl": "/assets/img/image.png",
+        "caption": "Glass is no longer detected on the table surface",
+        "detail": "The vision system lost tracking of the glass at the pour position. The glass may have been moved by the customer or occluded by another object. Pouring has been halted for safety."
+      },
+      "validation": {
+        "prompt": "Does this image confirm the glass is no longer at the pouring position?",
+        "confirmLabel": "Yes — Glass Missing",
+        "denyLabel": "No — False Alarm"
+      },
+      "resolutionActions": [
+        { "key": "fulfill_manually", "label": "Pour Manually", "variant": "primary" },
+        { "key": "dismiss_wait",    "label": "Dismiss & Wait for Glass", "variant": "outline" }
+      ],
+      "timestamps": {
+        "waiting_mode":    "12:36",
+        "customer_detect": "12:36",
+        "glass_detect":    "12:36",
+        "confirming":      "12:36",
+        "pouring_routine": "12:36",
+        "lost_glass":      "NOW",
+        "waiting_mode_2":  "TBD"
+      }
     }
   }
 }

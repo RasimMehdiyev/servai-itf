@@ -11,7 +11,7 @@ export function buildScenario(scenarioKey) {
   const scenario = scenarioData.scenarios[key]
   if (!scenario) throw new Error(`Unknown scenario: "${key}"`)
 
-  const pipeline = scenarioData.pipeline
+  const pipeline = scenario.pipeline || scenarioData.pipeline
   const failIndex = scenario.failAtStep
     ? pipeline.findIndex(s => s.key === scenario.failAtStep)
     : pipeline.length // no failure → all completed
