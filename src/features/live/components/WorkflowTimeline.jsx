@@ -38,7 +38,7 @@ export default function WorkflowTimeline({ title, earlierStepsCount, steps, vali
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <div className="gap-row">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--text-secondary)" aria-hidden><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" fill="none" stroke="var(--text-secondary)" strokeWidth="2"/></svg>
-          <h2 style={{ fontSize: 'clamp(15px,2vw,17px)', fontWeight: 600 }}>{title}</h2>
+          <h2 style={{ fontSize: 'clamp(18px,2.4vw,21px)', fontWeight: 600 }}>{title}</h2>
         </div>
         <button
           className="expand-toggle"

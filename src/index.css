@@ -93,14 +93,14 @@ body {
 
 .topbar-title {
     font-weight: 700;
-    font-size: clamp(15px, 2vw, 17px)
+    font-size: clamp(18px, 2.4vw, 21px)
 }
 
 .topbar select {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 4px 8px;
-    font-size: clamp(13px, 1.6vw, 14px);
+    font-size: clamp(16px, 2.0vw, 17px);
     background: var(--surface);
     min-height: 36px;
 }
@@ -132,7 +132,7 @@ body {
     gap: 2px;
     text-decoration: none;
     color: var(--text-tertiary);
-    font-size: clamp(10px, 1.3vw, 12px);
+    font-size: clamp(12px, 1.6vw, 15px);
     background: none;
     border: none;
     cursor: pointer;
@@ -168,7 +168,7 @@ body {
 }
 
 .section-hdr h2 {
-    font-size: clamp(15px, 2vw, 17px);
+    font-size: clamp(18px, 2.4vw, 21px);
     font-weight: 600
 }
 
@@ -179,7 +179,7 @@ body {
     gap: 6px;
     padding: 4px 10px;
     border-radius: var(--radius-full);
-    font-size: clamp(11px, 1.4vw, 12px);
+    font-size: clamp(14px, 1.7vw, 15px);
     font-weight: 600
 }
 
@@ -241,7 +241,7 @@ body {
 .filter-pill {
     padding: 8px 16px;
     border-radius: var(--radius-full);
-    font-size: clamp(13px, 1.6vw, 14px);
+    font-size: clamp(16px, 2.0vw, 17px);
     font-weight: 600;
     background: var(--bg);
     color: var(--text-secondary);
@@ -264,13 +264,13 @@ body {
 }
 
 .metric-stat__value {
-    font-size: clamp(22px, 3vw, 32px);
+    font-size: clamp(27px, 3.6vw, 39px);
     font-weight: 700;
     line-height: 1.1
 }
 
 .metric-stat__label {
-    font-size: clamp(11px, 1.4vw, 13px);
+    font-size: clamp(14px, 1.7vw, 16px);
     color: var(--text-secondary);
     margin-top: 2px
 }
@@ -382,11 +382,11 @@ body {
 
 .timeline-step__title {
     font-weight: 600;
-    font-size: clamp(13px, 1.6vw, 15px)
+    font-size: clamp(16px, 2.0vw, 18px)
 }
 
 .timeline-step__desc {
-    font-size: clamp(12px, 1.4vw, 13px);
+    font-size: clamp(15px, 1.7vw, 16px);
     color: var(--text-secondary);
     margin-top: 2px
 }
@@ -396,7 +396,7 @@ body {
 }
 
 .timeline-step__time {
-    font-size: clamp(11px, 1.3vw, 12px);
+    font-size: clamp(14px, 1.6vw, 15px);
     color: var(--text-tertiary);
     white-space: nowrap
 }
@@ -424,7 +424,7 @@ body {
     border-radius: 50%;
     background: var(--danger);
     color: #fff;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     border: none;
@@ -500,13 +500,13 @@ body {
 }
 
 .camera-modal__caption {
-    font-size: clamp(13px, 1.6vw, 15px);
+    font-size: clamp(16px, 2.0vw, 18px);
     color: var(--text-primary);
     font-weight: 500
 }
 
 .camera-modal__sub {
-    font-size: clamp(12px, 1.4vw, 13px);
+    font-size: clamp(15px, 1.7vw, 16px);
     color: var(--text-secondary);
     margin-top: 4px
 }
@@ -520,7 +520,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 8px 16px;
-    font-size: 13px;
+    font-size: 16px;
     cursor: pointer;
     color: var(--text-primary);
     font-weight: 500;
@@ -541,7 +541,7 @@ body {
   padding:clamp(10px,1.6vw,14px);border-left:3px solid var(--primary);
 }
 .diag-validation__prompt{
-  font-size:clamp(13px,1.6vw,14px);font-weight:600;
+  font-size:clamp(16px,2.0vw,17px);font-weight:600;
   color:var(--text-primary);margin-bottom:10px;
 }
 .diag-validation__btns{display:flex;flex-wrap:wrap;gap:8px}
@@ -553,7 +553,7 @@ body {
 }
 .diag-resolution__label{
   display:flex;align-items:center;gap:6px;
-  font-size:clamp(12px,1.4vw,13px);font-weight:600;
+  font-size:clamp(15px,1.7vw,16px);font-weight:600;
   color:var(--success);margin-bottom:10px;
 }
 .diag-resolution__btns{display:flex;flex-wrap:wrap;gap:8px}
@@ -600,11 +600,11 @@ body {
 
 .order-item__title {
     font-weight: 600;
-    font-size: clamp(13px, 1.6vw, 15px)
+    font-size: clamp(16px, 2.0vw, 18px)
 }
 
 .order-item__meta {
-    font-size: clamp(11px, 1.3vw, 12px);
+    font-size: clamp(14px, 1.6vw, 15px);
     color: var(--text-secondary)
 }
 
@@ -624,7 +624,7 @@ body {
     border: none;
     cursor: pointer;
     color: var(--text-secondary);
-    font-size: clamp(12px, 1.4vw, 13px);
+    font-size: clamp(15px, 1.7vw, 16px);
     padding: 6px 0;
     min-height: 44px;
 }
@@ -652,7 +652,7 @@ body {
     border: none;
     cursor: pointer;
     color: var(--text-secondary);
-    font-size: clamp(13px, 1.6vw, 14px);
+    font-size: clamp(16px, 2.0vw, 17px);
     padding: 4px 0;
     min-height: 44px;
 }
@@ -669,7 +669,7 @@ body {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    font-size: clamp(13px, 1.6vw, 14px)
+    font-size: clamp(16px, 2.0vw, 17px)
 }
 
 .bullet-list li svg {
@@ -692,7 +692,7 @@ body {
 .quick-action-btn{
   display:inline-flex;align-items:center;gap:6px;
   padding:10px 16px;border-radius:var(--radius-sm);
-  font-size:clamp(13px,1.6vw,14px);font-weight:600;
+  font-size:clamp(16px,2.0vw,17px);font-weight:600;
   cursor:pointer;min-height:44px;
   transition:background .15s,color .15s,box-shadow .15s;
   border:1.5px solid transparent;
@@ -719,6 +719,72 @@ body {
 }
 .quick-action-btn--confirm:hover{box-shadow:0 2px 8px rgba(11,122,62,.2)}
 
+/* ── Calendar ────────────────────────────── */
+
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.cal-nav__label{
+  font-size:clamp(16px,2.0vw,18px);font-weight:600;color:var(--text-primary);
+}
+.cal-nav__arrow{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  background:var(--bg);border:1px solid var(--border);
+  cursor:pointer;color:var(--text-secondary);transition:background .15s;
+}
+.cal-nav__arrow:hover:not(:disabled){background:var(--border)}
+.cal-nav__arrow:disabled{opacity:.35;cursor:default}
+
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,70px);gap:4px;
+  justify-content:center;
+}
+
+.cal-hdr{
+  font-size:14px;font-weight:600;color:var(--text-tertiary);
+  text-align:center;padding:4px 0;width:70px;
+}
+
+.cal-cell{
+  width:70px;height:70px;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;font-size:clamp(15px,1.8vw,17px);font-weight:500;
+  border:none;cursor:pointer;transition:box-shadow .15s,transform .1s;
+}
+.cal-cell:active:not(:disabled){transform:scale(.92)}
+
+.cal-cell--blank{background:transparent;cursor:default}
+.cal-cell--empty{background:var(--bg);color:var(--text-tertiary);cursor:default}
+
+.cal-cell--good{
+  background:var(--success-bg);color:var(--success);
+  border:1.5px solid var(--success);
+}
+.cal-cell--good:hover{box-shadow:0 2px 8px rgba(11,122,62,.18)}
+
+.cal-cell--bad{
+  background:var(--danger-bg);color:var(--danger);
+  border:1.5px solid var(--danger);
+}
+.cal-cell--bad:hover{box-shadow:0 2px 8px rgba(196,38,26,.18)}
+
+.cal-cell--today{
+  background:var(--primary);color:#fff;font-weight:700;
+  border:2px solid var(--primary);
+}
+.cal-cell--today:hover{box-shadow:0 2px 8px rgba(11,102,255,.3)}
+
+/* Legend */
+.cal-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:15px;color:var(--text-secondary)}
+.cal-legend__item{display:flex;align-items:center;gap:5px}
+.cal-legend__dot{
+  width:10px;height:10px;border-radius:3px;display:inline-block;
+}
+.cal-legend__dot--good{background:var(--success)}
+.cal-legend__dot--bad{background:var(--danger)}
+.cal-legend__dot--today{background:var(--primary)}
+
 .quick-action-btn--deny{
   background:var(--surface);color:var(--text-secondary);border-color:var(--border);
 }
@@ -730,7 +796,7 @@ body {
   padding:clamp(10px,1.6vw,14px);border-left:3px solid var(--primary);
 }
 .validation-prompt__text{
-  font-size:clamp(13px,1.6vw,14px);font-weight:600;
+  font-size:clamp(16px,2.0vw,17px);font-weight:600;
   color:var(--text-primary);margin-bottom:10px;
 }
 .validation-prompt__btns{display:flex;flex-wrap:wrap;gap:8px}
@@ -739,7 +805,7 @@ body {
 .action-toast{
   display:inline-flex;align-items:center;gap:6px;
   padding:8px 14px;border-radius:var(--radius-sm);
-  font-size:clamp(12px,1.4vw,13px);font-weight:500;
+  font-size:clamp(15px,1.7vw,16px);font-weight:500;
   background:var(--primary-bg);color:var(--primary);
   animation:fadeIn .2s ease;
 }
@@ -751,7 +817,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: clamp(11px, 1.3vw, 12px);
+    font-size: clamp(14px, 1.6vw, 15px);
     font-weight: 600
 }
 
@@ -775,7 +841,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: clamp(12px, 1.4vw, 13px);
+    font-size: clamp(15px, 1.7vw, 16px);
     color: var(--text-secondary)
 }
 
@@ -808,7 +874,7 @@ body {
 }
 
 .text-sm {
-    font-size: clamp(12px, 1.4vw, 13px)
+    font-size: clamp(15px, 1.7vw, 16px)
 }
 
 .mt-sm {

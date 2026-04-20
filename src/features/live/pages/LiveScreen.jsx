@@ -33,7 +33,7 @@ export default function LiveScreen() {
   const topRight = (
     <div className="gap-row">
       <span className="status-dot status-dot--live" />
-      <span style={{ color: 'var(--live-dot)', fontWeight: 600, fontSize: 'clamp(13px,1.6vw,14px)' }}>Live</span>
+      <span style={{ color: 'var(--live-dot)', fontWeight: 600, fontSize: 'clamp(16px,2.0vw,17px)' }}>Live</span>
     </div>
   )
 
