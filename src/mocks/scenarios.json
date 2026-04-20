@@ -1,0 +1,203 @@
+{
+  "defaultScenario": "customer_not_found",
+  "pipeline": [
+    { "key": "receive_order",      "title": "Receive order",                "description": "Order placed by customer via app" },
+    { "key": "turn_to_shelves",    "title": "Turn to the shelves",          "description": "Route calculated successfully" },
+    { "key": "scan_shelves",       "title": "Scan shelves",                 "description": "Scanning for the requested item" },
+    { "key": "pick_item",          "title": "Pick the item(-s)",            "description": "Grip check in progress" },
+    { "key": "plan_route",         "title": "Planning my way to checkout",  "description": "Choosing a collision-free route" },
+    { "key": "find_customer",      "title": "Find the customer",            "description": "Locating the target customer" },
+    { "key": "hand_item",          "title": "Hand the item",                "description": "Delivering the item to the customer" }
+  ],
+  "scenarios": {
+    "customer_not_found": {
+      "label": "Customer not found",
+      "storeId": "ROBI",
+      "orderId": "1234",
+      "attentionTitle": "Looking for the customer",
+      "attentionLevel": "needs_attention",
+      "explanationText": "Cannot find the customer with Order #1234.",
+      "explanationBullets": [
+        { "text": "Order received", "state": "completed" },
+        { "text": "Item found in stock", "state": "completed" },
+        { "text": "Target customer not found", "state": "warning" },
+        { "text": "Sending an audio signal to the customer", "state": "pending" }
+      ],
+      "failAtStep": "find_customer",
+      "failState": "warning",
+      "failDescription": "No customer with Order #1234 has been detected near the checkout area. A PA announcement will be triggered in 30 seconds to attract attention.",
+      "alert": {
+        "imageUrl": "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&q=80",
+        "caption": "No customer has been detected near the checkout area",
+        "detail": "The robot camera cannot identify the target customer. An audio signal will be sent in 30 seconds to attract attention."
+      },
+      "validation": {
+        "prompt": "Does this image show the checkout area with no matching customer?",
+        "confirmLabel": "Yes — Customer absent",
+        "denyLabel": "No — False Alarm"
+      },
+      "resolutionActions": [
+        { "key": "fulfill_manually", "label": "Fulfill Order Manually", "variant": "primary" },
+        { "key": "dismiss_wait",    "label": "Dismiss & Let Robot Wait", "variant": "outline" }
+      ],
+      "timestamps": {
+        "receive_order":   "12:28",
+        "turn_to_shelves": "12:30",
+        "scan_shelves":    "12:32",
+        "pick_item":       "12:34",
+        "plan_route":      "12:36",
+        "find_customer":   "NOW",
+        "hand_item":       "TBD"
+      }
+    },
+    "item_not_found": {
+      "label": "Item not on shelf",
+      "storeId": "ROBI",
+      "orderId": "1587",
+      "attentionTitle": "Item cannot be located",
+      "attentionLevel": "needs_attention",
+      "explanationText": "The requested item for Order #1587 is not on the expected shelf.",
+      "explanationBullets": [
+        { "text": "Order received", "state": "completed" },
+        { "text": "Route to shelf calculated", "state": "completed" },
+        { "text": "Item not found at expected location", "state": "warning" },
+        { "text": "Scanning adjacent shelves", "state": "pending" }
+      ],
+      "failAtStep": "scan_shelves",
+      "failState": "warning",
+      "failDescription": "Item is not at the expected location on shelf B-12. Scanning nearby shelves…",
+      "alert": {
+        "imageUrl": "https://images.unsplash.com/photo-1604709177225-055f99402ea3?w=800&q=80",
+        "caption": "Shelf B-12 does not contain the requested item",
+        "detail": "Camera confirms the shelf slot is empty. The robot is now scanning adjacent shelves in Aisle 4 to locate a possible misplacement."
+      },
+      "validation": {
+        "prompt": "Does this image confirm the shelf slot at B-12 is empty?",
+        "confirmLabel": "Yes — Shelf Empty",
+        "denyLabel": "No — False Alarm"
+      },
+      "resolutionActions": [
+        { "key": "fulfill_manually", "label": "Fulfill Order Manually", "variant": "primary" },
+        { "key": "dismiss_wait",    "label": "Dismiss & Let Robot Scan", "variant": "outline" }
+      ],
+      "timestamps": {
+        "receive_order":   "14:01",
+        "turn_to_shelves": "14:02",
+        "scan_shelves":    "NOW",
+        "pick_item":       "TBD",
+        "plan_route":      "TBD",
+        "find_customer":   "TBD",
+        "hand_item":       "TBD"
+      }
+    },
+    "path_blocked": {
+      "label": "Path obstructed",
+      "storeId": "ROBI",
+      "orderId": "1802",
+      "attentionTitle": "Route is blocked",
+      "attentionLevel": "needs_attention",
+      "explanationText": "An obstacle is blocking the planned route to checkout for Order #1802.",
+      "explanationBullets": [
+        { "text": "Order received", "state": "completed" },
+        { "text": "Item picked up", "state": "completed" },
+        { "text": "Obstacle detected on planned route", "state": "warning" },
+        { "text": "Recalculating alternative path", "state": "pending" }
+      ],
+      "failAtStep": "plan_route",
+      "failState": "warning",
+      "failDescription": "A pallet has been detected blocking Aisle 3. Recalculating route…",
+      "alert": {
+        "imageUrl": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80",
+        "caption": "Obstacle detected — pallet blocking Aisle 3",
+        "detail": "The depth sensor and camera detected an unexpected pallet at coordinates (12, 7). An alternative route via Aisle 5 is being calculated."
+      },
+      "validation": {
+        "prompt": "Does this image show an obstacle blocking Aisle 3?",
+        "confirmLabel": "Yes — Obstacle Confirmed",
+        "denyLabel": "No — False Alarm"
+      },
+      "resolutionActions": [
+        { "key": "fulfill_manually", "label": "Fulfill Order Manually", "variant": "primary" },
+        { "key": "dismiss_wait",    "label": "Dismiss & Let Robot Reroute", "variant": "outline" }
+      ],
+      "timestamps": {
+        "receive_order":   "09:15",
+        "turn_to_shelves": "09:16",
+        "scan_shelves":    "09:18",
+        "pick_item":       "09:20",
+        "plan_route":      "NOW",
+        "find_customer":   "TBD",
+        "hand_item":       "TBD"
+      }
+    },
+    "grip_failure": {
+      "label": "Grip failure",
+      "storeId": "ROBI",
+      "orderId": "2045",
+      "attentionTitle": "Failed to pick up item",
+      "attentionLevel": "needs_attention",
+      "explanationText": "The gripper could not secure the item for Order #2045. Retrying.",
+      "explanationBullets": [
+        { "text": "Order received", "state": "completed" },
+        { "text": "Item located on shelf", "state": "completed" },
+        { "text": "Grip check failed — item slipped", "state": "warning" },
+        { "text": "Adjusting gripper angle for retry", "state": "pending" }
+      ],
+      "failAtStep": "pick_item",
+      "failState": "warning",
+      "failDescription": "Grip check failed — item slipped during pickup. Retrying with adjusted angle.",
+      "alert": {
+        "imageUrl": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
+        "caption": "Grip failure — item slipped during pickup attempt",
+        "detail": "The force sensor detected the item slipping at 78% grip pressure. The arm is repositioning to attempt pickup at a 15° offset angle."
+      },
+      "validation": {
+        "prompt": "Does this image show the item slipping from the gripper?",
+        "confirmLabel": "Yes — Grip Failure Confirmed",
+        "denyLabel": "No — False Alarm"
+      },
+      "resolutionActions": [
+        { "key": "fulfill_manually", "label": "Fulfill Order Manually", "variant": "primary" },
+        { "key": "dismiss_wait",    "label": "Dismiss & Let Robot Retry", "variant": "outline" }
+      ],
+      "timestamps": {
+        "receive_order":   "11:40",
+        "turn_to_shelves": "11:41",
+        "scan_shelves":    "11:42",
+        "pick_item":       "NOW",
+        "plan_route":      "TBD",
+        "find_customer":   "TBD",
+        "hand_item":       "TBD"
+      }
+    },
+    "all_ok": {
+      "label": "Successful delivery",
+      "storeId": "ROBI",
+      "orderId": "0999",
+      "attentionTitle": "Delivery completed",
+      "attentionLevel": "ok",
+      "explanationText": "Order #0999 was delivered successfully.",
+      "explanationBullets": [
+        { "text": "Order received", "state": "completed" },
+        { "text": "Item picked up", "state": "completed" },
+        { "text": "Customer found", "state": "completed" },
+        { "text": "Item handed over", "state": "completed" }
+      ],
+      "failAtStep": null,
+      "failState": null,
+      "failDescription": null,
+      "alert": null,
+      "validation": null,
+      "resolutionActions": [],
+      "timestamps": {
+        "receive_order":   "10:00",
+        "turn_to_shelves": "10:01",
+        "scan_shelves":    "10:03",
+        "pick_item":       "10:05",
+        "plan_route":      "10:07",
+        "find_customer":   "10:09",
+        "hand_item":       "10:11"
+      }
+    }
+  }
+}
