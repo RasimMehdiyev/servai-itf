@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
 import AttentionPanel from '../components/AttentionPanel'
+import RobotStatusCard from '../components/RobotStatusCard'
 import WorkflowTimeline from '../components/WorkflowTimeline'
 import LoadingState from '../../../components/ui/LoadingState'
 import ErrorState from '../../../components/ui/ErrorState'
@@ -45,15 +46,29 @@ export default function LiveScreen() {
         {error && <ErrorState />}
         {data && (
           <>
-            <AttentionPanel
-              title={data.attentionTitle}
-              level={data.attentionLevel}
-              explanationTitle={data.explanationTitle}
-              explanationText={data.explanationText}
-              bullets={data.explanationBullets}
-              onFulfillManually={() => { /* future API call */ }}
-              onOpenCamera={() => setDiagnosticOpen(true)}
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'clamp(12px,2vw,20px)', alignItems: 'stretch' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <AttentionPanel
+                title={data.attentionTitle}
+                level={data.attentionLevel}
+                explanationTitle={data.explanationTitle}
+                explanationText={data.explanationText}
+                bullets={data.explanationBullets}
+                onFulfillManually={() => { /* future API call */ }}
+                onOpenCamera={() => setDiagnosticOpen(true)}
+                style={{ flex: 1 }}
+              />
+            </div>
+            {data.robotParams && (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <RobotStatusCard
+                  params={data.robotParams.params}
+                  suggestion={data.robotParams.suggestion}
+                  style={{ flex: 1 }}
+                />
+              </div>
+            )}
+          </div>
             <div className="mt-lg">
               <WorkflowTimeline
                 title={data.activeWorkflowTitle}

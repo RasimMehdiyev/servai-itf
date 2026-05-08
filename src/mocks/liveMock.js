@@ -11,7 +11,7 @@ export function buildScenario(scenarioKey) {
   const scenario = scenarioData.scenarios[key]
   if (!scenario) throw new Error(`Unknown scenario: "${key}"`)
 
-  const pipeline = scenarioData.pipeline
+  const pipeline = scenario.pipeline || scenarioData.pipeline
   const failIndex = scenario.failAtStep
     ? pipeline.findIndex(s => s.key === scenario.failAtStep)
     : pipeline.length // no failure → all completed
@@ -31,7 +31,7 @@ export function buildScenario(scenarioKey) {
       badgeLabel = alert ? '1' : undefined
     } else {
       state = 'pending'
-      description = 'Waiting…'
+      description = 'Not started yet'
     }
 
     stepCounter++
@@ -64,6 +64,7 @@ export function buildScenario(scenarioKey) {
     activeWorkflowTitle: 'What I am doing right now',
     earlierStepsCount,
     steps,
+    robotParams: scenario.robotParams || null,
   }
 }
 
