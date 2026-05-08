@@ -7,6 +7,8 @@
  *   - The /history/:dayId detail page
  */
 
+import failureTypes from './failureTypes.json'
+
 const TODAY = '2026-04-20'
 
 // Deterministic "random" from a seed so data is stable across renders
@@ -18,14 +20,7 @@ function seededRandom(seed) {
   }
 }
 
-const failureReasons = [
-  'Dropped item',
-  'Customer not found',
-  'Path obstructed',
-  'Grip failure',
-  'Timeout waiting for customer',
-  'Item out of stock',
-]
+const failureReasons = failureTypes
 
 function generateDay(dateStr, index) {
   const rng = seededRandom(index * 31 + 7)

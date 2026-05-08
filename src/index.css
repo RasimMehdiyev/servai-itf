@@ -1,3 +1,8 @@
+/* Tailwind utilities (preflight disabled — our resets below take precedence) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================================
    ServAI — Global styles · Tablet-first · CVD-friendly
    ============================================================ */

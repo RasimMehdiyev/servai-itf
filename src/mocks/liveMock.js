@@ -31,7 +31,7 @@ export function buildScenario(scenarioKey) {
       badgeLabel = alert ? '1' : undefined
     } else {
       state = 'pending'
-      description = 'Waiting…'
+      description = 'Not started yet'
     }
 
     stepCounter++
@@ -64,6 +64,7 @@ export function buildScenario(scenarioKey) {
     activeWorkflowTitle: 'What I am doing right now',
     earlierStepsCount,
     steps,
+    robotParams: scenario.robotParams || null,
   }
 }
 

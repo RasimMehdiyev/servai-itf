@@ -1,17 +1,25 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { fetchHistory } from '../services/historyService'
 
-export default function useHistorySummary(range = '7d'){
-  const [data, setData] = useState(null)
+/**
+ * @param {{ range?: string, startDate?: string, endDate?: string } | string} params
+ */
+export default function useHistorySummary(params = { range: '7d' }) {
+  const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError]     = useState(null)
 
-  useEffect(()=>{
+  const key = JSON.stringify(params)
+
+  useEffect(() => {
     let mounted = true
     setLoading(true)
-    fetchHistory(range).then(d=>{ if(mounted){ setData(d); setLoading(false) } }).catch(e=>{ if(mounted){ setError(e); setLoading(false) } })
-    return ()=> { mounted = false }
-  },[range])
+    const p = typeof params === 'string' ? { range: params } : params
+    fetchHistory(p)
+      .then(d => { if (mounted) { setData(d); setLoading(false) } })
+      .catch(e => { if (mounted) { setError(e); setLoading(false) } })
+    return () => { mounted = false }
+  }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return {data, loading, error}
+  return { data, loading, error }
 }
