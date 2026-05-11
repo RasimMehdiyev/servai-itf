@@ -1,0 +1,206 @@
+2026-04-02 14:52:38.671 | INFO     | grocery_bot.rerun_config:init_rerun:22 - Rerun initialised (app=grocery_bot, recording=grocery_demo)
+INFO:drake:Meshcat listening for connections at http://localhost:7000
+==== LCM Warning ===
+LCM detected that large packets are being received, but the kernel UDP
+receive buffer is very small.  The possibility of dropping packets due to
+insufficient buffer space is very high.
+
+For more information, visit:
+   https://lcm-proj.github.io/lcm/content/multicast-setup.html
+
+2026-04-02 14:52:40.218 | INFO     | grocery_bot.robot.drake_kinematics:__init__:37 - DrakeKinematics initialised (Meshcat: http://localhost:7000)
+2026-04-02 14:52:40.219 | INFO     | grocery_bot.robot.real_robot:__init__:60 - Waiting for first joint state from robot...
+2026-04-02 14:52:40.319 | INFO     | grocery_bot.robot.real_robot:__init__:68 - Joint state received
+INFO:drake:Meshcat listening for connections at http://localhost:7001
+==== LCM Warning ===
+LCM detected that large packets are being received, but the kernel UDP
+receive buffer is very small.  The possibility of dropping packets due to
+insufficient buffer space is very high.
+
+For more information, visit:
+   https://lcm-proj.github.io/lcm/content/multicast-setup.html
+
+2026-04-02 14:52:40.810 | INFO     | grocery_bot.robot.drake_kinematics:__init__:37 - DrakeKinematics initialised (Meshcat: http://localhost:7001)
+INFO:drake:Allocating contexts to support implicit context parallelism 22
+2026-04-02 14:52:41.947 | INFO     | grocery_bot.robot.real_robot:__init__:77 - OMPL planner initialized
+2026-04-02 14:52:42.448 | INFO     | grocery_bot.robot.runner:main:58 - Zenoh session opened
+2026-04-02 14:52:42.449 | INFO     | grocery_bot.robot.runner:main:84 - Robot started (mode=real) â€” waiting for orders
+2026-04-02 14:53:54.519 | INFO     | grocery_bot.robot.runner:on_order:79 - New order: milk (id=f0d33e01)
+2026-04-02 14:53:54.520 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase received â€” Order received for milk (oat)
+2026-04-02 14:53:54.520 | DEBUG    | grocery_bot.robot.state_machine:advance:92 - Transition: received -> moving_to_shelf
+2026-04-02 14:53:54.520 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase moving_to_shelf â€” Moving to shelf for milk (oat)
+2026-04-02 14:53:54.551 | INFO     | airo_planner.ompl.single_arm_ompl_planner:_calculate_ik_solutions:156 - IK returned 11 solutions.
+2026-04-02 14:53:54.552 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_bounds:102 - Found 11/11 solutions within joint bounds.
+2026-04-02 14:53:54.553 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_validity:58 - Found 11/11 valid solutions.
+2026-04-02 14:53:54.553 | INFO     | airo_planner.multiple_goal_planner:plan_to_ik_solutions:156 - Running OMPL towards 11 IK solutions.
+Debug:   RRTConnect: Planner range detected to be 6.156239
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.013968 seconds
+Info:    SimpleSetup: Path simplification took 0.107102 seconds and changed from 4 to 2 states
+2026-04-02 14:53:54.675 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 9 states (3 start + 6 goal)
+Info:    Solution found in 0.090141 seconds
+Info:    SimpleSetup: Path simplification took 0.414598 seconds and changed from 6 to 5 states
+2026-04-02 14:53:55.277 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 129 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.018033 seconds
+Info:    SimpleSetup: Path simplification took 0.086405 seconds and changed from 4 to 2 states
+2026-04-02 14:53:55.382 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 6 states (3 start + 3 goal)
+Info:    Solution found in 0.047865 seconds
+Info:    SimpleSetup: Path simplification took 0.446280 seconds and changed from 5 to 5 states
+2026-04-02 14:53:55.997 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 129 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 7 states (3 start + 4 goal)
+Info:    Solution found in 0.071130 seconds
+Info:    SimpleSetup: Path simplification took 0.410835 seconds and changed from 5 to 3 states
+2026-04-02 14:53:56.552 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 65 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 6 states (3 start + 3 goal)
+Info:    Solution found in 0.034080 seconds
+Info:    SimpleSetup: Path simplification took 0.257782 seconds and changed from 4 to 5 states
+2026-04-02 14:53:56.969 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 129 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 8 states (3 start + 5 goal)
+Info:    Solution found in 0.072026 seconds
+Info:    SimpleSetup: Path simplification took 0.085982 seconds and changed from 3 to 3 states
+2026-04-02 14:53:57.132 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 5 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.021830 seconds
+Info:    SimpleSetup: Path simplification took 0.227784 seconds and changed from 4 to 3 states
+2026-04-02 14:53:57.432 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 65 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 6 states (3 start + 3 goal)
+Info:    Solution found in 0.041844 seconds
+Info:    SimpleSetup: Path simplification took 0.141237 seconds and changed from 4 to 4 states
+2026-04-02 14:53:57.697 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 97 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.022591 seconds
+Info:    SimpleSetup: Path simplification took 0.090736 seconds and changed from 4 to 2 states
+2026-04-02 14:53:57.811 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.022290 seconds
+Info:    SimpleSetup: Path simplification took 0.146708 seconds and changed from 4 to 4 states
+2026-04-02 14:53:58.046 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 97 waypoints).
+2026-04-02 14:53:58.047 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:134 - Found 11 paths towards IK solutions, (planning time: 3.49 s).
+2026-04-02 14:53:58.047 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:143 - Chose path with 2 waypoints.
+2026-04-02 14:53:58.061 | INFO     | grocery_bot.robot.real_robot:_execute_path:156 - Executing trajectory: 692 waypoints, 6.9s duration (TOPPRA 25% speed)
+2026-04-02 14:54:05.026 | DEBUG    | grocery_bot.robot.state_machine:advance:92 - Transition: moving_to_shelf -> picking
+2026-04-02 14:54:05.026 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase picking â€” Picking milk (oat)
+2026-04-02 14:54:05.062 | INFO     | airo_planner.ompl.single_arm_ompl_planner:_calculate_ik_solutions:156 - IK returned 8 solutions.
+2026-04-02 14:54:05.063 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_bounds:102 - Found 8/8 solutions within joint bounds.
+2026-04-02 14:54:05.064 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_validity:58 - Found 8/8 valid solutions.
+2026-04-02 14:54:05.064 | INFO     | airo_planner.multiple_goal_planner:plan_to_ik_solutions:156 - Running OMPL towards 8 IK solutions.
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.022460 seconds
+Info:    SimpleSetup: Path simplification took 0.082325 seconds and changed from 3 to 2 states
+2026-04-02 14:54:05.169 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.033123 seconds
+Info:    SimpleSetup: Path simplification took 0.126798 seconds and changed from 3 to 2 states
+2026-04-02 14:54:05.330 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.013181 seconds
+Info:    SimpleSetup: Path simplification took 0.094254 seconds and changed from 3 to 3 states
+2026-04-02 14:54:05.465 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 65 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.029736 seconds
+Debug:   The solution path was slightly touching on an invalid region of the state space, but it was successfully fixed.
+Info:    SimpleSetup: Path simplification took 0.234918 seconds and changed from 4 to 5 states
+2026-04-02 14:54:05.816 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 129 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.028749 seconds
+Info:    SimpleSetup: Path simplification took 0.069726 seconds and changed from 3 to 2 states
+2026-04-02 14:54:05.915 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.016391 seconds
+Info:    SimpleSetup: Path simplification took 0.096340 seconds and changed from 3 to 2 states
+2026-04-02 14:54:06.028 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 6 states (3 start + 3 goal)
+Info:    Solution found in 0.042530 seconds
+Info:    SimpleSetup: Path simplification took 0.131075 seconds and changed from 4 to 3 states
+2026-04-02 14:54:06.203 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 5 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.010955 seconds
+Info:    SimpleSetup: Path simplification took 0.055548 seconds and changed from 3 to 3 states
+2026-04-02 14:54:06.272 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 5 waypoints).
+2026-04-02 14:54:06.273 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:134 - Found 8 paths towards IK solutions, (planning time: 1.21 s).
+2026-04-02 14:54:06.273 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:143 - Chose path with 2 waypoints.
+2026-04-02 14:54:06.285 | INFO     | grocery_bot.robot.real_robot:_execute_path:156 - Executing trajectory: 253 waypoints, 2.5s duration (TOPPRA 25% speed)
+2026-04-02 14:54:10.070 | DEBUG    | grocery_bot.robot.state_machine:advance:92 - Transition: picking -> moving_to_handover
+2026-04-02 14:54:10.071 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase moving_to_handover â€” Moving to handover position
+2026-04-02 14:54:10.125 | INFO     | airo_planner.ompl.single_arm_ompl_planner:_calculate_ik_solutions:156 - IK returned 8 solutions.
+2026-04-02 14:54:10.126 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_bounds:102 - Found 8/8 solutions within joint bounds.
+2026-04-02 14:54:10.129 | INFO     | airo_planner.multiple_goal_planner:_check_ik_solutions_validity:58 - Found 8/8 valid solutions.
+2026-04-02 14:54:10.129 | INFO     | airo_planner.multiple_goal_planner:plan_to_ik_solutions:156 - Running OMPL towards 8 IK solutions.
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 8 states (3 start + 5 goal)
+Info:    Solution found in 0.071178 seconds
+Info:    SimpleSetup: Path simplification took 0.131900 seconds and changed from 4 to 2 states
+2026-04-02 14:54:10.332 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.012995 seconds
+Info:    SimpleSetup: Path simplification took 0.042108 seconds and changed from 3 to 2 states
+2026-04-02 14:54:10.388 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 4 states (2 start + 2 goal)
+Info:    Solution found in 0.014067 seconds
+Info:    SimpleSetup: Path simplification took 0.060578 seconds and changed from 3 to 2 states
+2026-04-02 14:54:10.463 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (2 start + 3 goal)
+Info:    Solution found in 0.021485 seconds
+Info:    SimpleSetup: Path simplification took 0.081001 seconds and changed from 4 to 2 states
+2026-04-02 14:54:10.566 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (3 start + 2 goal)
+Info:    Solution found in 0.025716 seconds
+Info:    SimpleSetup: Path simplification took 0.093118 seconds and changed from 4 to 2 states
+2026-04-02 14:54:10.686 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 11 states (6 start + 5 goal)
+Info:    Solution found in 0.103535 seconds
+Info:    SimpleSetup: Path simplification took 0.466391 seconds and changed from 6 to 5 states
+2026-04-02 14:54:11.455 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 129 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (3 start + 2 goal)
+Info:    Solution found in 0.019391 seconds
+Info:    SimpleSetup: Path simplification took 0.109768 seconds and changed from 4 to 2 states
+2026-04-02 14:54:11.585 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 5 states (3 start + 2 goal)
+Info:    Solution found in 0.020722 seconds
+Info:    SimpleSetup: Path simplification took 0.120834 seconds and changed from 4 to 2 states
+2026-04-02 14:54:11.728 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+2026-04-02 14:54:11.728 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:134 - Found 8 paths towards IK solutions, (planning time: 1.60 s).
+2026-04-02 14:54:11.728 | SUCCESS  | airo_planner.multiple_goal_planner:_plan_to_goal_configurations:143 - Chose path with 2 waypoints.
+2026-04-02 14:54:11.745 | INFO     | grocery_bot.robot.real_robot:_execute_path:156 - Executing trajectory: 1054 waypoints, 10.5s duration (TOPPRA 25% speed)
+2026-04-02 14:54:22.325 | DEBUG    | grocery_bot.robot.state_machine:advance:92 - Transition: moving_to_handover -> ready_for_handover
+2026-04-02 14:54:22.325 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase ready_for_handover â€” Ready â€” please take the milk (oat)
+2026-04-02 14:54:22.368 | INFO     | grocery_bot.robot.real_robot:_servo_to_hand:197 - Handover: hand reached (distance=0.002m)
+2026-04-02 14:54:23.541 | DEBUG    | grocery_bot.robot.state_machine:advance:92 - Transition: ready_for_handover -> done
+2026-04-02 14:54:23.541 | INFO     | grocery_bot.robot.runner:publish_status:69 - Phase done â€” Handover complete for milk (oat)
+Info:    RRTConnect: Starting planning with 1 states already in datastructure
+Info:    RRTConnect: Created 8 states (4 start + 4 goal)
+Info:    Solution found in 0.068836 seconds
+Info:    SimpleSetup: Path simplification took 0.112081 seconds and changed from 4 to 2 states
+2026-04-02 14:54:23.724 | SUCCESS  | airo_planner.ompl.single_arm_ompl_planner:plan_to_joint_configuration:129 - Successfully found path (with 2 waypoints).
+2026-04-02 14:54:23.738 | INFO     | grocery_bot.robot.real_robot:_execute_path:156 - Executing trajectory: 999 waypoints, 10.0s duration (TOPPRA 25% speed)
+2026-04-02 14:54:33.763 | INFO     | grocery_bot.robot.real_robot:process_order:94 - Order f0d33e01 complete
+^C2026-04-02 15:14:45.497 | INFO     | grocery_bot.robot.runner:main:125 - Robot stopped

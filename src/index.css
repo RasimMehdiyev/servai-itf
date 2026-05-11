@@ -460,16 +460,6 @@ body {
     animation: fadeIn .2s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0
-    }
-
-    to {
-        opacity: 1
-    }
-}
-
 .camera-modal {
     background: var(--surface);
     border-radius: var(--radius-xl);
@@ -902,6 +892,60 @@ body {
     display: flex;
     align-items: center;
     gap: 8px
+}
+
+/* ---- Animations: blinking & pulse dots ---- */
+
+/* blink — opacity oscillation for inline status dots */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.animate-blink {
+  animation: blink 1.8s ease-in-out infinite;
+}
+
+/* pulse-ring — expanding halo around a solid dot */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  70% { box-shadow: 0 0 0 6px currentColor; opacity: 0; }
+  100% { box-shadow: 0 0 0 0 currentColor; opacity: 0; }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-out infinite;
+  color: var(--warning);
+}
+.animate-pulse-ring-red {
+  animation: pulse-ring 1.5s ease-out infinite;
+  color: var(--danger);
+}
+
+/* Progress bar diagonal stripes */
+.stripes {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255,255,255,0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255,255,255,0.2) 50%,
+    rgba(255,255,255,0.2) 75%,
+    transparent 75%
+  );
+  background-size: 20px 20px;
+  animation: stripes-move 0.8s linear infinite;
+}
+@keyframes stripes-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 0; }
+}
+
+/* fadeIn for accordion content */
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease;
 }
 
 /* ---- Responsive ---- */

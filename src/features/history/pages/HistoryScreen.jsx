@@ -5,6 +5,7 @@ import PerformanceCard from '../components/PerformanceCard'
 import FailureList from '../components/FailureList'
 import LoadingState from '../../../components/ui/LoadingState'
 import ErrorState from '../../../components/ui/ErrorState'
+import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
 import useHistorySummary from '../../../hooks/useHistorySummary'
 import { allFailures as allFailuresBase } from '../../../mocks/historyMock'
 
@@ -68,8 +69,7 @@ export default function HistoryScreen() {
 
   const topRight = (
     <div className="gap-row">
-      <span className="status-dot status-dot--live" />
-      <span style={{ color: 'var(--live-dot)', fontWeight: 600, fontSize: 'clamp(16px,2.0vw,17px)' }}>Live</span>
+      <ConnectionIndicator />
     </div>
   )
 

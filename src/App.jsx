@@ -1,6 +1,7 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
+import { DataSourceProvider } from './context/DataSourceContext'
 import LiveScreen from './features/live/pages/LiveScreen'
 import HistoryScreen from './features/history/pages/HistoryScreen'
 import DayDetailsScreen from './features/day-details/pages/DayDetailsScreen'
@@ -25,16 +26,18 @@ function SettingsStub() {
 
 export default function App() {
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Navigate to="/live" replace />} />
-        <Route path="/live" element={<LiveScreen />} />
-        <Route path="/history" element={<HistoryScreen />} />
-        <Route path="/history/:dayId" element={<DayDetailsScreen />} />
-        <Route path="/assistant" element={<AssistantStub />} />
-        <Route path="/settings" element={<SettingsStub />} />
-        <Route path="*" element={<Navigate to="/live" replace />} />
-      </Routes>
-    </AppShell>
+    <DataSourceProvider>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<Navigate to="/live" replace />} />
+          <Route path="/live" element={<LiveScreen />} />
+          <Route path="/history" element={<HistoryScreen />} />
+          <Route path="/history/:dayId" element={<DayDetailsScreen />} />
+          <Route path="/assistant" element={<AssistantStub />} />
+          <Route path="/settings" element={<SettingsStub />} />
+          <Route path="*" element={<Navigate to="/live" replace />} />
+        </Routes>
+      </AppShell>
+    </DataSourceProvider>
   )
 }

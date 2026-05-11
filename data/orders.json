@@ -1,0 +1,8782 @@
+[
+  {
+    "id": 1,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T11:51:53.053Z",
+    "completed_at": "2026-05-10T11:54:52.008Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 2,
+    "item": "water bottle",
+    "started_at": "2026-05-10T11:54:52.070Z",
+    "completed_at": "2026-05-10T11:57:24.547Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 3,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T11:58:26.951Z",
+    "completed_at": "2026-05-10T12:01:25.907Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 4,
+    "item": "water bottle",
+    "started_at": "2026-05-10T12:01:25.969Z",
+    "completed_at": "2026-05-10T12:03:58.460Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 5,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:03:58.521Z",
+    "completed_at": "2026-05-10T12:06:52.419Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 6,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:13:03.251Z",
+    "completed_at": "2026-05-10T12:16:02.206Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 7,
+    "item": "water bottle",
+    "started_at": "2026-05-10T12:16:02.267Z",
+    "completed_at": "2026-05-10T12:18:34.718Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 8,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:18:34.782Z",
+    "completed_at": "2026-05-10T12:21:28.683Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 9,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:24:49.388Z",
+    "completed_at": "2026-05-10T12:27:48.380Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 10,
+    "item": "water bottle",
+    "started_at": "2026-05-10T12:27:48.441Z",
+    "completed_at": "2026-05-10T12:30:20.930Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 11,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:30:20.991Z",
+    "completed_at": "2026-05-10T12:33:14.915Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 12,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:36:35.637Z",
+    "completed_at": "2026-05-10T12:39:34.640Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 13,
+    "item": "water bottle",
+    "started_at": "2026-05-10T12:39:34.704Z",
+    "completed_at": "2026-05-10T12:42:07.224Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 14,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:42:07.287Z",
+    "completed_at": "2026-05-10T12:45:01.216Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 15,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:48:21.930Z",
+    "completed_at": "2026-05-10T12:51:20.919Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 16,
+    "item": "water bottle",
+    "started_at": "2026-05-10T12:51:20.981Z",
+    "completed_at": "2026-05-10T12:53:53.464Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 17,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T12:53:53.527Z",
+    "completed_at": "2026-05-10T12:56:47.425Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 18,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T13:00:08.139Z",
+    "completed_at": "2026-05-10T13:03:07.132Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 19,
+    "item": "water bottle",
+    "started_at": "2026-05-10T13:03:07.195Z",
+    "completed_at": "2026-05-10T13:05:39.718Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 20,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T13:05:39.781Z",
+    "completed_at": "2026-05-10T13:08:33.701Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 21,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T13:11:54.409Z",
+    "completed_at": "2026-05-10T13:14:53.384Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 22,
+    "item": "water bottle",
+    "started_at": "2026-05-10T13:14:53.446Z",
+    "completed_at": "2026-05-10T13:17:25.955Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 23,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-10T13:17:26.017Z",
+    "completed_at": "2026-05-10T13:20:19.942Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 24,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T07:57:51.577Z",
+    "completed_at": "2026-05-11T08:00:50.515Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 25,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:01:53.952Z",
+    "completed_at": "2026-05-11T08:04:52.890Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 26,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:06:17.714Z",
+    "completed_at": "2026-05-11T08:09:16.660Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 27,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:11:16.233Z",
+    "completed_at": "2026-05-11T08:14:15.032Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 28,
+    "item": "water bottle",
+    "started_at": "2026-05-11T08:14:15.093Z",
+    "completed_at": "2026-05-11T08:16:47.365Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 82,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 29,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:16:47.427Z",
+    "completed_at": "2026-05-11T08:19:41.354Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 30,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:19:55.530Z",
+    "completed_at": "2026-05-11T08:22:54.495Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 31,
+    "item": "water bottle",
+    "started_at": "2026-05-11T08:22:54.556Z",
+    "completed_at": "2026-05-11T08:25:27.061Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 32,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:25:27.123Z",
+    "completed_at": "2026-05-11T08:28:21.040Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 33,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:31:41.733Z",
+    "completed_at": "2026-05-11T08:34:40.671Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 34,
+    "item": "water bottle",
+    "started_at": "2026-05-11T08:34:40.734Z",
+    "completed_at": "2026-05-11T08:37:13.262Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 35,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:37:13.323Z",
+    "completed_at": "2026-05-11T08:40:07.246Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 36,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:43:28.035Z",
+    "completed_at": "2026-05-11T08:46:26.991Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 37,
+    "item": "water bottle",
+    "started_at": "2026-05-11T08:46:27.053Z",
+    "completed_at": "2026-05-11T08:48:59.544Z",
+    "total_seconds": 152,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 38,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:50:19.220Z",
+    "completed_at": "2026-05-11T08:53:18.260Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 39,
+    "item": "water bottle",
+    "started_at": "2026-05-11T08:53:18.322Z",
+    "completed_at": "2026-05-11T08:55:50.838Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 40,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T08:56:10.910Z",
+    "completed_at": "2026-05-11T08:59:04.862Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 41,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T09:02:25.578Z",
+    "completed_at": "2026-05-11T09:05:24.572Z",
+    "total_seconds": 179,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 3,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 30,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 85,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 15,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 42,
+    "item": "water bottle",
+    "started_at": "2026-05-11T09:05:24.635Z",
+    "completed_at": "2026-05-11T09:07:57.138Z",
+    "total_seconds": 153,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 83,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 11,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 20,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 4,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 8,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 13,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "id": 43,
+    "item": "ballpoint pen",
+    "started_at": "2026-05-11T09:08:17.203Z",
+    "completed_at": "2026-05-11T09:11:11.094Z",
+    "total_seconds": 174,
+    "steps": [
+      {
+        "name": "Return to start",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 1",
+        "duration_seconds": 91,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 3",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 4",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 7,
+        "meta": {}
+      },
+      {
+        "name": "Stage 5",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 6",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 7",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 8",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 9",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 26,
+        "meta": {}
+      },
+      {
+        "name": "Stage 11",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 9,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12a",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12b",
+        "duration_seconds": 12,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12c",
+        "duration_seconds": 0,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 14,
+        "meta": {}
+      },
+      {
+        "name": "Stage 12d",
+        "duration_seconds": 0,
+        "meta": {}
+      }
+    ],
+    "status": "success"
+  }
+]

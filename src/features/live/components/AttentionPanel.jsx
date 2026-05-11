@@ -1,93 +1,231 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Card from '../../../components/ui/Card'
+import { useDataSource } from '../../../context/DataSourceContext'
 
-// ── Bullet-state icon ──────────────────────────────────────────────────────
-
-function BulletIcon({ state }) {
-  if (state === 'completed')
-    return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[var(--success)] shrink-0 mt-0.5" aria-hidden><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-  if (state === 'warning')
-    return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[var(--danger)] shrink-0 mt-0.5" aria-hidden><circle cx="12" cy="12" r="10"/></svg>
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[var(--text-tertiary)] shrink-0 mt-0.5" aria-hidden><circle cx="12" cy="12" r="6"/></svg>
+const PILL = {
+  green:  { text: 'On track',       cls: 'bg-[var(--success-bg)] text-[var(--success)]' },
+  orange: { text: "Can't find it",  cls: 'bg-[var(--warning-bg)] text-[var(--warning)]' },
+  red:    { text: 'Needs help',     cls: 'bg-[var(--danger-bg)] text-[var(--danger)]' },
 }
 
-// ── Component ──────────────────────────────────────────────────────────────
+export function formatDuration(ms) {
+  if (!ms || ms <= 0) return '0s'
+  const totalSec = Math.floor(ms / 1000)
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const s = totalSec % 60
+  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`
+  if (m > 0) return s > 0 ? `${m}m ${s}s` : `${m}m`
+  return `${s}s`
+}
 
-export default function AttentionPanel({ title, level, explanationTitle, explanationText, bullets, onFulfillManually, onOpenCamera, style }) {
-  const [fulfilled, setFulfilled] = useState(false)
-  const isOk = level === 'ok'
+export function formatSeconds(sec) {
+  if (!sec || sec <= 0) return '0s'
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  const s = sec % 60
+  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`
+  if (m > 0) return s > 0 ? `${m}m ${s}s` : `${m}m`
+  return `${s}s`
+}
 
-  const handleFulfill = () => {
-    setFulfilled(true)
-    onFulfillManually?.()
-  }
+function ProgressBar({ fraction, animDuration, milestone }) {
+  const pct = Math.min(Math.max(fraction * 100, 0), 100)
+  const milestones = [
+    { pct: 33, label: 'Started' },
+    { pct: 66, label: 'Picked up' },
+    { pct: 100, label: 'Handover' },
+  ]
 
   return (
-    <Card style={style}>
-      {/* ── Title + status chip ── */}
-      <div className="flex justify-between items-start gap-3">
-        <h2 className="text-[clamp(20px,2.4vw,24px)] font-bold text-[var(--text-primary)]">{title}</h2>
-        {isOk
-          ? <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[clamp(14px,1.7vw,15px)] font-semibold bg-[var(--success-bg)] text-[var(--success)] shrink-0">✓ All Clear</span>
-          : <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[clamp(14px,1.7vw,15px)] font-semibold bg-[var(--danger-bg)] text-[var(--danger)] shrink-0">⚠ Needs Attention</span>
-        }
+    <div className="mt-4">
+      <div className="relative h-3 rounded-full bg-[var(--border)] overflow-hidden">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-[var(--primary)] stripes"
+          style={{
+            width: `${pct}%`,
+            transition: animDuration > 0 ? `width ${animDuration}s linear` : 'width 0.3s ease',
+          }}
+        />
       </div>
-
-      {/* ── Why card ── */}
-      <div className="bg-[var(--bg)] rounded-[10px] p-[clamp(10px,1.6vw,16px)] mt-3 border-l-[3px] border-solid border-[var(--danger)]">
-        <div className="flex items-center gap-2 mb-1.5">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[var(--danger)]" aria-hidden>
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/>
-          </svg>
-          <strong className="text-[clamp(16px,2.0vw,17px)]">{explanationTitle}</strong>
-        </div>
-        <p className="text-[var(--text-secondary)] text-[clamp(15px,1.7vw,16px)]">{explanationText}</p>
-      </div>
-
-      {/* ── Bullet list ── */}
-      <ul className="list-none flex flex-col gap-2 mt-3 p-0">
-        {bullets.map((b, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-[clamp(16px,2.0vw,17px)]">
-            <BulletIcon state={b.state} />
-            <span>{b.text}</span>
-          </li>
+      <div className="flex justify-between mt-1.5">
+        {milestones.map((m, i) => (
+          <div key={i} className="flex flex-col items-center" style={{ width: '33.3%' }}>
+            <div className={`w-2.5 h-2.5 rounded-full border-2 border-solid -mt-[11px] relative z-10 ${
+              milestone >= i ? 'bg-[var(--primary)] border-[var(--primary)]' : 'bg-[var(--surface)] border-[var(--border)]'
+            }`} />
+            <span className="text-[10px] text-[var(--text-tertiary)] mt-1 font-medium">{m.label}</span>
+          </div>
         ))}
-      </ul>
-
-      {/* ── Action buttons ── */}
-      {!isOk && !fulfilled && (
-        <div className="flex gap-2.5 flex-wrap mt-3">
-          <button
-            className="flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[6px] bg-[var(--primary)] text-white font-semibold text-[clamp(16px,2.0vw,17px)] min-h-[44px] border border-solid border-[var(--primary)] cursor-pointer transition-shadow hover:shadow-[0_2px_8px_rgba(43,127,255,.3)]"
-            onClick={handleFulfill}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M18 11V6a2 2 0 0 0-4 0v1M14 10V4a2 2 0 0 0-4 0v6M10 10V5a2 2 0 0 0-4 0v9"/>
-              <path d="M18 11a2 2 0 0 1 4 0v5a8 8 0 0 1-8 8h-2c-2.5 0-4.5-1-6.2-2.8L2.5 17a1.5 1.5 0 0 1 2.1-2.1L6 16.4"/>
-            </svg>
-            Fulfill Order Manually
-          </button>
-          <button
-            className="flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[6px] bg-[var(--surface)] text-[var(--text-primary)] font-semibold text-[clamp(16px,2.0vw,17px)] min-h-[44px] border border-solid border-[var(--border)] cursor-pointer transition-colors hover:bg-[var(--bg)]"
-            onClick={onOpenCamera}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            View Camera Feed
-          </button>
-        </div>
-      )}
-
-      {/* ── Fulfilled toast ── */}
-      {fulfilled && (
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] text-[clamp(15px,1.7vw,16px)] font-medium bg-[var(--success-bg)] text-[var(--success)] mt-3">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
-          Manual fulfillment initiated — robot set to idle
-        </div>
-      )}
-    </Card>
+      </div>
+    </div>
   )
 }
 
+// ── Status banner (always visible below progress) ───────────────────────────
+
+function StatusBanner({ cardState, itemName, explanationText }) {
+  if (cardState === 'green') {
+    return (
+      <div className="mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--success-bg)]">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" className="shrink-0"><path d="M20 6L9 17l-5-5"/></svg>
+        <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--success)]">
+          {explanationText || 'Everything is running fine'}
+        </span>
+      </div>
+    )
+  }
+
+  if (cardState === 'orange') {
+    return (
+      <div className="mt-4">
+        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--warning-bg)] mb-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--warning)" className="shrink-0" aria-hidden>
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          </svg>
+          <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--warning)]">
+            Can't find the {itemName || 'item'} on the shelf
+          </span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <button className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--warning)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+            I'll restock the shelf
+          </button>
+          <div className="flex gap-2">
+            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+              Tell customer we're out
+            </button>
+            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
+              Cancel this order
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (cardState === 'red') {
+    return (
+      <div className="mt-4">
+        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--danger-bg)] mb-3">
+          <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 animate-pulse-ring" style={{ color: 'var(--danger)' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--danger)" aria-hidden>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/>
+            </svg>
+          </div>
+          <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--danger)]">
+            {explanationText || 'I need help — please come over'}
+          </span>
+        </div>
+        <div className="flex flex-col gap-2">
+          <button className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--danger)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+            I'm on my way
+          </button>
+          <div className="flex gap-2">
+            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+              Tell customer it's delayed
+            </button>
+            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
+              Cancel this order
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return null
+}
+
+// ── Cycle failures log ──────────────────────────────────────────────────────
+
+function CycleFailures({ failures }) {
+  if (!failures || failures.length === 0) return null
+
+  return (
+    <div className="mt-4">
+      <div className="h-px bg-[var(--border)] mb-3" />
+      <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Issues this cycle</div>
+      <div className="flex flex-col gap-1.5">
+        {failures.map((f, i) => (
+          <div key={i} className={`flex items-start gap-2 px-3 py-2 rounded-lg ${
+            f.level === 'red' ? 'bg-[var(--danger-bg)]' : 'bg-[var(--warning-bg)]'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-[6px] ${
+              f.level === 'red' ? 'bg-[var(--danger)]' : 'bg-[var(--warning)]'
+            }`} />
+            <span className={`text-[clamp(12px,1.4vw,13px)] ${
+              f.level === 'red' ? 'text-[var(--danger)]' : 'text-[var(--warning)]'
+            }`}>
+              {f.message}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Main component ──────────────────────────────────────────────────────────
+
+export default function AttentionPanel({ title, level, explanationText, style }) {
+  const { liveData } = useDataSource()
+  const cardState = liveData?._cardState || 'green'
+  const pill = PILL[cardState] || PILL.green
+  const itemName = liveData?._itemName
+  const cycleNum = liveData?._cycleNum
+  const startedAt = liveData?._cycleStartedAt
+  const elapsed = startedAt ? Date.now() - startedAt : 0
+  const progress = liveData?.progress || { fraction: 0, milestone: 0, animDuration: 0 }
+  const isActive = !!itemName && !liveData?._cycleComplete
+  const failures = liveData?._cycleFailures || []
+
+  const eta = progress.fraction > 0.05 && isActive
+    ? formatDuration(Math.max(0, (elapsed / progress.fraction) - elapsed))
+    : '--'
+
+  return (
+    <Card style={style}>
+      {/* Header row */}
+      <div className="flex justify-between items-start gap-3 mb-1">
+        <div>
+          <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Now serving</div>
+          <h2 className="text-[clamp(22px,2.8vw,28px)] font-bold text-[var(--text-primary)] m-0 leading-tight">
+            {isActive ? itemName.charAt(0).toUpperCase() + itemName.slice(1) : 'Idle'}
+          </h2>
+          <div className="flex items-center gap-3 mt-1 text-[clamp(13px,1.5vw,14px)] text-[var(--text-secondary)]">
+            {cycleNum && <span>Order #{cycleNum}</span>}
+            {isActive && <span>· started {formatDuration(elapsed)} ago</span>}
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[13px] font-semibold ${pill.cls}`}>
+            <span className={`w-2 h-2 rounded-full ${cardState === 'green' ? 'bg-[var(--success)]' : cardState === 'orange' ? 'bg-[var(--warning)]' : 'bg-[var(--danger)]'} ${isActive ? 'animate-blink' : ''}`} />
+            {pill.text}
+          </span>
+          {isActive && (
+            <div className="text-right">
+              <div className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">ETA</div>
+              <div className="text-[clamp(16px,2vw,20px)] font-bold text-[var(--text-primary)] tabular-nums">{eta}</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      {isActive && (
+        <ProgressBar
+          fraction={progress.fraction}
+          animDuration={progress.animDuration}
+          milestone={progress.milestone}
+        />
+      )}
+
+      {/* Real-time status banner + action buttons */}
+      <StatusBanner cardState={cardState} itemName={itemName} explanationText={explanationText} />
+
+      {/* Failures within this cycle */}
+      <CycleFailures failures={failures} />
+    </Card>
+  )
+}

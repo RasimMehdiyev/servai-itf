@@ -13,6 +13,7 @@ const DOT_CLS = {
   warning:   'bg-[var(--danger)]  border-solid border-[var(--danger)]  text-white',
   failed:    'bg-[var(--danger)]  border-solid border-[var(--danger)]  text-white',
   active:    'bg-[var(--primary)] border-solid border-[var(--primary)] text-white',
+  loading:   'bg-[var(--surface)] border-solid border-[var(--border)] text-[var(--text-tertiary)]',
   pending:   'bg-[var(--surface)] border-[var(--text-tertiary)] text-[var(--text-tertiary)]',
 }
 
@@ -21,6 +22,7 @@ const LINE_CLS = {
   warning:   'bg-[var(--danger)]',
   failed:    'bg-[var(--danger)]',
   active:    'bg-[var(--primary)]',
+  loading:   'bg-[var(--border)]',
   pending:   'bg-[var(--border)]',
 }
 
@@ -29,6 +31,7 @@ const CARD_CLS = {
   warning:   'bg-[var(--danger-bg)]',
   failed:    'bg-[var(--danger-bg)]',
   active:    'bg-[var(--info-bg)]',
+  loading:   'bg-[var(--surface)] border-l-[3px] border-solid border-[var(--border)]',
   pending:   'bg-[var(--surface)] border-l-[3px] border-solid border-[var(--border)]',
 }
 
@@ -37,6 +40,7 @@ const DESC_CLS = {
   warning:   'text-[var(--danger)]',
   failed:    'text-[var(--danger)]',
   active:    'text-[var(--text-secondary)]',
+  loading:   'text-[var(--text-tertiary)]',
   pending:   'text-[var(--text-tertiary)]',
 }
 
@@ -45,6 +49,7 @@ const STATE_BADGE = {
   warning:   { text: 'Failed',   cls: 'text-[var(--danger)]        bg-[var(--danger-bg)]'  },
   failed:    { text: 'Failed',   cls: 'text-[var(--danger)]        bg-[var(--danger-bg)]'  },
   active:    { text: 'Active',   cls: 'text-[var(--primary)]       bg-[var(--info-bg)]'    },
+  loading:   { text: 'Next',     cls: 'text-[var(--text-tertiary)] bg-[var(--border)]'     },
   pending:   { text: 'Upcoming', cls: 'text-[var(--text-secondary)] bg-[var(--border)]'    },
 }
 
@@ -193,7 +198,7 @@ export default function WorkflowTimeline({
               <li className="flex">
                 {/* ── Dot + connector column ── */}
                 <div className="flex flex-col items-center w-7 shrink-0">
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 z-10 mt-[14px] ${dotCls} ${step.state === 'pending' ? 'border-dashed' : 'border-solid'}`}>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 z-10 mt-[14px] ${dotCls} ${step.state === 'pending' ? 'border-dashed' : 'border-solid'} ${step.state === 'active' ? 'animate-pulse-ring' : ''} ${step.state === 'loading' ? 'animate-blink' : ''}`}>
                     {step.state === 'completed' && <SmallCheckIcon />}
                   </div>
                   {showConnector && (
@@ -203,36 +208,63 @@ export default function WorkflowTimeline({
 
                 {/* ── Card ── */}
                 <div className={`flex-1 ml-2 mb-3 rounded-[10px] px-4 py-3 ${cardCls}`}>
-                  <div className="flex items-start justify-between gap-3 mb-1.5">
-                    <div className="font-semibold text-[clamp(16px,2.0vw,18px)] text-[var(--text-primary)] leading-snug">
-                      {step.title}
+                  {step.state === 'loading' ? (
+                    /* Skeleton placeholder for the next expected step */
+                    <div className="animate-pulse">
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="h-5 w-2/3 rounded bg-[var(--border)]" />
+                        <div className="h-4 w-10 rounded bg-[var(--border)]" />
+                      </div>
+                      <div className="h-4 w-4/5 rounded bg-[var(--border)] mt-2" />
+                      <div className="mt-2">
+                        <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>
+                          {badge.text}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-[clamp(13px,1.5vw,14px)] text-[var(--text-tertiary)] whitespace-nowrap shrink-0 pt-0.5 font-medium tabular-nums">
-                      {step.timestamp}
-                    </span>
-                  </div>
+                  ) : (
+                    <>
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="font-semibold text-[clamp(16px,2.0vw,18px)] text-[var(--text-primary)] leading-snug">
+                          {step.title}
+                        </div>
+                        <span className="text-[clamp(13px,1.5vw,14px)] text-[var(--text-tertiary)] whitespace-nowrap shrink-0 pt-0.5 font-medium tabular-nums">
+                          {step.timestamp}
+                        </span>
+                      </div>
 
-                  <p className={`text-[clamp(14px,1.6vw,15px)] m-0 leading-snug ${descCls}`}>
-                    {step.description}
-                  </p>
+                      <div className={`text-[clamp(14px,1.6vw,15px)] m-0 leading-snug ${descCls}`}>
+                        {step.debugMessages?.length > 0 ? (
+                          step.debugMessages.map((msg, di) => (
+                            <p key={di} className="flex items-start gap-1.5 m-0 mt-1 text-[clamp(11px,1.3vw,12px)] text-[var(--text-tertiary)]">
+                              <span className="shrink-0 mt-[4px] w-1.5 h-1.5 rounded-full bg-[var(--warning)]" />
+                              <span className="font-mono">{msg}</span>
+                            </p>
+                          ))
+                        ) : (
+                          <p className="m-0">{step.description}</p>
+                        )}
+                      </div>
 
-                  {step.alert && (
-                    <div className="mt-2.5">
-                      <button
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[clamp(14px,1.6vw,15px)] font-medium bg-[var(--danger)] text-white border-0 cursor-pointer transition-shadow hover:shadow-[0_2px_8px_rgba(240,87,100,.35)]"
-                        onClick={() => onOpenDiagnostic?.()}
-                      >
-                        <AlertCircleIcon />
-                        View Camera Feed
-                      </button>
-                    </div>
+                      {step.alert && (
+                        <div className="mt-2.5">
+                          <button
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[clamp(14px,1.6vw,15px)] font-medium bg-[var(--danger)] text-white border-0 cursor-pointer transition-shadow hover:shadow-[0_2px_8px_rgba(240,87,100,.35)]"
+                            onClick={() => onOpenDiagnostic?.()}
+                          >
+                            <AlertCircleIcon />
+                            View Camera Feed
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="mt-2">
+                        <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>
+                          {badge.text}
+                        </span>
+                      </div>
+                    </>
                   )}
-
-                  <div className="mt-2">
-                    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>
-                      {badge.text}
-                    </span>
-                  </div>
                 </div>
               </li>
 
