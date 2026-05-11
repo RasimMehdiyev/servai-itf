@@ -60,7 +60,7 @@ const liveInitialState = {
 }
 
 export function DataSourceProvider({ children }) {
-  const { status, tick, drain } = useRobotSocket(isLiveMode ? wsUrl : null)
+  const { status, tick, drain, send } = useRobotSocket(isLiveMode ? wsUrl : null)
   const [liveData, dispatch] = useReducer(liveReducer, liveInitialState)
   const [recentOrders, setRecentOrders] = useState({ total: 0, failedCount: 0, recent: [] })
   const idleTimer = useRef(null)
@@ -109,11 +109,16 @@ export function DataSourceProvider({ children }) {
     return () => clearTimeout(idleTimer.current)
   }, [])
 
+  const sendMessage = useCallback((msg) => {
+    if (isLiveMode) send(msg)
+  }, [isLiveMode, send])
+
   const value = {
     mode: isLiveMode ? 'live' : 'mock',
     connectionStatus: isLiveMode ? status : 'mock',
     liveData: isLiveMode ? liveData : null,
     recentOrders,
+    sendMessage,
   }
 
   return (

@@ -1,11 +1,20 @@
-import { dayDetailsMock } from '../mocks/dayDetailsMock'
-import { calendarDayMap } from '../mocks/calendarMock'
+import { fetchOrders, buildDayMap } from './orderStore'
 
-export function fetchDayDetails(id){
-  const dayData = calendarDayMap[id]
-  if (dayData) {
-    return new Promise((resolve)=> setTimeout(()=> resolve(dayData), 250))
+export async function fetchDayDetails(id) {
+  const orders = await fetchOrders()
+  const dayMap = buildDayMap(orders)
+  const dayData = dayMap[id]
+  if (dayData) return dayData
+  return {
+    id,
+    dateStr: id,
+    dateLabel: id,
+    isToday: false,
+    successRate: 0,
+    ordersReceived: 0,
+    successCount: 0,
+    failureCount: 0,
+    attentionLabel: 'All Clear',
+    orders: [],
   }
-  // Fallback to static mock for unknown IDs
-  return new Promise((resolve)=> setTimeout(()=> resolve(dayDetailsMock), 250))
 }

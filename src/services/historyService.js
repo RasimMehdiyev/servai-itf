@@ -1,7 +1,4 @@
-import { calendarDayMap } from '../mocks/calendarMock'
-import { allFailures as allFailuresBase } from '../mocks/historyMock'
-
-const DATA_END = '2026-04-20'
+import { fetchOrders, buildDayMap, FAILURE_DESCRIPTIONS } from './orderStore'
 
 function getFailuresByType(day) {
   const byType = {}
@@ -15,17 +12,18 @@ function getFailuresByType(day) {
   return byType
 }
 
-function buildBars(start, end) {
+function buildBars(start, end, dayMap) {
   const bars = []
   const cursor = new Date(start)
   while (cursor <= end) {
     const dateStr = cursor.toISOString().slice(0, 10)
-    const day = calendarDayMap[dateStr]
+    const day = dayMap[dateStr]
     bars.push({
       date: dateStr,
       success: day?.successCount ?? 0,
       failure: day?.failureCount ?? 0,
       failuresByType: getFailuresByType(day),
+      orders: day?.orders ?? [],
     })
     cursor.setDate(cursor.getDate() + 1)
   }
@@ -45,8 +43,12 @@ function countByType(bars) {
 /**
  * @param {{ range?: string, startDate?: string, endDate?: string }} params
  */
-export function fetchHistory({ range = '7d', startDate = null, endDate = null } = {}) {
-  const end = new Date((endDate || DATA_END) + 'T12:00:00')
+export async function fetchHistory({ range = '7d', startDate = null, endDate = null } = {}) {
+  const orders = await fetchOrders()
+  const dayMap = buildDayMap(orders)
+
+  const dataEnd = endDate || new Date().toISOString().slice(0, 10)
+  const end = new Date(dataEnd + 'T12:00:00')
 
   let start
   if (startDate) {
@@ -57,24 +59,23 @@ export function fetchHistory({ range = '7d', startDate = null, endDate = null } 
     start.setDate(start.getDate() - days + 1)
   }
 
-  const bars = buildBars(start, end)
+  const bars = buildBars(start, end, dayMap)
 
-  // Previous period (same length, immediately before current start)
   const periodDays = bars.length
   const prevEnd = new Date(start)
   prevEnd.setDate(prevEnd.getDate() - 1)
   const prevStart = new Date(prevEnd)
   prevStart.setDate(prevStart.getDate() - periodDays + 1)
-  const prevBars = buildBars(prevStart, prevEnd)
+  const prevBars = buildBars(prevStart, prevEnd, dayMap)
 
   const currentCounts = countByType(bars)
   const prevCounts = countByType(prevBars)
 
-  // Compute allFailures with real counts and trends
-  const computedFailures = allFailuresBase
-    .map(f => {
-      const curr = currentCounts[f.title] ?? 0
-      const prev = prevCounts[f.title] ?? 0
+  const allFailureTypes = Object.keys(currentCounts)
+  const computedFailures = allFailureTypes
+    .map((title, i) => {
+      const curr = currentCounts[title] ?? 0
+      const prev = prevCounts[title] ?? 0
       let trendDirection = 'neutral'
       let trendPercent = 0
       if (curr > prev) {
@@ -84,12 +85,18 @@ export function fetchHistory({ range = '7d', startDate = null, endDate = null } 
         trendDirection = 'down'
         trendPercent = Math.round(((prev - curr) / prev) * 100)
       }
-      return { ...f, count: curr, trendPercent, trendDirection }
+      return {
+        id: `f${i + 1}`,
+        title,
+        description: FAILURE_DESCRIPTIONS[title] || `Failure: ${title}`,
+        count: curr,
+        trendPercent,
+        trendDirection,
+      }
     })
     .filter(f => f.count > 0)
     .sort((a, b) => b.count - a.count)
 
-  // Collect failure types present in current period
   const typeSet = new Set()
   bars.forEach(b => Object.keys(b.failuresByType).forEach(t => typeSet.add(t)))
   const failureTypes = Array.from(typeSet).sort()
@@ -99,10 +106,5 @@ export function fetchHistory({ range = '7d', startDate = null, endDate = null } 
   const total = totalSuccess + totalFailure
   const successRate = total > 0 ? Math.round((totalSuccess / total) * 100) : 0
 
-  return new Promise((resolve) =>
-    setTimeout(() =>
-      resolve({ successRate, successCount: totalSuccess, failureCount: totalFailure, performanceBars: bars, failureTypes, allFailures: computedFailures }),
-      200
-    )
-  )
+  return { successRate, successCount: totalSuccess, failureCount: totalFailure, performanceBars: bars, failureTypes, allFailures: computedFailures }
 }

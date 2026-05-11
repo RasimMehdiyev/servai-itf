@@ -32,6 +32,25 @@ const LOOP_PAUSE = 5000
 const HEARTBEAT_INTERVAL = 4000
 const FAILURE_AFTER_CYCLE = 2   // inject a simulated failure after this cycle (per loop)
 const FAILURE_PAUSE = 20000     // ms of silence before resuming (triggers client idle → red)
+const INTERVENTION_TIMEOUT = 120000  // 2 minutes for employee to intervene on "item not found"
+const MAX_EVENT_DELAY = 5000         // cap any single inter-event gap at 5s (before speed scaling)
+
+// ── Failure classification ───────────────────────────────────────────────────
+
+function classifyFailure(message) {
+  const msg = (message || '').toLowerCase()
+  if (msg.includes('gripper') || msg.includes('grip') || msg.includes('slipped') || msg.includes('dropped'))
+    return 'Grip failure'
+  if (msg.includes('detection') || msg.includes('detect'))
+    return 'Item not detected'
+  if (msg.includes('e_stop') || msg.includes('emergency'))
+    return 'Emergency stop'
+  if (msg.includes('error state'))
+    return 'Robot error'
+  if (msg.includes('timeout') || msg.includes('no updates'))
+    return 'Connection timeout'
+  return 'Unknown failure'
+}
 
 // ── Order bookkeeping ────────────────────────────────────────────────────────
 
@@ -134,6 +153,14 @@ function parseLog(filePath) {
       const text = stageMatch[2].trim()
       if (text.match(/\?\s*\[y\/N\]/)) continue
       if (text.includes('aborted by user')) continue
+      if (text.startsWith('waiting for employee intervention')) {
+        events.push({ ts: lastTimestamp, type: 'intervention_wait', stageNum, text })
+        continue
+      }
+      if (text.startsWith('employee intervention:')) {
+        events.push({ ts: lastTimestamp, type: 'intervention_resolved', stageNum, text })
+        continue
+      }
       events.push({ ts: lastTimestamp, type: 'stage', stageNum, text })
       continue
     }
@@ -164,7 +191,7 @@ function computeDelays(events) {
     const prev = tsToMs(events[i - 1].ts)
     const curr = tsToMs(events[i].ts)
     if (prev !== null && curr !== null && curr > prev) {
-      delays.push((curr - prev) / REPLAY_SPEED)
+      delays.push(Math.min(curr - prev, MAX_EVENT_DELAY) / REPLAY_SPEED)
     } else {
       delays.push(50 / REPLAY_SPEED)
     }
@@ -194,6 +221,9 @@ let cycleStartTime = null
 let stepLog = []
 let stepStart = null
 let stepName = null
+let cycleFailures = []
+let interventionTimer = null
+let interventionResolve = null  // callback to resume after intervention
 
 function broadcast(data) {
   const msg = JSON.stringify(data)
@@ -264,6 +294,7 @@ function globalReplay() {
       stepLog = []
       stepStart = Date.now()
       stepName = 'Return to start'
+      cycleFailures = []
       cycleHistory = []  // reset history for the new cycle
     }
 
@@ -275,6 +306,27 @@ function globalReplay() {
       }
       stepStart = Date.now()
       stepName = `Stage ${evt.stageNum}`
+
+      // Track orange-level failure: 0 detections
+      if (evt.stageNum === '3') {
+        const m = evt.text?.match(/(\d+) detection\(s\)/)
+        if (m && parseInt(m[1]) === 0) {
+          cycleFailures.push({ level: 'orange', message: `0 detections for ${currentItem || 'item'}` })
+        }
+      }
+    }
+
+    // Track red-level failures
+    if (evt.type === 'gripper' && !evt.success) {
+      cycleFailures.push({ level: 'red', message: evt.message || 'Gripper failure' })
+    }
+    if (evt.type === 'robot_status') {
+      if (evt.raw?.includes('e_stopped') && evt.raw?.includes('True')) {
+        cycleFailures.push({ level: 'red', message: 'Emergency stop activated' })
+      }
+      if (evt.raw?.includes('in_error') && evt.raw?.includes('True')) {
+        cycleFailures.push({ level: 'red', message: 'Robot in error state' })
+      }
     }
 
     if (evt.type === 'cycle_end' && cycleStartTime) {
@@ -282,16 +334,31 @@ function globalReplay() {
         stepLog.push({ name: stepName, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: {} })
       }
       const orderId = orderIdBase + cycleOffset - 1
+      const hasCritical = cycleFailures.some(f => f.level === 'red')
+      const status = hasCritical ? 'failed' : 'ok'
+      let failureReason = null
+      if (hasCritical) {
+        failureReason = classifyFailure(cycleFailures.find(f => f.level === 'red').message)
+      } else if (cycleFailures.some(f => f.level === 'orange')) {
+        failureReason = classifyFailure(cycleFailures.find(f => f.level === 'orange').message)
+      }
+      const startedAt = new Date(cycleStartTime).toISOString()
+      const d = new Date(cycleStartTime)
+      const timestamp = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
       writeOrder({
         id: orderId,
         item: currentItem || 'unknown',
-        started_at: new Date(cycleStartTime).toISOString(),
+        orderNumber: String(orderId),
+        timestamp,
+        started_at: startedAt,
         completed_at: new Date().toISOString(),
         total_seconds: Math.round((Date.now() - cycleStartTime) / 1000),
         steps: stepLog,
-        status: 'success',
+        status,
+        failureReason,
+        rating: status === 'ok' ? 5 : 1,
       })
-      console.log(`  Order #${orderId} (${currentItem}) written to orders.json`)
+      console.log(`  Order #${orderId} (${currentItem}) [${status}] written to orders.json`)
     }
 
     const payload = { ...evt }
@@ -302,6 +369,93 @@ function globalReplay() {
     cycleHistory.push(payload)
     broadcast(payload)
     saveReplayState()
+
+    // When we hit an intervention_wait, pause replay and wait for employee or timeout
+    if (evt.type === 'intervention_wait') {
+      console.log(`  Intervention required — waiting up to ${INTERVENTION_TIMEOUT / 1000}s for employee action…`)
+      startHeartbeat()
+
+      // Find the intervention_resolved event that follows (it's the next event in the log)
+      const resolvedIdx = allEvents.findIndex((e, i) => i > idx && e.type === 'intervention_resolved')
+
+      interventionResolve = (fromEmployee) => {
+        interventionResolve = null
+        if (interventionTimer) { clearTimeout(interventionTimer); interventionTimer = null }
+
+        if (fromEmployee && resolvedIdx !== -1) {
+          // Employee intervened — continue from the resolved event onward
+          console.log('  Employee intervened — resuming pipeline')
+          const resumeEvt = allEvents[resolvedIdx]
+          cycleHistory.push(resumeEvt)
+          broadcast(resumeEvt)
+          const nextIdx = resolvedIdx + 1
+          const nextDelay = nextIdx < delays.length ? delays[nextIdx] : 50
+          globalTimeout = setTimeout(() => sendEvent(nextIdx), nextDelay)
+        } else {
+          // Timeout — skip rest of this cycle, emit a cycle_end as failed
+          console.log('  No intervention — skipping cycle (timeout)')
+          const skipEvt = {
+            ts: new Date().toISOString(),
+            type: 'stage',
+            stageNum: '3',
+            text: 'Intervention timeout — skipping to next order',
+          }
+          cycleHistory.push(skipEvt)
+          broadcast(skipEvt)
+
+          // Write a failed order for this cycle
+          if (stepName && stepStart) {
+            stepLog.push({ name: stepName, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: {} })
+          }
+          const orderId = orderIdBase + cycleOffset - 1
+          const startedAt = new Date(cycleStartTime).toISOString()
+          const d = new Date(cycleStartTime)
+          const timestamp = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+          writeOrder({
+            id: orderId,
+            item: currentItem || 'unknown',
+            orderNumber: String(orderId),
+            timestamp,
+            started_at: startedAt,
+            completed_at: new Date().toISOString(),
+            total_seconds: Math.round((Date.now() - cycleStartTime) / 1000),
+            steps: stepLog,
+            status: 'failed',
+            failureReason: 'Item not detected',
+            rating: 1,
+          })
+          console.log(`  Order #${orderId} (${currentItem}) [failed — timeout] written to orders.json`)
+
+          const endEvt = { ts: new Date().toISOString(), type: 'cycle_end' }
+          cycleHistory.push(endEvt)
+          broadcast(endEvt)
+
+          // Skip ahead to the next cycle_start in the log
+          let nextCycleIdx = allEvents.findIndex((e, i) => i > idx && e.type === 'cycle_start')
+          if (nextCycleIdx === -1) {
+            // No more cycles — end of loop
+            stopHeartbeat()
+            globalTimeout = setTimeout(globalReplay, LOOP_PAUSE / REPLAY_SPEED)
+          } else {
+            const nextDelay = 1000 / REPLAY_SPEED
+            globalTimeout = setTimeout(() => sendEvent(nextCycleIdx), nextDelay)
+          }
+        }
+      }
+
+      interventionTimer = setTimeout(() => {
+        if (interventionResolve) interventionResolve(false)
+      }, INTERVENTION_TIMEOUT / REPLAY_SPEED)
+
+      return
+    }
+
+    // Skip the intervention_resolved event during normal replay (handled by intervention logic)
+    if (evt.type === 'intervention_resolved') {
+      const nextDelay = (idx + 1 < delays.length) ? delays[idx + 1] : 50
+      globalTimeout = setTimeout(() => sendEvent(idx + 1), nextDelay)
+      return
+    }
 
     // After the target cycle, pause without heartbeats to trigger client-side idle → red
     if (evt.type === 'cycle_end' && cycleOffset === FAILURE_AFTER_CYCLE) {
@@ -338,14 +492,21 @@ function globalReplay() {
 
 // ── HTTP + WebSocket server ──────────────────────────────────────────────────
 
+const url = require('url')
+
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
-  if (req.url === '/api/recent-orders') {
+  const pathname = url.parse(req.url).pathname
+  if (pathname === '/api/recent-orders') {
     const orders = readOrders()
     const recent = orders.slice(-4).reverse()
     const failed = orders.filter(o => o.status === 'failed').length
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ total: orders.length, failedCount: failed, recent }))
+  } else if (pathname === '/api/orders') {
+    const orders = readOrders()
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify(orders))
   } else {
     res.writeHead(404)
     res.end('Not found')
@@ -370,6 +531,15 @@ wss.on('connection', (ws) => {
       ws.send(JSON.stringify({ ...evt, _catchUp: true, _cycleStartedAt: cycleStartTime }))
     }
   }
+
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw)
+      if (msg.type === 'intervene' && interventionResolve) {
+        interventionResolve(true)
+      }
+    } catch {}
+  })
 
   ws.on('close', () => console.log('Client disconnected'))
 })

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchHistory } from '../services/historyService'
 
 /**
@@ -8,8 +8,9 @@ export default function useHistorySummary(params = { range: '7d' }) {
   const [data, setData]       = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState(null)
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const key = JSON.stringify(params)
+  const key = JSON.stringify(params) + refreshKey
 
   useEffect(() => {
     let mounted = true
@@ -21,5 +22,7 @@ export default function useHistorySummary(params = { range: '7d' }) {
     return () => { mounted = false }
   }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { data, loading, error }
+  const refresh = useCallback(() => setRefreshKey(k => k + 1), [])
+
+  return { data, loading, error, refresh }
 }

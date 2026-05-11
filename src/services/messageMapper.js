@@ -270,6 +270,31 @@ export function applyMessageToScenario(currentData, message) {
     }
   }
 
+  // ── intervention_wait ──────────────────────────────────────────────────────
+  if (type === 'intervention_wait') {
+    return {
+      ...data,
+      _cardState: 'orange',
+      attentionLevel: 'needs_attention',
+      explanationText: `Can't find ${data._itemName || 'the item'} on the shelf. Waiting for employee intervention…`,
+      _cycleFailures: appendFailure(data, {
+        level: 'orange',
+        message: `Item not found — waiting for intervention`,
+        ts: timestamp || new Date().toISOString(),
+      }),
+    }
+  }
+
+  // ── intervention_resolved ────────────────────────────────────────────────
+  if (type === 'intervention_resolved') {
+    return {
+      ...data,
+      _cardState: 'green',
+      attentionLevel: 'ok',
+      explanationText: `Employee intervened — resuming pipeline for ${data._itemName || 'item'}.`,
+    }
+  }
+
   // ── cycle_end ─────────────────────────────────────────────────────────────
   if (type === 'cycle_end') {
     const newData = {

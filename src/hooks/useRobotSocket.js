@@ -73,5 +73,11 @@ export default function useRobotSocket(url) {
     }
   }, [connect])
 
-  return { status, tick, drain }
+  const send = useCallback((message) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(message))
+    }
+  }, [])
+
+  return { status, tick, drain, send }
 }

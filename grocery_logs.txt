@@ -244,8 +244,76 @@ y
 
 === Cycle 4 ===
 [stage 1] cycle 4: planning to 'left-top-shelve'...
+[stage 1 → 'left-top-shelve'] execute? [y/N] y
+2026-05-08 11:50:02.310 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=1.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0] a_peak[J1..J6 deg/s²]=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0] attach_step[J1..J6 deg]=[0.001, 0.002, 0.002, 0.001, 0.001, 0.001]
+
+[cycle 4] known objects: ['ballpoint pen', 'plastic-wrapped towel', 't-shirt', 'water bottle']
+[cycle 4] enter object name (TAB to complete, blank to stop):
+[cycle 4] object> plastic-wrapped towel
+[stage 3] SAM3.detect_and_segment(['plastic-wrapped towel'])...
+[stage 3] 0 detection(s) in 0.09s (score_threshold=0.3)
+[stage 3] WARNING: requested item 'plastic-wrapped towel' not found on shelf.
+[stage 3] waiting for employee intervention (timeout 120s)...
+2026-05-08 11:50:12.450 | WARNING  | grocery_bot.pipeline:_handle_no_detection:812 - No detections for 'plastic-wrapped towel' — entering intervention wait (120s timeout)
+[stage 3] employee intervention: item repositioned by operator.
+2026-05-08 11:51:45.220 | INFO     | grocery_bot.pipeline:_resume_after_intervention:830 - Intervention received after 92.8s — resuming pipeline
+[stage 3] SAM3.detect_and_segment(['plastic-wrapped towel'])...
+[stage 3] 2 detection(s) in 0.14s (score_threshold=0.3)
+[stage 3]   #1 score=0.612 bbox=(780,390,870,580) area=14400px
+[stage 3]   #2 score=0.534 bbox=(810,410,860,560) area=5250px
+[stage 4]   #1: centroid=[-0.350, -1.030, 1.455] m (14400 world points)
+[stage 4]   #2: centroid=[-0.370, -1.045, 1.460] m (5250 world points)
+[stage 4] anchor mode='closest', selected=#1(d=68.1cm,score=0.61) -> [-0.350, -1.030, 1.455] m
+[stage 5] view_pose translation = [-0.280, -0.640, 1.455] m
+[stage 5 → close-up viewpoint] execute? [y/N] y
+2026-05-08 11:51:52.400 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=5.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[2.1, 5.2, 6.8, 11.5, 2.4, 9.8] a_peak[J1..J6 deg/s²]=[2.0, 5.0, 6.5, 18.0, 2.3, 15.0] attach_step[J1..J6 deg]=[0.0, 0.001, 0.002, 0.0, 0.0, 0.001]
+[stage 5] arrived at close-up viewpoint.
+[stage 6] Molmo prompt: 'Point to the geometric center of the plastic-wrapped towel that has the most empty space around it.'
+[stage 6] Molmo returned 1 point(s) in 1.25s
+[stage 6] selected Molmo point: (620.8, 475.2)
+[stage 7] SAM3.detect_and_segment(['plastic-wrapped towel']) at close-up...
+[stage 7] picked detection score=0.685 area=18200px contains_click=True nearest_centroid_fallback=False (3 candidate(s))
+[stage 8] p_hint_world = [-0.348, -1.035, 1.458] m (depth_med=0.545 m)
+[stage 9] depth_offset = 25 mm (source: prompts-config['plastic-wrapped towel'])
+[stage 9] accepted=True width=45.2 mm degenerate_pca=False reason=None
+[stage 9] grasp pose translation = [-0.352, -1.060, 1.458] m
+[stage 11] grasp width 45.2 mm => pre-grasp opening: MID (POSITION 80, ~55 mm) (narrow<= 30 mm, mid<= 55 mm)
+[stage 11] driving grasp end-to-end via plan_grasp (standoff=120 mm, lift=100 mm)...
+[stage 11] execute pre-grasp move (primary candidate)? [y/N] y
+2026-05-08 11:52:01.650 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=4.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[1.8, 7.5, 8.2, 6.0, 1.2, 5.5] a_peak[J1..J6 deg/s²]=[2.0, 13.0, 12.5, 8.5, 1.5, 8.0] attach_step[J1..J6 deg]=[0.0, 0.001, 0.003, 0.003, 0.001, 0.002]
+2026-05-08 11:52:06.100 | INFO     | grocery_bot.robot.fanuc.crx10ial:_on_gripper_result:620 - Gripper result: success=True, message=Gripper open complete
+[stage 11] execute descent into grasp pose? [y/N] y
+2026-05-08 11:52:08.250 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=3.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[0.8, 6.5, 9.8, 2.5, 4.0, 1.5] a_peak[J1..J6 deg/s²]=[2.0, 15.0, 22.0, 6.0, 10.0, 4.0] attach_step[J1..J6 deg]=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[stage 11] close gripper? [y/N] y
+2026-05-08 11:52:14.300 | INFO     | grocery_bot.robot.fanuc.crx10ial:_on_gripper_result:620 - Gripper result: success=True, message=Gripper close complete
+[stage 11] lift 100 mm? [y/N] y
+2026-05-08 11:52:17.800 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=2.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[0.5, 2.8, 7.5, 8.8, 9.2, 9.0] a_peak[J1..J6 deg/s²]=[1.5, 7.5, 18.0, 24.0, 25.0, 24.5] attach_step[J1..J6 deg]=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[stage 11] SUCCESS — chose primary
+
+[stage 12a] transit through 'left-top-shelve' before handover...
+[stage 12a → transit to 'left-top-shelve'] execute? [y/N] y
+2026-05-08 11:52:27.100 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=7.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[1.8, 7.2, 10.5, 6.5, 5.0, 9.8] a_peak[J1..J6 deg/s²]=[1.5, 10.0, 14.5, 6.0, 4.0, 12.0] attach_step[J1..J6 deg]=[0.0, 0.001, 0.004, 0.002, 0.003, 0.002]
+[stage 12a] arrived at 'left-top-shelve'; joints: [-104.8  -22.9  -55.2   21.9   36.9   72.2] deg
+
+[stage 12b] planning to handover waypoint 'handover-desk'...
+[stage 12b → 'handover-desk'] execute? [y/N] y
+2026-05-08 11:52:38.500 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=10.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[7.4, 9.3, 6.0, 5.0, 6.1, 0.4] a_peak[J1..J6 deg/s²]=[8.5, 11.3, 3.9, 3.2, 3.9, 0.2] attach_step[J1..J6 deg]=[0.0, 0.002, 0.004, 0.001, 0.001, 0.001]
+[stage 12b] arrived at 'handover-desk'; joints: [-50.9  44.9 -18.5  52.3  74.   70.1] deg
+[stage 12c] release object (open gripper)? [y/N] y
+2026-05-08 11:52:50.200 | INFO     | grocery_bot.robot.fanuc.crx10ial:_on_gripper_result:620 - Gripper result: success=True, message=Gripper open complete
+[stage 12c] gripper opened.
+
+[stage 12d] planning return to 'left-top-shelve'...
+[stage 12d → 'left-top-shelve'] execute? [y/N] y
+2026-05-08 11:52:53.900 | INFO     | grocery_bot.robot.motion_executor:_log_planned_envelope:879 - TrajectoryTarget envelope: duration=10.00s speed_scale=0.50 v_peak[J1..J6 deg/s]=[7.4, 9.3, 6.0, 5.0, 6.1, 0.4] a_peak[J1..J6 deg/s²]=[8.5, 11.3, 3.9, 3.2, 3.9, 0.2] attach_step[J1..J6 deg]=[0.0, 0.0, 0.002, 0.0, 0.0, 0.001]
+[stage 12d] returned to 'left-top-shelve'; ready for next cycle.
+[cycle 4] complete.
+
+=== Cycle 5 ===
+[stage 1] cycle 5: planning to 'left-top-shelve'...
 [stage 1 → 'left-top-shelve'] execute? [y/N] N
 [stage 1 → 'left-top-shelve'] aborted by user.
+(viser) Connection closed (1, 0 total)
 (viser) Connection closed (1, 0 total)
 (viser) Server stopped
 2026-05-08 11:52:51.612 | INFO     | grocery_bot.robot.motion_executor:stop:1235 - MotionExecutor: stopped

@@ -64,7 +64,7 @@ function ProgressBar({ fraction, animDuration, milestone }) {
 
 // ── Status banner (always visible below progress) ───────────────────────────
 
-function StatusBanner({ cardState, itemName, explanationText }) {
+function StatusBanner({ cardState, itemName, explanationText, onIntervene }) {
   if (cardState === 'green') {
     return (
       <div className="mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--success-bg)]">
@@ -88,14 +88,14 @@ function StatusBanner({ cardState, itemName, explanationText }) {
           </span>
         </div>
         <div className="flex flex-col gap-2">
-          <button className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--warning)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+          <button onClick={() => onIntervene?.('restock')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--warning)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
             I'll restock the shelf
           </button>
           <div className="flex gap-2">
-            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+            <button onClick={() => onIntervene?.('out_of_stock')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
               Tell customer we're out
             </button>
-            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
+            <button onClick={() => onIntervene?.('cancel')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
               Cancel this order
             </button>
           </div>
@@ -118,14 +118,14 @@ function StatusBanner({ cardState, itemName, explanationText }) {
           </span>
         </div>
         <div className="flex flex-col gap-2">
-          <button className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--danger)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+          <button onClick={() => onIntervene?.('on_my_way')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--danger)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
             I'm on my way
           </button>
           <div className="flex gap-2">
-            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+            <button onClick={() => onIntervene?.('delayed')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
               Tell customer it's delayed
             </button>
-            <button className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
+            <button onClick={() => onIntervene?.('cancel')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
               Cancel this order
             </button>
           </div>
@@ -169,7 +169,7 @@ function CycleFailures({ failures }) {
 // ── Main component ──────────────────────────────────────────────────────────
 
 export default function AttentionPanel({ title, level, explanationText, style }) {
-  const { liveData } = useDataSource()
+  const { liveData, sendMessage } = useDataSource()
   const cardState = liveData?._cardState || 'green'
   const pill = PILL[cardState] || PILL.green
   const itemName = liveData?._itemName
@@ -222,7 +222,7 @@ export default function AttentionPanel({ title, level, explanationText, style })
       )}
 
       {/* Real-time status banner + action buttons */}
-      <StatusBanner cardState={cardState} itemName={itemName} explanationText={explanationText} />
+      <StatusBanner cardState={cardState} itemName={itemName} explanationText={explanationText} onIntervene={(action) => sendMessage({ type: 'intervene', action })} />
 
       {/* Failures within this cycle */}
       <CycleFailures failures={failures} />

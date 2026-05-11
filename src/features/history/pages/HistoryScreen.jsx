@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
 import PerformanceCard from '../components/PerformanceCard'
-import FailureList from '../components/FailureList'
+import OrderSummary from '../components/OrderSummary'
 import LoadingState from '../../../components/ui/LoadingState'
 import ErrorState from '../../../components/ui/ErrorState'
 import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
 import useHistorySummary from '../../../hooks/useHistorySummary'
-import { allFailures as allFailuresBase } from '../../../mocks/historyMock'
 
-const DATA_END = '2026-04-20'
+function getToday() {
+  return new Date().toISOString().slice(0, 10)
+}
 
-function getDefaultStart() {
-  const d = new Date(DATA_END + 'T12:00:00')
+function getDefaultStart(endDate) {
+  const d = new Date(endDate + 'T12:00:00')
   d.setDate(d.getDate() - 6)
   return d.toISOString().slice(0, 10)
 }
-const DEFAULT_START = getDefaultStart()
 
 function formatDateRange(start, end) {
   const fmt = (s) => new Date(s + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
@@ -25,8 +25,13 @@ function formatDateRange(start, end) {
 }
 
 export default function HistoryScreen() {
-  const [custom, setCustom] = useState({ startDate: DEFAULT_START, endDate: DATA_END })
+  const today = useMemo(getToday, [])
+  const defaultStart = useMemo(() => getDefaultStart(today), [today])
+
+  const [custom, setCustom] = useState({ startDate: defaultStart, endDate: today })
   const [selectedDay, setSelectedDay] = useState(null)
+  const [chartMode, setChartMode] = useState('failures')
+  const isFail = chartMode === 'failures'
 
   const params = { startDate: custom.startDate, endDate: custom.endDate || custom.startDate }
   const { data, loading, error } = useHistorySummary(params)
@@ -40,21 +45,42 @@ export default function HistoryScreen() {
     setSelectedDay(prev => (prev === dateStr ? null : dateStr))
   }
 
-  // Build per-day failure list from bar data when a day is selected
-  const displayFailures = (() => {
-    if (!data) return []
-    if (!selectedDay) return data.allFailures
-    const bar = data.performanceBars.find(b => b.date === selectedDay)
-    if (!bar) return []
-    return allFailuresBase
-      .map(f => ({ ...f, count: bar.failuresByType?.[f.title] ?? 0 }))
-      .filter(f => f.count > 0)
-      .sort((a, b) => b.count - a.count)
-  })()
+  const selectedBar = selectedDay && data
+    ? data.performanceBars.find(b => b.date === selectedDay)
+    : null
 
-  const failureListTitle = selectedDay
-    ? new Date(selectedDay + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
-    : `Failures · ${formatDateRange(custom.startDate, custom.endDate || custom.startDate)}`
+  // When a day is clicked, show ALL orders for that day
+  const dayOrders = selectedBar?.orders ?? []
+
+  const allFailedOrders = useMemo(() => {
+    if (!data) return []
+    return data.performanceBars
+      .flatMap(b => b.orders.filter(o => o.status === 'failed'))
+      .sort((a, b) => (b.started_at || '').localeCompare(a.started_at || ''))
+  }, [data])
+
+  const allSuccessOrders = useMemo(() => {
+    if (!data) return []
+    return data.performanceBars
+      .flatMap(b => b.orders.filter(o => o.status === 'ok'))
+      .sort((a, b) => (b.started_at || '').localeCompare(a.started_at || ''))
+  }, [data])
+
+  const summaryTitle = (() => {
+    const dateLabel = selectedDay
+      ? new Date(selectedDay + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+      : null
+
+    if (selectedDay) {
+      const total = dayOrders.length
+      return `${dateLabel} — ${total} order${total !== 1 ? 's' : ''}`
+    }
+
+    if (chartMode === 'failures') {
+      return `Failures · ${formatDateRange(custom.startDate, custom.endDate || custom.startDate)}`
+    }
+    return `Orders · ${formatDateRange(custom.startDate, custom.endDate || custom.startDate)}`
+  })()
 
   const topLeft = (
     <>
@@ -86,21 +112,23 @@ export default function HistoryScreen() {
                 successCount={data.successCount}
                 failureCount={data.failureCount}
                 bars={data.performanceBars}
-                failureTypes={data.failureTypes || []}
                 startDate={custom.startDate}
                 endDate={custom.endDate}
                 onDateChange={handleDateChange}
-                onDateClear={() => { setSelectedDay(null); setCustom({ startDate: DEFAULT_START, endDate: DATA_END }) }}
+                onDateClear={() => { setSelectedDay(null); setCustom({ startDate: defaultStart, endDate: today }) }}
                 selectedDay={selectedDay}
                 onDaySelect={handleDaySelect}
+                chartMode={chartMode}
+                onChartModeChange={setChartMode}
               />
             </div>
             <div className="mt-lg">
-              <FailureList
-                failures={displayFailures}
-                title={failureListTitle}
+              <OrderSummary
+                title={summaryTitle}
                 selectedDay={selectedDay}
                 onClearDay={() => setSelectedDay(null)}
+                orders={selectedDay ? dayOrders : (isFail ? allFailedOrders : allSuccessOrders)}
+                chartMode={chartMode}
               />
             </div>
           </>
