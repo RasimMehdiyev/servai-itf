@@ -33,6 +33,7 @@ const HEARTBEAT_INTERVAL = 4000
 const FAILURE_AFTER_CYCLE = 2   // inject a simulated failure after this cycle (per loop)
 const FAILURE_PAUSE = 20000     // ms of silence before resuming (triggers client idle → red)
 const INTERVENTION_TIMEOUT = 120000  // 2 minutes for employee to intervene on "item not found"
+const INTERVENTION_DEMO_DELAY = 8000 // in replay mode, auto-resolve intervention after this delay
 const MAX_EVENT_DELAY = 5000         // cap any single inter-event gap at 5s (before speed scaling)
 
 // ── Failure classification ───────────────────────────────────────────────────
@@ -443,9 +444,13 @@ function globalReplay() {
         }
       }
 
+      // In replay mode, auto-resolve after a short demo delay (employee can still intervene earlier)
       interventionTimer = setTimeout(() => {
-        if (interventionResolve) interventionResolve(false)
-      }, INTERVENTION_TIMEOUT / REPLAY_SPEED)
+        if (interventionResolve) {
+          console.log('  Auto-resolving intervention (demo mode)')
+          interventionResolve(true)
+        }
+      }, INTERVENTION_DEMO_DELAY / REPLAY_SPEED)
 
       return
     }
@@ -462,9 +467,10 @@ function globalReplay() {
       stopHeartbeat()
       console.log(`  Simulating failure: ${FAILURE_PAUSE / 1000}s silence after cycle ${cycleOffset}…`)
       globalTimeout = setTimeout(() => {
+        const failTs = new Date().toISOString()
         // Send a gripper failure to explicitly trigger red state with context
         const failEvt = {
-          ts: new Date().toISOString(),
+          ts: failTs,
           type: 'gripper',
           success: false,
           message: 'Gripper timeout — object slipped during grasp',
@@ -472,6 +478,25 @@ function globalReplay() {
         }
         cycleHistory.push(failEvt)
         broadcast(failEvt)
+
+        // Persist the simulated failure as an order
+        const failOrderId = nextOrderId()
+        const d = new Date()
+        writeOrder({
+          id: failOrderId,
+          item: currentItem || 'unknown',
+          orderNumber: String(failOrderId),
+          timestamp: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+          started_at: failTs,
+          completed_at: failTs,
+          total_seconds: Math.round(FAILURE_PAUSE / 1000),
+          steps: [],
+          status: 'failed',
+          failureReason: 'Grip failure',
+          rating: 1,
+        })
+        console.log(`  Order #${failOrderId} (${currentItem}) [failed — grip failure] written to orders.json`)
+
         startHeartbeat()
         // Continue replay
         const nextDelay = (idx + 1 < delays.length) ? delays[idx + 1] : 50

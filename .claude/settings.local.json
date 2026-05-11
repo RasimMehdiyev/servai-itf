@@ -7,7 +7,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Workdir\\\\Develop\\\\servai\\\\src\\\\mocks\" -Force)",
       "Bash(Select-Object Name)",
       "Bash(npm run *)",
-      "mcp__Claude_in_Chrome__tabs_context_mcp"
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(Get-ChildItem -Path . -MaxDepth 1 -Include \"*.js\", \"*.jsx\", \"*.json\", \"vite.config.js\", \"tailwind.config.js\", \"postcss.config.js\")"
     ]
   }
 }
