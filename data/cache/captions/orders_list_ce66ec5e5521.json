@@ -1,0 +1,11 @@
+{
+  "text": "Failed delivery orders from April 13 to May 12, with an average robot response time of 246 seconds per order. [cite:N]",
+  "citations": [],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-04-13",
+    "to": "2026-05-12",
+    "status": "failed"
+  },
+  "generated_at": "2026-05-12T08:15:46.612273+00:00"
+}

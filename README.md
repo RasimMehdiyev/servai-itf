@@ -1,6 +1,6 @@
 # ServAI UI
 
-Tablet-first React prototype for the **ServAI** operational workflow interface — a real-time monitoring dashboard for a robotic warehouse fulfillment system (operated by a robot called **ROBI**). The application provides live operational monitoring with employee intervention support, historical performance analytics backed by server-side persistence, and detailed day/order-level views.
+Tablet-first React prototype for the **ServAI** operational workflow interface — a real-time monitoring dashboard for a robotic warehouse fulfillment system (operated by a robot called **ROBI**). The application provides live operational monitoring with employee intervention support, historical performance analytics with AI-powered insights, and detailed day/order-level views.
 
 ## Quick Start
 
@@ -8,6 +8,7 @@ Tablet-first React prototype for the **ServAI** operational workflow interface �
 npm install
 npm run dev              # Vite dev server at http://localhost:5173
 node ws-test-server.js   # WebSocket replay server at ws://localhost:8765
+py src/rag/server.py     # RAG/AI server at http://localhost:5174
 ```
 
 Production build:
@@ -17,6 +18,22 @@ npm run build        # Outputs to dist/
 npm run preview      # Preview production build locally
 ```
 
+### Ollama setup (required for AI features)
+
+Install [Ollama](https://ollama.ai/) and pull the required models:
+
+```bash
+# Install Ollama (Windows: download from https://ollama.ai/download)
+# Then pull models:
+ollama pull qwen2.5:7b-instruct
+ollama pull nomic-embed-text
+
+# Verify:
+curl http://localhost:11434/api/tags
+```
+
+The AI features (weekly summary, chart captions, order analysis, chat) require Ollama running. If Ollama is offline, the page degrades gracefully — AI sections show a "local AI is offline" notice instead of crashing.
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -24,9 +41,9 @@ npm run preview      # Preview production build locally
 | UI Framework | React 18, JSX |
 | Routing | React Router v6 |
 | Styling | Tailwind CSS 3 + CSS custom properties |
-| Component Library | Material UI 9 (MUI) |
-| Charts | MUI X-Charts (line charts) |
+| Charts | Custom stacked bar chart (CSS + JS) |
 | Real-time | WebSocket (`ws` package), bidirectional |
+| AI / RAG | Python FastAPI, Ollama (Qwen 2.5 7B), FAISS, nomic-embed-text |
 | Build Tool | Vite 5 |
 | State Management | React Context + `useReducer` |
 | Persistence | Server-side JSON (`data/orders.json`) via HTTP API |
@@ -37,7 +54,7 @@ npm run preview      # Preview production build locally
 |------|--------|---------|
 | `/` | — | Redirects to `/live` |
 | `/live` | LiveScreen | Real-time task monitoring, robot status, workflow timeline, employee intervention |
-| `/history` | HistoryScreen | Performance line chart (failures/successes toggle), order list with infinite scroll |
+| `/history` | HistoryScreen | AI weekly summary, activity chart, orders list with expandable detail, AI chat |
 | `/history/:dayId` | DayDetailsScreen | Single-day summary with individual order list |
 | `/assistant` | — | Stub (coming soon) |
 | `/settings` | — | Stub (coming soon) |
@@ -49,73 +66,72 @@ Navigation is via a bottom tab bar (Live, History, Settings).
 ```
 src/
 ├── components/
-│   ├── ui/             Reusable primitives (Card, StatusChip, FilterPills, StarRating, etc.)
+│   ├── ui/             Reusable primitives (Card, SmartCaption, StatusChip, StarRating, etc.)
 │   └── layout/         App shell (AppShell, TopBar, BottomTabBar, ScreenContainer)
 ├── features/
 │   ├── live/           Live monitoring screen + components
-│   ├── history/        Performance analytics screen + components
+│   ├── history/        Performance analytics + AI insights
+│   │   ├── components/ ActivityChart, OrdersList, WeeklySummaryCard, ChatPanel, ChatCard, AiCaption
+│   │   └── pages/      HistoryScreen (composes all with shared date range)
 │   ├── day-details/    Day breakdown screen + components
 │   └── assistant/      Floating assistant stub
-├── hooks/              Data-fetching hooks (useRobotSocket, useLiveDashboard, etc.)
+├── hooks/              Data-fetching hooks (useRobotSocket, useRagCaption, useRagChat, etc.)
 ├── services/           API abstraction + data layer (orderStore, historyService, messageMapper)
 ├── context/            Global state (DataSourceContext — live/mock mode, connection, send)
-├── mocks/              Static mock data, scenarios, calendar generation
+├── lib/                Terms dictionary, phase mapping
+├── rag/                Python FastAPI RAG server (server.py)
 └── theme/              Design tokens
 ```
 
-## What Each Part Does
+## History Page
 
-### Live Screen (`src/features/live/`)
+The History page is organized top-to-bottom:
+
+1. **WeeklySummaryCard** — AI-generated weekly summary with SmartCaption rendering (term tooltips, order citations)
+2. **ChatCard** — Slim "Ask ROBI" card that opens the chat panel
+3. **Range chips** — Today / Week / Month toggle that controls both the chart and orders list
+4. **ActivityChart** — Tally tiles (delivered, couldn't deliver, avg fetch time) + stacked bar chart with animated bars, hover tooltips, TODAY marker, and an AI caption below
+5. **OrdersList** — Filter chips (All, Delivered, Issues, by item), AI caption, date-grouped order rows with expandable step-by-step detail, "Why so long? Ask ROBI" button
+6. **ChatPanel** — Slide-in right panel with SSE-streamed chat, suggested questions, SmartCaption rendering
+
+### Color semantics
+- **Emerald** (`emerald-50` through `emerald-700`) — success / delivered states
+- **Rose** (`rose-50` through `rose-700`) — failure / issues
+- **Teal** (`teal-50` through `teal-700`) — AI-content accents only (captions, term highlights, AI buttons)
+- **Gray** — neutral content
+
+### Smart Captions
+AI-generated text uses `[[slug]]` markers for technical term tooltips and `[cite:N]` markers for clickable order references. The `SmartCaption` component renders these as interactive teal-underlined tooltips and blue citation chips.
+
+## RAG Server (`src/rag/server.py`)
+
+A Python FastAPI server that provides AI-powered insights via local Ollama inference.
+
+### Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/rag/caption` | POST | Generate AI caption for a surface (weekly, chart, orders_list, order_detail) |
+| `/api/rag/chat` | POST | Streaming chat via SSE (Server-Sent Events) |
+| `/api/rag/health` | GET | Health check — reports LLM/embed reachability, model name, index size |
+| `/api/orders/daily` | GET | Daily activity buckets for the chart (`?from=&to=`) |
+| `/api/orders` | GET | Filtered order list (`?from=&to=&status=&item=`) |
+
+### Key design decisions
+- **Deterministic stats**: All numbers (counts, averages, rates) are computed in Python and injected as facts into prompts. The LLM handles phrasing only — it never counts.
+- **Term-wrapping post-processor**: After LLM generation, a deterministic pass wraps technical terms in `[[brackets]]` even if the model forgot.
+- **FAISS vector index**: Orders are embedded with `nomic-embed-text` (768-dim) for retrieval-augmented chat. Index rebuilt on startup, persisted to `data/rag_index.faiss`.
+- **Caching**: File-based caching with per-surface TTLs (weekly: 30min, chart: 15min, orders_list: 10min, order_detail: forever). Weekly summary auto-refreshes in background.
+- **Graceful degradation**: When Ollama is unreachable, captions show a soft "local AI offline" notice instead of crashing.
+
+## Live Screen (`src/features/live/`)
 
 The primary operational view. Shows the robot's current task in real time with bidirectional communication.
 
-- **AttentionPanel** — Displays the current order/item, a 3-milestone progress bar, ETA, and a status banner (green/orange/red). Action buttons let the employee intervene: "I'll restock the shelf" (orange state), "I'm on my way" (red state), "Cancel this order", etc. Clicking an action button sends `{ type: "intervene" }` back to the server via WebSocket to resume the pipeline.
-- **RobotStatusCard** — Shows robot hardware parameters (drivetrain, gripper, camera, sensors) and a list of recently delivered orders.
-- **WorkflowTimeline** — A 12-stage pipeline view (from "Return to start" through "Return to base"). Each step shows its state (completed/active/loading/pending), a description, timestamp, and optional debug messages.
-- **TechnicalDetails** — Collapsed accordion for deeper robot parameter inspection.
-- **DiagnosticModal** — Modal for diagnostic information.
-- **ConnectionIndicator** — Dot indicator for WebSocket status (live/connecting/disconnected/mock).
-
-### History Screen (`src/features/history/`)
-
-Performance analytics dashboard backed by server-side order data.
-
-- **PerformanceCard** — Date range picker (custom start/end dates) with a line chart. A **Failures/Successful toggle** switches between a red failure line and a green success line. Individual days on the chart are clickable to drill into that day's orders.
-- **OrderSummary** — Replaces the old FailureList. Shows individual orders (not grouped by type) with **infinite scroll** via IntersectionObserver. Loads 10 orders at a time with skeleton placeholder animation while loading. When no day is selected, shows all failed orders (failures mode) or all successful orders (success mode) for the entire date range.
-
-### Day Details Screen (`src/features/day-details/`)
-
-Drills into a single day's operations.
-
-- **DaySummaryCard** — Date label, attention status, totals (orders received, failures).
-- **OrderListItem** — Individual order rows showing order number, time, status (ok/failed), star rating (1-5), and failure reason if applicable.
-
-### Hooks (`src/hooks/`)
-
-Custom hooks that manage data fetching and state for each screen.
-
-| Hook | Purpose |
-|------|---------|
-| `useRobotSocket` | Manages the WebSocket connection with auto-reconnect (exponential backoff 1s–30s), message buffering, `send()` for bidirectional communication, and cleanup on unmount |
-| `useLiveDashboard` | Switches between live (WebSocket) and mock mode; returns current live state from context |
-| `useHistorySummary` | Fetches aggregated history from the server for a date range; supports manual `refresh()` for cache invalidation |
-| `useDayDetails` | Fetches detail data for a single calendar day from the server |
-
-### Services (`src/services/`)
-
-Data layer — fetches from the WebSocket server's HTTP API.
-
-| Service | Purpose |
-|---------|---------|
-| `orderStore` | Core data access: `fetchOrders()` from `GET /api/orders`, `buildDayMap()` to group/normalize orders by date, `FAILURE_DESCRIPTIONS` map for human-readable failure text. Normalizes legacy formats (`"success"` → `"ok"`) and derives missing fields (timestamp, orderNumber, rating). |
-| `historyService` | Aggregates order data into line chart bars with per-day success/failure counts, period-over-period trend calculations, and failure type breakdowns |
-| `dayDetailsService` | Fetches a single day's data from the server and returns it as a structured day object |
-| `messageMapper` | Maps raw WebSocket events into structured live dashboard state — parses the 12-stage pipeline, derives progress milestones, detects failures (red/orange), handles intervention flow, builds timeline steps |
-| `liveService` | Fetches mock scenarios by key (fallback when not in live mode) |
-
-### Context (`src/context/`)
-
-- **DataSourceContext** — Global state provider that holds the current mode (live/mock), WebSocket connection status, live data state, recent orders, and a `sendMessage()` function for bidirectional WebSocket communication. Uses `useReducer` with a `liveReducer` that applies WebSocket messages via the message mapper. Includes idle detection (15s timeout → red state).
+- **AttentionPanel** — Current order/item, 3-milestone progress bar, ETA, action buttons for employee intervention
+- **RobotStatusCard** — Robot hardware parameters (drivetrain, gripper, camera, sensors) and recent orders
+- **WorkflowTimeline** — 12-stage pipeline view with step state, description, timestamp, debug messages
+- **TechnicalDetails** — Collapsed accordion for deeper robot parameter inspection
 
 ## Data Flow
 
@@ -136,51 +152,40 @@ Employee action (button click)
     → Server resumes paused pipeline
 ```
 
-WebSocket message types:
-- **Server → Client:** `cycle_start`, `object_selected`, `stage`, `motion`, `gripper`, `cycle_end`, `robot_status`, `robot_log`, `heartbeat`, `init`, `intervention_wait`, `intervention_resolved`
-- **Client → Server:** `intervene` (employee action to resume a paused pipeline)
-
-### History
+### History + AI
 
 ```
-useHistorySummary({ startDate, endDate })
-    → historyService.fetchHistory()
-    → orderStore.fetchOrders()    — GET /api/orders
-    → orderStore.buildDayMap()    — normalize + group by date
-    → Returns { successRate, successCount, failureCount, performanceBars, failureTypes, allFailures }
+HistoryScreen (shared date range state)
+    → ActivityChart fetches GET /api/orders/daily
+    → OrdersList fetches GET /api/orders
+    → Both use useRagCaption(surface, scope) for AI captions
+    → ChatPanel uses useRagChat() with SSE streaming
+    → All AI text rendered via SmartCaption (term tooltips + citations)
 ```
-
-### Mock Mode (fallback)
-
-```
-Scenario key (UI dropdown)
-    → liveService.fetchLive(key)
-    → buildScenario() from scenarios.json
-    → Static snapshot rendered
-```
-
-## Server-Side Persistence
-
-All order data is persisted in `data/orders.json` on the WebSocket server. Each completed cycle writes an enriched order record with:
-
-- `id`, `item`, `orderNumber`, `timestamp`, `started_at`, `completed_at`
-- `total_seconds` (cycle duration)
-- `steps[]` (pipeline step log with durations)
-- `status` (`"ok"` or `"failed"`)
-- `failureReason` (classified: Grip failure, Item not detected, Emergency stop, Robot error, Connection timeout)
-- `rating` (5 for success, 1 for failure)
-
-Failure classification is done server-side by `classifyFailure()`, which analyzes raw log messages for keywords (gripper, detection, e-stop, error state, timeout).
 
 ## Employee Intervention Flow
 
-The system supports a "item not found" scenario where the robot pauses and waits for employee action:
-
 1. During stage 3 (detection), if 0 items are detected, the server emits an `intervention_wait` event
-2. The frontend shows an **orange status** with action buttons ("I'll restock the shelf", "Tell customer we're out", "Cancel this order")
+2. The frontend shows an **orange status** with action buttons
 3. The server pauses the replay and waits up to **2 minutes** for an employee response
-4. **If the employee clicks a button:** the client sends `{ type: "intervene" }` → the server resumes the pipeline from where it left off (re-detection, grasp, handover)
+4. **If the employee clicks a button:** the client sends `{ type: "intervene" }` → the server resumes
 5. **If no response within 2 minutes:** the server writes a failed order and skips to the next cycle
+
+## Environment Configuration
+
+`.env` file:
+
+```bash
+VITE_USE_WEBSOCKET=true            # true = live WebSocket mode, false = mock mode
+VITE_WS_URL=ws://localhost:8765    # WebSocket server URL
+VITE_RAG_URL=http://localhost:5174 # RAG/AI server URL
+
+# Ollama RAG
+LLM_BASE_URL=http://localhost:11434/v1
+LLM_API_KEY=ollama                 # Ignored by Ollama, required by OpenAI client
+LLM_MODEL=qwen2.5:7b-instruct
+EMBED_MODEL=nomic-embed-text
+```
 
 ## WebSocket Test Server (`ws-test-server.js`)
 
@@ -188,51 +193,17 @@ A development server that replays `grocery_logs.txt` to simulate a live robot co
 
 - Parses the log file on startup and replays events with timing derived from real timestamps
 - Caps inter-event delays at 5 seconds (`MAX_EVENT_DELAY`) to keep replay snappy
-- New clients receive a rapid catch-up burst of the current cycle's events
-- Persists replay state to `data/replay-state.json` (survives restarts)
-- Injects a simulated gripper failure (20s silence) after cycle 2
-- Handles intervention pauses: waits for employee WebSocket message or 2-minute timeout
-- Tracks failures per cycle (red: gripper/e-stop/error; orange: 0 detections) and writes enriched order records
-- Sends heartbeats every 4 seconds
-- HTTP API endpoints:
-  - `GET /api/recent-orders` — last 4 orders + totals
-  - `GET /api/orders` — all orders (used by history screen)
-- Configurable: `REPLAY_SPEED` (default 1.0), `WS_PORT` (default 8765)
-
-### Robot Log Format (`grocery_logs.txt`)
-
-The log contains 5 cycles from a real FANUC CRX-10iA/L robot running a grocery pick pipeline:
-
-- **Cycles 1–3:** Successful picks (ballpoint pen, water bottle, ballpoint pen)
-- **Cycle 4:** "Item not found" failure — 0 detections for plastic-wrapped towel, employee intervention after ~93s, then successful completion
-- **Cycle 5:** Aborted by user at stage 1
-
-Each cycle follows: `=== Cycle N ===` → stage 1 (return to start) → object selection → stage 3 (SAM3 detection) → stages 4–9 (anchor, viewpoint, Molmo, segmentation, depth, grasp synthesis) → stage 11 (grasp execution) → stages 12a–12d (transit, handover, release, return).
-
-## Environment Configuration
-
-`.env` file controls the data source:
-
-```
-VITE_USE_WEBSOCKET=true          # true = live WebSocket mode, false = mock mode
-VITE_WS_URL=ws://localhost:8765  # WebSocket server URL
-```
-
-## Error Handling & Resilience
-
-- **WebSocket reconnection** — Exponential backoff (1s to 30s max), auto-reconnects on close
-- **Idle detection** — 15-second timeout after last message triggers a red status card with "Connection timeout" failure
-- **Client catch-up** — New WebSocket clients receive all events from the current cycle as a rapid burst (with `animDuration: 0` to skip progress animations)
-- **Order normalization** — `orderStore.normalizeOrder()` handles legacy formats (`status: "success"` → `"ok"`) and derives missing fields
-- **Loading/error states** — `LoadingState` and `ErrorState` components handle pending and failed data fetches
-- **Infinite scroll** — IntersectionObserver-based lazy loading with skeleton placeholders prevents rendering large order lists
+- Injects a simulated gripper failure after cycle 2
+- Handles intervention pauses with 8-second auto-resolve in replay mode
+- Persists replay state to `data/replay-state.json`
+- Tracks failures per cycle and writes enriched order records to `data/orders.json`
+- HTTP API: `GET /api/recent-orders`, `GET /api/orders`
 
 ## Accessibility
 
 - CVD-friendly palette: blue/orange primary pair; darker green, clear red; never color-alone for meaning
 - Icons + labels + shapes used alongside status colors
-- Semantic HTML (`<header role="banner">`, `<nav aria-label>`)
-- ARIA labels on interactive elements, `focus-visible` states
+- Semantic HTML, ARIA labels on interactive elements
 - Touch targets >= 44 x 44px
 
 ## Target Devices

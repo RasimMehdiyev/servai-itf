@@ -1,0 +1,11 @@
+{
+  "text": "Orders from May 5 to May 11, totaling 312 with an average delivery time of 155 seconds, include both successful and failed deliveries.",
+  "citations": [],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-05",
+    "to": "2026-05-11",
+    "status": "all"
+  },
+  "generated_at": "2026-05-11T20:50:21.836468+00:00"
+}

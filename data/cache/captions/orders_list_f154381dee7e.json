@@ -1,0 +1,11 @@
+{
+  "text": "ROBI processed 287 orders between May 10 and May 11, with an average delivery time of 154 seconds. [cite:N]",
+  "citations": [],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-11",
+    "to": "2026-05-11",
+    "status": "all"
+  },
+  "generated_at": "2026-05-11T20:50:47.529104+00:00"
+}

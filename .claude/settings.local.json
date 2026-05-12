@@ -8,7 +8,11 @@
       "Bash(Select-Object Name)",
       "Bash(npm run *)",
       "mcp__Claude_in_Chrome__tabs_context_mcp",
-      "Bash(Get-ChildItem -Path . -MaxDepth 1 -Include \"*.js\", \"*.jsx\", \"*.json\", \"vite.config.js\", \"tailwind.config.js\", \"postcss.config.js\")"
+      "Bash(Get-ChildItem -Path . -MaxDepth 1 -Include \"*.js\", \"*.jsx\", \"*.json\", \"vite.config.js\", \"tailwind.config.js\", \"postcss.config.js\")",
+      "PowerShell(python --version)",
+      "PowerShell(pip --version)",
+      "Bash(npx vite *)",
+      "PowerShell(Start-Sleep 5; Get-Content \"$env:LOCALAPPDATA\\\\Temp\\\\claude\\\\C--Workdir-Develop-servai\\\\db1b86ab-1dee-48bd-9f50-5daa4efdccf9\\\\tasks\\\\bxp3sqfe3.output\")"
     ]
   }
 }

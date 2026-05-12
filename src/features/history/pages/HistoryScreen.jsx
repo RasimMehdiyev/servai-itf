@@ -1,86 +1,58 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
-import PerformanceCard from '../components/PerformanceCard'
-import OrderSummary from '../components/OrderSummary'
-import LoadingState from '../../../components/ui/LoadingState'
-import ErrorState from '../../../components/ui/ErrorState'
+import WeeklySummaryCard from '../components/WeeklySummaryCard'
+import ChatCard from '../components/ChatCard'
+import ActivityChart from '../components/ActivityChart'
+import OrdersList from '../components/OrdersList'
+import ChatPanel from '../components/ChatPanel'
 import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
-import useHistorySummary from '../../../hooks/useHistorySummary'
 
 function getToday() {
   return new Date().toISOString().slice(0, 10)
 }
 
-function getDefaultStart(endDate) {
+function getWeekAgo(endDate) {
   const d = new Date(endDate + 'T12:00:00')
   d.setDate(d.getDate() - 6)
   return d.toISOString().slice(0, 10)
 }
 
-function formatDateRange(start, end) {
-  const fmt = (s) => new Date(s + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-  if (start === end) return fmt(start)
-  return `${fmt(start)} – ${fmt(end)}`
+function getMonthAgo(endDate) {
+  const d = new Date(endDate + 'T12:00:00')
+  d.setDate(d.getDate() - 29)
+  return d.toISOString().slice(0, 10)
 }
+
+const RANGE_CHIPS = [
+  { label: 'Today', getFrom: (today) => today },
+  { label: 'Week', getFrom: (today) => getWeekAgo(today) },
+  { label: 'Month', getFrom: (today) => getMonthAgo(today) },
+]
 
 export default function HistoryScreen() {
   const today = useMemo(getToday, [])
-  const defaultStart = useMemo(() => getDefaultStart(today), [today])
+  const [rangeIdx, setRangeIdx] = useState(1) // default: Week
+  const [chatOpen, setChatOpen] = useState(false)
+  const [chatPrefill, setChatPrefill] = useState(null)
 
-  const [custom, setCustom] = useState({ startDate: defaultStart, endDate: today })
-  const [selectedDay, setSelectedDay] = useState(null)
-  const [chartMode, setChartMode] = useState('failures')
-  const isFail = chartMode === 'failures'
+  const dateFrom = RANGE_CHIPS[rangeIdx].getFrom(today)
+  const dateTo = today
 
-  const params = { startDate: custom.startDate, endDate: custom.endDate || custom.startDate }
-  const { data, loading, error } = useHistorySummary(params)
+  const handleCitationClick = useCallback((orderId) => {
+    const el = document.getElementById(`order-${orderId}`)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [])
 
-  function handleDateChange(next) {
-    setSelectedDay(null)
-    setCustom(next)
-  }
+  const handleAskRobi = useCallback((order) => {
+    setChatPrefill(`Why did order #${order.order_number || order.id} take ${order.robot_seconds || order.total_seconds}s?`)
+    setChatOpen(true)
+  }, [])
 
-  function handleDaySelect(dateStr) {
-    setSelectedDay(prev => (prev === dateStr ? null : dateStr))
-  }
-
-  const selectedBar = selectedDay && data
-    ? data.performanceBars.find(b => b.date === selectedDay)
-    : null
-
-  // When a day is clicked, show ALL orders for that day
-  const dayOrders = selectedBar?.orders ?? []
-
-  const allFailedOrders = useMemo(() => {
-    if (!data) return []
-    return data.performanceBars
-      .flatMap(b => b.orders.filter(o => o.status === 'failed'))
-      .sort((a, b) => (b.started_at || '').localeCompare(a.started_at || ''))
-  }, [data])
-
-  const allSuccessOrders = useMemo(() => {
-    if (!data) return []
-    return data.performanceBars
-      .flatMap(b => b.orders.filter(o => o.status === 'ok'))
-      .sort((a, b) => (b.started_at || '').localeCompare(a.started_at || ''))
-  }, [data])
-
-  const summaryTitle = (() => {
-    const dateLabel = selectedDay
-      ? new Date(selectedDay + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
-      : null
-
-    if (selectedDay) {
-      const total = dayOrders.length
-      return `${dateLabel} — ${total} order${total !== 1 ? 's' : ''}`
-    }
-
-    if (chartMode === 'failures') {
-      return `Failures · ${formatDateRange(custom.startDate, custom.endDate || custom.startDate)}`
-    }
-    return `Orders · ${formatDateRange(custom.startDate, custom.endDate || custom.startDate)}`
-  })()
+  const handleOpenChat = useCallback(() => {
+    setChatPrefill(null)
+    setChatOpen(true)
+  }, [])
 
   const topLeft = (
     <>
@@ -103,37 +75,59 @@ export default function HistoryScreen() {
     <>
       <TopBar left={topLeft} right={topRight} />
       <ScreenContainer>
-        {loading && <LoadingState />}
-        {error && <ErrorState />}
-        {data && (
-          <>
-            <div className="mt-lg">
-              <PerformanceCard
-                successCount={data.successCount}
-                failureCount={data.failureCount}
-                bars={data.performanceBars}
-                startDate={custom.startDate}
-                endDate={custom.endDate}
-                onDateChange={handleDateChange}
-                onDateClear={() => { setSelectedDay(null); setCustom({ startDate: defaultStart, endDate: today }) }}
-                selectedDay={selectedDay}
-                onDaySelect={handleDaySelect}
-                chartMode={chartMode}
-                onChartModeChange={setChartMode}
-              />
-            </div>
-            <div className="mt-lg">
-              <OrderSummary
-                title={summaryTitle}
-                selectedDay={selectedDay}
-                onClearDay={() => setSelectedDay(null)}
-                orders={selectedDay ? dayOrders : (isFail ? allFailedOrders : allSuccessOrders)}
-                chartMode={chartMode}
-              />
-            </div>
-          </>
-        )}
+        {/* Weekly AI summary */}
+        <div className="mt-lg">
+          <WeeklySummaryCard onCitationClick={handleCitationClick} />
+        </div>
+
+        {/* Slim chat card */}
+        <div className="mt-lg">
+          <ChatCard onOpenChat={handleOpenChat} />
+        </div>
+
+        {/* Range chips */}
+        <div className="mt-lg flex items-center gap-2">
+          {RANGE_CHIPS.map((chip, i) => (
+            <button
+              key={chip.label}
+              onClick={() => setRangeIdx(i)}
+              className="px-4 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer transition-colors"
+              style={i === rangeIdx
+                ? { background: '#111827', color: 'white', borderColor: '#111827' }
+                : { background: 'white', color: '#374151', borderColor: '#e5e7eb' }
+              }
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Activity chart */}
+        <div className="mt-lg">
+          <ActivityChart
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onCitationClick={handleCitationClick}
+          />
+        </div>
+
+        {/* Orders list */}
+        <div className="mt-lg">
+          <OrdersList
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onCitationClick={handleCitationClick}
+            onAskRobi={handleAskRobi}
+          />
+        </div>
       </ScreenContainer>
+
+      <ChatPanel
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        onCitationClick={handleCitationClick}
+        prefill={chatPrefill}
+      />
     </>
   )
 }

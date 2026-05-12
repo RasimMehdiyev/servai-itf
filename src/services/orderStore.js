@@ -7,6 +7,13 @@ const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8765'
 const API_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
 
 export const FAILURE_DESCRIPTIONS = {
+  'gripper_failed': 'The gripper was not stable enough to hold onto the item.',
+  'item_not_found': 'The item could not be detected at the expected location.',
+  'e_stopped': 'An emergency stop was triggered during operation.',
+  'planning_failed': 'The robot entered an error state during the cycle.',
+  'timeout': 'No updates were received from the robot for an extended period.',
+  'user_cancelled': 'The operator cancelled the order.',
+  // Legacy keys for backward compat
   'Grip failure': 'The gripper was not stable enough to hold onto the item.',
   'Item not detected': 'The item could not be detected at the expected location.',
   'Emergency stop': 'An emergency stop was triggered during operation.',
@@ -45,13 +52,19 @@ function normalizeOrder(order) {
     timestamp = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
   }
 
+  // Derive failureReason from new failure object or legacy field
+  let failureReason = order.failureReason || null
+  if (!failureReason && order.failure) {
+    failureReason = order.failure.reason || order.failure.detail || null
+  }
+
   return {
     ...order,
     status,
-    orderNumber: order.orderNumber || String(order.id),
+    orderNumber: order.order_number || order.orderNumber || String(order.id),
     timestamp: timestamp || '',
     rating: order.rating ?? (status === 'ok' ? 5 : 1),
-    failureReason: order.failureReason || null,
+    failureReason,
   }
 }
 

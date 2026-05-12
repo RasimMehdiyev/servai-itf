@@ -36,21 +36,146 @@ const INTERVENTION_TIMEOUT = 120000  // 2 minutes for employee to intervene on "
 const INTERVENTION_DEMO_DELAY = 8000 // in replay mode, auto-resolve intervention after this delay
 const MAX_EVENT_DELAY = 5000         // cap any single inter-event gap at 5s (before speed scaling)
 
+// ── Phase mapping (mirrors src/lib/phases.js) ───────────────────────────────
+
+const PHASES = [
+  { phase: 'going_to_shelf',   friendly_name: 'Going to the shelf',      raw_stages: ['1'] },
+  { phase: 'finding_item',     friendly_name: 'Finding the item',         raw_stages: ['3', '4', '5'] },
+  { phase: 'analyzing_grasp',  friendly_name: 'Analyzing the grasp',      raw_stages: ['6', '7', '8', '9'] },
+  { phase: 'picking_up',       friendly_name: 'Picking it up',            raw_stages: ['11'] },
+  { phase: 'bringing_over',    friendly_name: 'Bringing it over',         raw_stages: ['12a', '12b'] },
+  { phase: 'handing_over',     friendly_name: 'Handing over',             raw_stages: ['12c'] },
+  { phase: 'returning',        friendly_name: 'Returning to the shelf',   raw_stages: ['12d'] },
+]
+
+const _stageToPhase = {}
+for (const p of PHASES) for (const s of p.raw_stages) _stageToPhase[s] = p
+
+function phaseForStage(stageNum) { return _stageToPhase[stageNum] || null }
+
+// ── Meta extraction from stage text ─────────────────────────────────────────
+
+function extractStageMeta(stageNum, text) {
+  if (!text) return null
+  const meta = {}
+
+  if (stageNum === '1') {
+    const m = text.match(/planning to '(.+?)'/)
+    if (m) meta.target = m[1]
+  }
+  if (stageNum === '3') {
+    const det = text.match(/(\d+) detection\(s\) in ([\d.]+)s/)
+    if (det) { meta.candidates = parseInt(det[1]); meta.detection_time_s = parseFloat(det[2]) }
+    const score = text.match(/#\d+ score=([\d.]+)/)
+    if (score) {
+      if (!meta.scores) meta.scores = []
+      meta.scores.push(parseFloat(score[1]))
+    }
+  }
+  if (stageNum === '4') {
+    const anchor = text.match(/anchor mode='(\w+)', selected=#(\d+)\(d=([\d.]+)cm,score=([\d.]+)\)/)
+    if (anchor) {
+      meta.selection_mode = anchor[1]
+      meta.chosen_index = parseInt(anchor[2])
+      meta.chosen_distance_cm = parseFloat(anchor[3])
+      meta.chosen_score = parseFloat(anchor[4])
+    }
+  }
+  if (stageNum === '6') {
+    const pt = text.match(/selected Molmo point: \(([\d.]+), ([\d.]+)\)/)
+    if (pt) meta.molmo_point = [parseFloat(pt[1]), parseFloat(pt[2])]
+    const pts = text.match(/returned (\d+) point/)
+    if (pts) meta.molmo_points = parseInt(pts[1])
+  }
+  if (stageNum === '7') {
+    const pick = text.match(/score=([\d.]+) area=(\d+)px/)
+    if (pick) { meta.closeup_score = parseFloat(pick[1]); meta.closeup_area_px = parseInt(pick[2]) }
+  }
+  if (stageNum === '8') {
+    const depth = text.match(/depth_med=([\d.]+)/)
+    if (depth) meta.depth_m = parseFloat(depth[1])
+  }
+  if (stageNum === '9') {
+    const w = text.match(/width=([\d.]+) mm/)
+    if (w) meta.grasp_width_mm = parseFloat(w[1])
+    const off = text.match(/depth_offset = (\d+) mm/)
+    if (off) meta.depth_offset_mm = parseInt(off[1])
+    const acc = text.match(/accepted=(\w+)/)
+    if (acc) meta.accepted = acc[1] === 'True'
+  }
+  if (stageNum === '11') {
+    const open = text.match(/pre-grasp opening: (\w+)/)
+    if (open) meta.gripper_opening = open[1]
+    if (text.includes('SUCCESS')) meta.success = true
+  }
+
+  return Object.keys(meta).length > 0 ? meta : null
+}
+
 // ── Failure classification ───────────────────────────────────────────────────
 
 function classifyFailure(message) {
   const msg = (message || '').toLowerCase()
   if (msg.includes('gripper') || msg.includes('grip') || msg.includes('slipped') || msg.includes('dropped'))
-    return 'Grip failure'
-  if (msg.includes('detection') || msg.includes('detect'))
-    return 'Item not detected'
+    return 'gripper_failed'
+  if (msg.includes('detection') || msg.includes('detect') || msg.includes('not found'))
+    return 'item_not_found'
   if (msg.includes('e_stop') || msg.includes('emergency'))
-    return 'Emergency stop'
-  if (msg.includes('error state'))
-    return 'Robot error'
+    return 'e_stopped'
+  if (msg.includes('error state') || msg.includes('planning'))
+    return 'planning_failed'
   if (msg.includes('timeout') || msg.includes('no updates'))
-    return 'Connection timeout'
-  return 'Unknown failure'
+    return 'timeout'
+  if (msg.includes('cancel'))
+    return 'user_cancelled'
+  return 'gripper_failed'
+}
+
+function classifyFailureLegacy(message) {
+  const reason = classifyFailure(message)
+  const map = { gripper_failed: 'Grip failure', item_not_found: 'Item not detected', e_stopped: 'Emergency stop', planning_failed: 'Robot error', timeout: 'Connection timeout', user_cancelled: 'User cancelled' }
+  return map[reason] || 'Unknown failure'
+}
+
+// ── Phase grouping for step log ─────────────────────────────────────────────
+
+function groupStepsIntoPhases(rawSteps) {
+  const grouped = []
+  let current = null
+
+  for (const step of rawSteps) {
+    const phase = phaseForStage(step.stageNum)
+    if (!phase) {
+      if (current) grouped.push(current)
+      current = null
+      grouped.push({
+        phase: 'unknown',
+        friendly_name: step.name || 'Unknown',
+        raw_stages: [step.name],
+        duration_seconds: step.duration_seconds || 0,
+        meta: step.meta || {},
+      })
+      continue
+    }
+
+    if (current && current.phase === phase.phase) {
+      current.duration_seconds += step.duration_seconds || 0
+      // Merge meta
+      if (step.meta) Object.assign(current.meta, step.meta)
+    } else {
+      if (current) grouped.push(current)
+      current = {
+        phase: phase.phase,
+        friendly_name: phase.friendly_name,
+        raw_stages: [...phase.raw_stages],
+        duration_seconds: step.duration_seconds || 0,
+        meta: step.meta ? { ...step.meta } : {},
+      }
+    }
+  }
+
+  if (current) grouped.push(current)
+  return grouped
 }
 
 // ── Order bookkeeping ────────────────────────────────────────────────────────
@@ -219,9 +344,10 @@ let orderIdBase = nextOrderId()
 let cycleOffset = 0
 let currentItem = null
 let cycleStartTime = null
-let stepLog = []
+let rawStepLog = []      // accumulates { stageNum, name, duration_seconds, meta }
 let stepStart = null
-let stepName = null
+let stepStageNum = null
+let stepMeta = {}
 let cycleFailures = []
 let interventionTimer = null
 let interventionResolve = null  // callback to resume after intervention
@@ -292,72 +418,102 @@ function globalReplay() {
       cycleOffset++
       currentItem = null
       cycleStartTime = Date.now()
-      stepLog = []
+      rawStepLog = []
       stepStart = Date.now()
-      stepName = 'Return to start'
+      stepStageNum = '1' // first stage is return to start
+      stepMeta = {}
       cycleFailures = []
-      cycleHistory = []  // reset history for the new cycle
+      cycleHistory = []
     }
 
     if (evt.type === 'object_selected') currentItem = evt.objectName
 
     if (evt.type === 'stage') {
-      if (stepName && stepStart) {
-        stepLog.push({ name: stepName, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: {} })
+      // Flush previous step
+      if (stepStageNum && stepStart) {
+        rawStepLog.push({ stageNum: stepStageNum, name: `Stage ${stepStageNum}`, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: { ...stepMeta } })
       }
       stepStart = Date.now()
-      stepName = `Stage ${evt.stageNum}`
+      stepStageNum = evt.stageNum
+      stepMeta = {}
+
+      // Extract rich meta from this event
+      const extracted = extractStageMeta(evt.stageNum, evt.text)
+      if (extracted) Object.assign(stepMeta, extracted)
 
       // Track orange-level failure: 0 detections
       if (evt.stageNum === '3') {
         const m = evt.text?.match(/(\d+) detection\(s\)/)
         if (m && parseInt(m[1]) === 0) {
-          cycleFailures.push({ level: 'orange', message: `0 detections for ${currentItem || 'item'}` })
+          cycleFailures.push({ level: 'orange', message: `0 detections for ${currentItem || 'item'}`, at_phase: 'finding_item' })
         }
       }
     }
 
+    // Accumulate meta from motion events into current step
+    if (evt.type === 'motion' && stepStageNum) {
+      stepMeta.trajectory_duration = evt.duration
+    }
+
     // Track red-level failures
-    if (evt.type === 'gripper' && !evt.success) {
-      cycleFailures.push({ level: 'red', message: evt.message || 'Gripper failure' })
+    if (evt.type === 'gripper') {
+      if (!evt.success) {
+        cycleFailures.push({ level: 'red', message: evt.message || 'Gripper failure', at_phase: 'picking_up' })
+      }
     }
     if (evt.type === 'robot_status') {
       if (evt.raw?.includes('e_stopped') && evt.raw?.includes('True')) {
-        cycleFailures.push({ level: 'red', message: 'Emergency stop activated' })
+        cycleFailures.push({ level: 'red', message: 'Emergency stop activated', at_phase: null })
       }
       if (evt.raw?.includes('in_error') && evt.raw?.includes('True')) {
-        cycleFailures.push({ level: 'red', message: 'Robot in error state' })
+        cycleFailures.push({ level: 'red', message: 'Robot in error state', at_phase: null })
       }
     }
 
     if (evt.type === 'cycle_end' && cycleStartTime) {
-      if (stepName && stepStart) {
-        stepLog.push({ name: stepName, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: {} })
+      // Flush last step
+      if (stepStageNum && stepStart) {
+        rawStepLog.push({ stageNum: stepStageNum, name: `Stage ${stepStageNum}`, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: { ...stepMeta } })
       }
+
       const orderId = orderIdBase + cycleOffset - 1
       const hasCritical = cycleFailures.some(f => f.level === 'red')
-      const status = hasCritical ? 'failed' : 'ok'
-      let failureReason = null
+      const hasOrange = cycleFailures.some(f => f.level === 'orange')
+      const status = hasCritical ? 'failed' : 'success'
+
+      let failure = null
       if (hasCritical) {
-        failureReason = classifyFailure(cycleFailures.find(f => f.level === 'red').message)
-      } else if (cycleFailures.some(f => f.level === 'orange')) {
-        failureReason = classifyFailure(cycleFailures.find(f => f.level === 'orange').message)
+        const f = cycleFailures.find(f => f.level === 'red')
+        failure = { reason: classifyFailure(f.message), detail: f.message, at_phase: f.at_phase || null }
+      } else if (hasOrange) {
+        const f = cycleFailures.find(f => f.level === 'orange')
+        failure = { reason: classifyFailure(f.message), detail: f.message, at_phase: f.at_phase || 'finding_item' }
       }
+
+      // Group raw steps into phases
+      const steps = groupStepsIntoPhases(rawStepLog)
+      const robotSeconds = steps.reduce((s, p) => s + p.duration_seconds, 0)
+      const totalSeconds = Math.round((Date.now() - cycleStartTime) / 1000)
+
       const startedAt = new Date(cycleStartTime).toISOString()
       const d = new Date(cycleStartTime)
       const timestamp = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+
       writeOrder({
         id: orderId,
+        order_number: String(orderId),
+        status,
+        failure,
         item: currentItem || 'unknown',
-        orderNumber: String(orderId),
-        timestamp,
+        robot_id: 'ROBI',
         started_at: startedAt,
         completed_at: new Date().toISOString(),
-        total_seconds: Math.round((Date.now() - cycleStartTime) / 1000),
-        steps: stepLog,
-        status,
-        failureReason,
-        rating: status === 'ok' ? 5 : 1,
+        total_seconds: totalSeconds,
+        robot_seconds: robotSeconds,
+        human_wait_seconds: Math.max(0, totalSeconds - robotSeconds),
+        steps,
+        timestamp,
+        rating: status === 'success' ? 5 : 1,
       })
       console.log(`  Order #${orderId} (${currentItem}) [${status}] written to orders.json`)
     }
@@ -405,24 +561,30 @@ function globalReplay() {
           broadcast(skipEvt)
 
           // Write a failed order for this cycle
-          if (stepName && stepStart) {
-            stepLog.push({ name: stepName, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: {} })
+          if (stepStageNum && stepStart) {
+            rawStepLog.push({ stageNum: stepStageNum, name: `Stage ${stepStageNum}`, duration_seconds: Math.round((Date.now() - stepStart) / 1000), meta: { ...stepMeta } })
           }
           const orderId = orderIdBase + cycleOffset - 1
+          const steps = groupStepsIntoPhases(rawStepLog)
+          const robotSeconds = steps.reduce((s, p) => s + p.duration_seconds, 0)
+          const totalSeconds = Math.round((Date.now() - cycleStartTime) / 1000)
           const startedAt = new Date(cycleStartTime).toISOString()
           const d = new Date(cycleStartTime)
           const timestamp = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
           writeOrder({
             id: orderId,
+            order_number: String(orderId),
+            status: 'failed',
+            failure: { reason: 'timeout', detail: 'Employee intervention timeout — item not found', at_phase: 'finding_item' },
             item: currentItem || 'unknown',
-            orderNumber: String(orderId),
-            timestamp,
+            robot_id: 'ROBI',
             started_at: startedAt,
             completed_at: new Date().toISOString(),
-            total_seconds: Math.round((Date.now() - cycleStartTime) / 1000),
-            steps: stepLog,
-            status: 'failed',
-            failureReason: 'Item not detected',
+            total_seconds: totalSeconds,
+            robot_seconds: robotSeconds,
+            human_wait_seconds: Math.max(0, totalSeconds - robotSeconds),
+            steps,
+            timestamp,
             rating: 1,
           })
           console.log(`  Order #${orderId} (${currentItem}) [failed — timeout] written to orders.json`)
@@ -484,15 +646,18 @@ function globalReplay() {
         const d = new Date()
         writeOrder({
           id: failOrderId,
+          order_number: String(failOrderId),
+          status: 'failed',
+          failure: { reason: 'gripper_failed', detail: 'Gripper timeout — object slipped during grasp', at_phase: 'picking_up' },
           item: currentItem || 'unknown',
-          orderNumber: String(failOrderId),
-          timestamp: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
+          robot_id: 'ROBI',
           started_at: failTs,
           completed_at: failTs,
           total_seconds: Math.round(FAILURE_PAUSE / 1000),
+          robot_seconds: 0,
+          human_wait_seconds: Math.round(FAILURE_PAUSE / 1000),
           steps: [],
-          status: 'failed',
-          failureReason: 'Grip failure',
+          timestamp: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`,
           rating: 1,
         })
         console.log(`  Order #${failOrderId} (${currentItem}) [failed — grip failure] written to orders.json`)
@@ -519,19 +684,133 @@ function globalReplay() {
 
 const url = require('url')
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return }
+
   const pathname = url.parse(req.url).pathname
+
+  const parsedUrl = url.parse(req.url, true)
+  const query = parsedUrl.query
+
   if (pathname === '/api/recent-orders') {
     const orders = readOrders()
     const recent = orders.slice(-4).reverse()
     const failed = orders.filter(o => o.status === 'failed').length
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ total: orders.length, failedCount: failed, recent }))
+
+  } else if (pathname === '/api/orders/daily') {
+    const orders = readOrders()
+    const today = new Date().toISOString().slice(0, 10)
+    const from = query.from || (() => { const d = new Date(); d.setDate(d.getDate() - 6); return d.toISOString().slice(0, 10) })()
+    const to = query.to || today
+
+    // Build date buckets
+    const buckets = {}
+    let d = new Date(from + 'T12:00:00')
+    const endD = new Date(to + 'T12:00:00')
+    while (d <= endD) {
+      buckets[d.toISOString().slice(0, 10)] = { delivered: 0, failed: 0 }
+      d.setDate(d.getDate() + 1)
+    }
+
+    const filtered = orders.filter(o => {
+      const dt = (o.started_at || '').slice(0, 10)
+      return dt >= from && dt <= to
+    })
+
+    for (const o of filtered) {
+      const dt = (o.started_at || '').slice(0, 10)
+      if (buckets[dt]) {
+        if (o.status === 'success' || o.status === 'ok') buckets[dt].delivered++
+        else buckets[dt].failed++
+      }
+    }
+
+    const days = Object.entries(buckets).sort().map(([date, v]) => ({ date, ...v }))
+    const robotTimes = filtered.filter(o => (o.robot_seconds || 0) > 0).map(o => o.robot_seconds)
+    const avgFetch = robotTimes.length > 0 ? Math.round(robotTimes.reduce((a, b) => a + b, 0) / robotTimes.length) : 0
+    const totalDelivered = days.reduce((s, d) => s + d.delivered, 0)
+    const totalFailed = days.reduce((s, d) => s + d.failed, 0)
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({
+      from, to,
+      days,
+      totals: { delivered: totalDelivered, failed: totalFailed, avg_fetch_seconds: avgFetch },
+    }))
+
+  } else if (pathname === '/api/orders/list') {
+    const orders = readOrders()
+    const today = new Date().toISOString().slice(0, 10)
+    const from = query.from || (() => { const d = new Date(); d.setDate(d.getDate() - 6); return d.toISOString().slice(0, 10) })()
+    const to = query.to || today
+    const statusFilter = query.status || 'all'
+    const itemFilter = query.item || 'all'
+
+    let filtered = orders.filter(o => {
+      const dt = (o.started_at || '').slice(0, 10)
+      return dt >= from && dt <= to
+    })
+
+    // Counts before status/item filtering
+    const allCount = filtered.length
+    const deliveredCount = filtered.filter(o => o.status === 'success' || o.status === 'ok').length
+    const failedCount = allCount - deliveredCount
+    const byItem = {}
+    for (const o of filtered) {
+      const item = o.item || 'unknown'
+      byItem[item] = (byItem[item] || 0) + 1
+    }
+
+    // Apply filters
+    if (statusFilter === 'delivered') {
+      filtered = filtered.filter(o => o.status === 'success' || o.status === 'ok')
+    } else if (statusFilter === 'failed') {
+      filtered = filtered.filter(o => o.status !== 'success' && o.status !== 'ok')
+    }
+    if (itemFilter !== 'all') {
+      filtered = filtered.filter(o => o.item === itemFilter)
+    }
+
+    // Sort descending by completed_at
+    filtered.sort((a, b) => ((b.completed_at || b.started_at || '') ).localeCompare(a.completed_at || a.started_at || ''))
+
+    const resultOrders = filtered.map(o => ({
+      id: o.id,
+      order_number: o.order_number || String(o.id || ''),
+      item: o.item,
+      status: o.status,
+      failure: o.failure || null,
+      started_at: o.started_at,
+      completed_at: o.completed_at,
+      total_seconds: o.total_seconds || 0,
+      robot_seconds: o.robot_seconds || 0,
+      human_wait_seconds: o.human_wait_seconds || 0,
+      phases: o.steps || [],
+    }))
+
+    // Sort byItem descending
+    const sortedByItem = Object.entries(byItem).sort((a, b) => b[1] - a[1])
+    const byItemObj = {}
+    for (const [k, v] of sortedByItem) byItemObj[k] = v
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({
+      filter: { from, to, status: statusFilter, item: itemFilter },
+      counts: { all: allCount, delivered: deliveredCount, failed: failedCount, by_item: byItemObj },
+      orders: resultOrders,
+    }))
+
   } else if (pathname === '/api/orders') {
     const orders = readOrders()
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify(orders))
+
   } else {
     res.writeHead(404)
     res.end('Not found')

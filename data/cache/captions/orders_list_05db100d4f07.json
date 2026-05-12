@@ -1,0 +1,13 @@
+{
+  "text": "ROBI completed an average of 15.7 orders per day over the last month, with a total of 398 orders tracked from April 13 to May 12. [cite:1]",
+  "citations": [
+    1
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-04-13",
+    "to": "2026-05-12",
+    "status": "delivered"
+  },
+  "generated_at": "2026-05-12T08:15:37.507643+00:00"
+}

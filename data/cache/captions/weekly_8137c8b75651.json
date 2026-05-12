@@ -1,0 +1,7 @@
+{
+  "text": "This week ROBI handled a total of 363 orders, with 312 successfully delivered and 51 failures. The average fetch time was 228 seconds, which aligns closely with the median of 53 seconds. ROBI performed particularly well on May 11th, handling 302 orders in a single day. Notable details include frequent use of ballpoint pens (175 items) and water bottles (138), with plastic-wrapped towels making up only 50 units. The slowest order took over 6 hours to fetch and deliver, highlighting the importance of precise handling for delicate items like towels.\n\nAmong failures, [[gripper]] issues were the primary cause with 51 occurrences. This suggests that improving grip reliability could significantly enhance delivery efficiency.",
+  "citations": [],
+  "surface": "weekly",
+  "scope": {},
+  "generated_at": "2026-05-12T07:47:21.904855+00:00"
+}
