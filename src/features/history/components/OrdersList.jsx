@@ -11,10 +11,10 @@ const ROSE_50 = '#fff1f2'
 const ROSE_100 = '#ffe4e6'
 const ROSE_500 = '#f43f5e'
 const ROSE_700 = '#be123c'
-const AMBER_50 = '#fffbeb'
-const AMBER_100 = '#fef3c7'
-const AMBER_500 = '#f59e0b'
-const AMBER_700 = '#b45309'
+const AMBER_50 = '#fefce8'
+const AMBER_100 = '#fef9c3'
+const AMBER_500 = '#ca8a04'
+const AMBER_700 = '#854d0e'
 const GRAY_50 = '#f9fafb'
 const GRAY_100 = '#f3f4f6'
 const GRAY_200 = '#e5e7eb'
@@ -25,7 +25,7 @@ const GRAY_900 = '#111827'
 const TEAL_200 = '#99f6e4'
 
 // Order data comes from the WS server (always available)
-const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8765'
+const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
 const DATA_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
 const PAGE_SIZE = 5
 
@@ -61,33 +61,57 @@ function StatusIcon({ status }) {
       </div>
     )
   }
-  if (status === 'failed') {
+  if (status === 'warning') {
     return (
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: ROSE_50, borderColor: ROSE_100 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: AMBER_50, borderColor: AMBER_100 }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
         </svg>
       </div>
     )
   }
+  if (status === 'failed') {
+    return (
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: ROSE_50, borderColor: ROSE_100 }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </div>
+    )
+  }
   return (
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: AMBER_50, borderColor: AMBER_100 }}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: GRAY_50, borderColor: GRAY_200 }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
       </svg>
     </div>
   )
 }
 
-function StatusPill({ status }) {
+const REASON_SHORT = {
+  search_exhausted: 'Not found',
+  reachability_failed: 'Path blocked',
+  no_valid_depth: 'Depth failed',
+  handover_failed: 'Handover blocked',
+  user_cancelled: 'Cancelled',
+  gripper_failed: 'Grip failed',
+  e_stopped: 'E-stop',
+  timeout: 'Timeout',
+}
+
+function StatusPill({ status, failure }) {
   if (status === 'success' || status === 'ok') {
     return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: EMERALD_50, color: EMERALD_700, border: `1px solid ${EMERALD_100}` }}>Delivered</span>
   }
-  if (status === 'failed') {
-    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: ROSE_50, color: ROSE_700, border: `1px solid ${ROSE_100}` }}>Couldn't deliver</span>
+  const reasonLabel = failure?.reason ? REASON_SHORT[failure.reason] : null
+  if (status === 'warning') {
+    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: AMBER_50, color: AMBER_700, border: `1px solid ${AMBER_100}` }}>{reasonLabel || 'Warning'}</span>
   }
-  return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: AMBER_50, color: AMBER_700, border: `1px solid ${AMBER_100}` }}>Cancelled</span>
+  if (status === 'failed') {
+    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: ROSE_50, color: ROSE_700, border: `1px solid ${ROSE_100}` }}>{reasonLabel || 'Failed'}</span>
+  }
+  return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: GRAY_50, color: GRAY_500, border: `1px solid ${GRAY_200}` }}>Unknown</span>
 }
 
 function formatMeta(phase) {
@@ -107,6 +131,35 @@ function formatMeta(phase) {
   return parts.length > 0 ? parts.join(', ') : null
 }
 
+function StepIcon({ status }) {
+  if (status === 'failed') {
+    return (
+      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: ROSE_50, border: `1px solid ${ROSE_100}` }}>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </div>
+    )
+  }
+  if (status === 'warning') {
+    return (
+      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: AMBER_50, border: `1px solid ${AMBER_100}` }}>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </div>
+    )
+  }
+  return (
+    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: EMERALD_50, border: `1px solid ${EMERALD_100}` }}>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={EMERALD_500} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </div>
+  )
+}
+
 function ExpandedDetail({ order, onAskRobi }) {
   const phases = order.phases || []
 
@@ -116,17 +169,19 @@ function ExpandedDetail({ order, onAskRobi }) {
       <div className="flex flex-col gap-2.5">
         {phases.map((phase, i) => {
           const metaText = formatMeta(phase)
+          const failPhase = order.failure?.at_phase
+          const stepStatus = phase.status || (failPhase === phase.phase ? (order.status === 'warning' ? 'warning' : 'failed') : 'ok')
+          const nameColor = stepStatus === 'failed' ? ROSE_700 : stepStatus === 'warning' ? AMBER_700 : GRAY_900
           return (
             <div key={i} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: EMERALD_50, border: `1px solid ${EMERALD_100}` }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={EMERALD_500} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
+              <StepIcon status={stepStatus} />
               <div className="flex-1 min-w-0">
-                <div className="text-[13px]" style={{ color: GRAY_900 }}>
+                <div className="text-[13px]" style={{ color: nameColor }}>
                   {phase.friendly_name || phase.phase}
                 </div>
+                {phase.failure_detail && (
+                  <div className="text-[11px] mt-0.5" style={{ color: stepStatus === 'failed' ? ROSE_500 : AMBER_500 }}>{phase.failure_detail}</div>
+                )}
                 {metaText && (
                   <div className="text-[11px] mt-0.5" style={{ color: GRAY_400 }}>{metaText}</div>
                 )}
@@ -145,7 +200,7 @@ function ExpandedDetail({ order, onAskRobi }) {
           className="px-3 py-2 rounded-lg text-[12px] font-semibold border-0 cursor-pointer hover:opacity-90"
           style={{ background: 'var(--teal, #0d9488)', color: 'white' }}
         >
-          Why so long? Ask ROBI
+          {order.status === 'failed' ? 'Why did you fail?' : 'Why so long? Ask ROBI'}
         </button>
         <span className="text-[12px] cursor-pointer hover:underline" style={{ color: GRAY_400 }}>
           View full log →
@@ -186,7 +241,7 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
 
   const { caption, loading: captionLoading, error: captionError } = useRagCaption('orders_list', { from, to, status: statusFilter })
 
-  const counts = data?.counts || { all: 0, delivered: 0, failed: 0, by_item: {} }
+  const counts = data?.counts || { all: 0, delivered: 0, warning: 0, failed: 0, by_item: {} }
   const orders = data?.orders || []
 
   // Group orders by date
@@ -253,11 +308,18 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
           ✓ Delivered <span style={{ color: statusFilter === 'delivered' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.delivered}</span>
         </button>
         <button
+          onClick={() => { setStatusFilter('warning'); setItemFilter('all') }}
+          className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
+          style={{ ...chipStyle(statusFilter === 'warning'), opacity: counts.warning === 0 ? 0.6 : 1 }}
+        >
+          ⚠ Warnings <span style={{ color: statusFilter === 'warning' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.warning}</span>
+        </button>
+        <button
           onClick={() => { setStatusFilter('failed'); setItemFilter('all') }}
           className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
           style={{ ...chipStyle(statusFilter === 'failed'), opacity: counts.failed === 0 ? 0.6 : 1 }}
         >
-          ⚠ Issues <span style={{ color: statusFilter === 'failed' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.failed}</span>
+          ✕ Failed <span style={{ color: statusFilter === 'failed' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.failed}</span>
         </button>
 
         {itemChips.length > 0 && (
@@ -354,7 +416,7 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
                               Took {order.robot_seconds}s · {order.status === 'success' || order.status === 'ok' ? 'handed over' : 'ended'} at {formatTime(order.completed_at || order.started_at)}
                             </div>
                           </div>
-                          <StatusPill status={order.status} />
+                          <StatusPill status={order.status} failure={order.failure} />
                           <svg
                             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2"
                             style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease', shrinkFlexGrow: 0 }}

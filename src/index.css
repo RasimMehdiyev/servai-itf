@@ -22,13 +22,19 @@
     --text-secondary: #6b7280;
     --text-tertiary: #9ca3af;
 
-    /* Semantic — CVD-safe: blue/orange base, darker green, clear red */
-    --success: #10B981;
-    --success-bg: #EFFFF4;
-    --warning: #973C00;
-    --warning-bg: #FFFAE4;
-    --danger: #F05764;
-    --danger-bg: #FFE2E2;
+    /* Semantic palette — single source of truth for all pages */
+    --success: #10b981;
+    --success-bg: #ecfdf5;
+    --success-light: #d1fae5;
+    --success-text: #047857;
+    --warning: #ca8a04;
+    --warning-bg: #fefce8;
+    --warning-light: #fef9c3;
+    --warning-text: #854d0e;
+    --danger: #f43f5e;
+    --danger-bg: #fff1f2;
+    --danger-light: #ffe4e6;
+    --danger-text: #be123c;
     --info: #2B7FFF;
     --info-bg: #eff6ff;
     --primary: #2B7FFF;
@@ -609,7 +615,7 @@ body {
 .stars {
     display: flex;
     gap: 1px;
-    color: #f59e0b
+    color: var(--warning, #ca8a04)
 }
 
 /* ---- Expand toggle ---- */

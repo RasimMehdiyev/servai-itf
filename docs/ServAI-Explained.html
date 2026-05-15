@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServAI - Complete System Explanation</title>
+<style>
+  @page { margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; max-width: 850px; margin: 40px auto; padding: 0 24px; color: #1a1a2e; line-height: 1.7; }
+  h1 { font-size: 28px; border-bottom: 3px solid #0d9488; padding-bottom: 10px; margin-top: 50px; }
+  h2 { font-size: 22px; color: #0d9488; margin-top: 40px; border-left: 4px solid #0d9488; padding-left: 12px; }
+  h3 { font-size: 17px; color: #374151; margin-top: 28px; }
+  p { margin: 10px 0; }
+  .subtitle { font-size: 16px; color: #6b7280; margin-top: -8px; }
+  .highlight { background: #f0fdfa; border-left: 3px solid #14b8a6; padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .warning { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .diagram { background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; white-space: pre; overflow-x: auto; line-height: 1.5; margin: 16px 0; }
+  .file-ref { display: inline-block; background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 14px; color: #047857; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { border: 1px solid #e5e7eb; padding: 10px 14px; text-align: left; }
+  th { background: #f0fdfa; color: #0d9488; font-weight: 600; }
+  tr:nth-child(even) { background: #f9fafb; }
+  .toc { background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px 28px; border-radius: 8px; margin: 24px 0; }
+  .toc h2 { border: none; padding: 0; margin-top: 0; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: #0d9488; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .analogy { font-style: italic; color: #6b7280; }
+  .cover { text-align: center; padding: 60px 0 40px; }
+  .cover h1 { font-size: 36px; border: none; }
+  .cover .subtitle { font-size: 18px; }
+  @media print { .pagebreak { page-break-before: always; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>ServAI - How It All Works</h1>
+  <p class="subtitle">A complete, non-technical explanation of every part of the system</p>
+  <p style="color: #9ca3af; margin-top: 30px;">May 2026</p>
+</div>
+
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#big-picture">The Big Picture</a></li>
+    <li><a href="#three-servers">The Three Servers</a></li>
+    <li><a href="#fake-robot">The Fake Robot (WebSocket Replay Server)</a></li>
+    <li><a href="#frontend">The Frontend (What You See on Screen)</a></li>
+    <li><a href="#live-screen">The Live Screen</a></li>
+    <li><a href="#history-screen">The History Screen</a></li>
+    <li><a href="#ai-brain">The AI Brain (RAG Server)</a></li>
+    <li><a href="#rag-explained">How RAG Works in Our Case</a></li>
+    <li><a href="#smart-captions">Smart Captions - Terms, Citations, and Suggestions</a></li>
+    <li><a href="#order-statuses">Order Statuses - Green, Amber, Red</a></li>
+    <li><a href="#file-by-file">File-by-File Guide</a></li>
+    <li><a href="#data-flow">How Data Flows Through the System</a></li>
+    <li><a href="#what-happens-when">What Happens When...</a></li>
+  </ol>
+</div>
+
+<div class="pagebreak"></div>
+
+<h1 id="big-picture">1. The Big Picture</h1>
+
+<p>ServAI is a monitoring dashboard for a grocery-picking robot called <strong>ROBI</strong>. Think of it like a security camera control room, but instead of watching cameras, a supermarket employee watches what the robot is doing in real time and reviews how it performed over the past days.</p>
+
+<p>The system has two main screens:</p>
+<ul>
+  <li><strong>Live Screen</strong> &mdash; Watch ROBI work right now. See what it's picking up, where it's going, and step in if something goes wrong.</li>
+  <li><strong>History Screen</strong> &mdash; Look back at past orders. See charts, statistics, and ask an AI assistant questions like "Why did order #42 take so long?"</li>
+</ul>
+
+<div class="highlight">
+  <strong>Key concept:</strong> In a real deployment, ROBI would be a physical FANUC robot arm in a supermarket, sending live data to this dashboard. During development, we don't have a real robot, so we <em>replay</em> a recording of a real robot session. The dashboard can't tell the difference &mdash; it behaves exactly as it would with a real robot.
+</div>
+
+<h1 id="three-servers">2. The Three Servers</h1>
+
+<p>To run ServAI, three separate programs need to be running at the same time. Think of them like three employees with different jobs:</p>
+
+<table>
+  <tr>
+    <th>Server</th>
+    <th>Analogy</th>
+    <th>What it does</th>
+    <th>Port</th>
+  </tr>
+  <tr>
+    <td><strong>Vite Dev Server</strong></td>
+    <td>The shop window</td>
+    <td>Serves the website you see in your browser</td>
+    <td>5173</td>
+  </tr>
+  <tr>
+    <td><strong>WebSocket Server</strong></td>
+    <td>The security camera feed</td>
+    <td>Replays robot activity in real time (dev only &mdash; replaced by the real robot in production)</td>
+    <td>8765</td>
+  </tr>
+  <tr>
+    <td><strong>RAG/AI Server</strong></td>
+    <td>The smart analyst</td>
+    <td>Generates AI summaries and answers questions using a local AI model</td>
+    <td>5175</td>
+  </tr>
+</table>
+
+<p class="analogy">A "port" is like an apartment number in a building. Your computer is the building (at address "localhost"), and each server lives in a different apartment. The browser knows which server to talk to by using the right port number.</p>
+
+<div class="highlight">
+  <strong>Independence rule:</strong> The charts, numbers, and order data work even if the AI server is completely off. The AI is a bonus layer &mdash; it adds captions and chat, but nothing breaks without it.
+</div>
+
+<div class="pagebreak"></div>
+
+<h1 id="fake-robot">3. The Fake Robot (WebSocket Replay Server)</h1>
+
+<p class="file-ref">ws-test-server.js</p>
+
+<p>Since we don't have a real robot plugged in during development, we have a clever workaround: a <strong>replay server</strong>.</p>
+
+<h3>What is a WebSocket?</h3>
+<p>A normal website works like sending letters &mdash; you ask for a page, the server sends it back, done. A WebSocket is more like a phone call &mdash; once connected, both sides can talk to each other at any time without hanging up. This is essential for live updates because the robot needs to continuously tell the dashboard what it's doing.</p>
+
+<h3>How the replay works</h3>
+<p>We have a file called <span class="file-ref">grocery_logs.txt</span> that contains a recording of a real robot session &mdash; every message the robot sent, with timestamps. The replay server reads this file and plays it back like a movie:</p>
+
+<div class="diagram">
+grocery_logs.txt (recording)          ws-test-server.js (replay)         Your browser
+       |                                      |                              |
+       |  "Stage 1: going to shelf"           |                              |
+       |  timestamp: 10:03:01.234    -------> |  Wait the right amount       |
+       |                                      |  of time, then send   -----> | Shows "Going
+       |  "Stage 3: 4 detections"             |  to all browsers             | to the shelf"
+       |  timestamp: 10:03:05.891    -------> |                       -----> |
+       |                                      |                              | Shows "Finding
+       |  "Stage 11: gripper SUCCESS"         |                       -----> | the item"
+       |  timestamp: 10:03:12.445    -------> |                              |
+       |                                      |                              | Shows "Picking
+       |                                      |                              | it up"</div>
+
+<h3>What the replay server also does</h3>
+<ul>
+  <li><strong>Appends orders to a shared file:</strong> Every time the robot completes a "cycle" (picks up one item), the server appends a record to <span class="file-ref">data/orders.json</span> with timing, status, and step details. This file is the shared data store &mdash; see the box below.</li>
+  <li><strong>Classifies outcomes:</strong> It decides if an order was successful (green), had warnings (amber &mdash; like 0 detections on first try but recovered), or failed (red &mdash; gripper dropped the item).</li>
+  <li><strong>Simulates failures:</strong> After every 2nd cycle, it intentionally injects a fake gripper failure to make the data more realistic.</li>
+  <li><strong>Handles intervention:</strong> Sometimes the robot can't find an item and needs a human to help. The server pauses and waits for the employee to click a button in the app.</li>
+  <li><strong>Serves data via HTTP:</strong> The History screen fetches order data and daily statistics through regular web requests (not WebSocket) from this server.</li>
+</ul>
+
+<div class="highlight">
+  <strong>Orders are independent from the robot connection.</strong> The file <span class="file-ref">data/orders.json</span> is a persistent data store on disk. Once an order is written there, it stays forever &mdash; regardless of whether the WebSocket server, the replay, or any robot is running. Both the WebSocket server and the RAG/AI server can read this file and serve its contents via their own HTTP endpoints. In production, order records would be written by whatever system processes real robot events (a backend service, a database, or the robot controller itself). The dashboard only reads from the data store &mdash; it never depends on a live robot connection to show historical orders.
+</div>
+
+<div class="warning">
+  <strong>In production:</strong> This replay server would be replaced by a real connection to the FANUC robot controller. The frontend code wouldn't change at all &mdash; it just receives messages in the same format. The order data store would likely be a database instead of a JSON file, but the API shape would remain the same.
+</div>
+
+<div class="pagebreak"></div>
+
+<h1 id="frontend">4. The Frontend (What You See on Screen)</h1>
+
+<p>The frontend is built with <strong>React</strong>, a popular library for building interactive websites. Instead of writing one giant HTML file, React lets you build small, reusable pieces called <strong>components</strong>.</p>
+
+<p class="analogy">Think of components like LEGO bricks. A "Card" component is a rounded white box. A "StatusChip" is a small colored label. You snap them together to build screens.</p>
+
+<h3>How the files are organized</h3>
+
+<div class="diagram">
+src/
+  main.jsx              &larr; The entry point. Starts the whole app.
+  App.jsx               &larr; Sets up the page structure and navigation routes.
+  index.css             &larr; Global styles and color variables.
+
+  components/
+    ui/                 &larr; Reusable building blocks
+      Card.jsx          &larr; White rounded box used everywhere
+      SmartCaption.jsx  &larr; Renders AI text with tooltips and citations
+      StatusChip.jsx    &larr; Small colored badge ("Delivered", "Failed")
+      ...
+
+    layout/             &larr; Page structure
+      TopBar.jsx        &larr; The bar at the top with "ROBI" and status
+      BottomTabBar.jsx  &larr; The Live / History / Settings tabs at the bottom
+      ScreenContainer   &larr; Wrapper that centers content and adds padding
+
+  features/
+    live/               &larr; Everything for the Live screen
+    history/            &larr; Everything for the History screen
+    day-details/        &larr; Everything for the Day Details screen
+
+  hooks/                &larr; Reusable logic for fetching data
+    useRobotSocket.js   &larr; Connects to the WebSocket server
+    useRagCaption.js    &larr; Fetches an AI caption from the RAG server
+    useRagChat.js       &larr; Streams a chat conversation with the AI
+
+  services/             &larr; Business logic
+    messageMapper.js    &larr; Translates raw robot messages into screen state
+    orderStore.js       &larr; Manages the orders data
+
+  context/
+    DataSourceContext   &larr; Shares the WebSocket connection across all components
+
+  lib/
+    terms.js            &larr; Dictionary of technical terms (for tooltips)
+    phases.js           &larr; Maps raw robot stages to friendly names</div>
+
+<h3>What is a "hook"?</h3>
+<p>In React, a <strong>hook</strong> is a reusable piece of logic that a component can "hook into." For example, <span class="file-ref">useRagCaption.js</span> knows how to call the AI server and manage the loading/error states. Any component that needs an AI caption can use this hook instead of writing the same fetch-and-wait logic from scratch.</p>
+
+<div class="pagebreak"></div>
+
+<h1 id="live-screen">5. The Live Screen</h1>
+
+<p class="file-ref">src/features/live/pages/LiveScreen.jsx</p>
+
+<p>This is what the employee looks at during their shift. It shows:</p>
+
+<table>
+  <tr><th>Component</th><th>What it shows</th></tr>
+  <tr><td><strong>AttentionPanel</strong></td><td>The current order: what item, which stage, a progress bar, and buttons to intervene if needed</td></tr>
+  <tr><td><strong>WorkflowTimeline</strong></td><td>A vertical timeline showing all 7 phases of the robot's work, with green checkmarks for completed steps</td></tr>
+  <tr><td><strong>RobotStatusCard</strong></td><td>Hardware status: is the gripper open/closed? Camera working? Any errors?</td></tr>
+  <tr><td><strong>TechnicalDetails</strong></td><td>Expandable panel with raw technical numbers (hidden by default)</td></tr>
+</table>
+
+<h3>The 7 phases of a robot order</h3>
+<p>Every order follows the same pipeline, defined in <span class="file-ref">src/lib/phases.js</span>:</p>
+
+<table>
+  <tr><th>#</th><th>Phase</th><th>What happens</th></tr>
+  <tr><td>1</td><td>Going to the shelf</td><td>Robot plans a path and drives to the shelf location</td></tr>
+  <tr><td>2</td><td>Finding the item</td><td>Camera takes a photo, AI (SAM3) detects items, picks the best match</td></tr>
+  <tr><td>3</td><td>Analyzing the grasp</td><td>Another AI (Molmo) figures out exactly where and how to grab it</td></tr>
+  <tr><td>4</td><td>Picking it up</td><td>Gripper opens, descends, closes around the item, lifts</td></tr>
+  <tr><td>5</td><td>Bringing it over</td><td>Robot arm moves the item to the handover desk</td></tr>
+  <tr><td>6</td><td>Handing over</td><td>Gripper opens to release the item for the employee</td></tr>
+  <tr><td>7</td><td>Returning</td><td>Robot goes back to the shelf, ready for the next order</td></tr>
+</table>
+
+<h3>Employee intervention</h3>
+<p>Sometimes the robot's camera can't find the requested item (maybe it's been moved or the shelf is empty). When this happens:</p>
+<ol>
+  <li>The dashboard turns orange and shows "Intervention needed"</li>
+  <li>The employee can tap a button to tell the robot to try again</li>
+  <li>The app sends a message back through the WebSocket to the server</li>
+  <li>The server resumes the robot's pipeline</li>
+</ol>
+<p>If nobody responds within 2 minutes, the order is marked as failed and the robot moves on.</p>
+
+<div class="pagebreak"></div>
+
+<h1 id="history-screen">6. The History Screen</h1>
+
+<p class="file-ref">src/features/history/pages/HistoryScreen.jsx</p>
+
+<p>This screen lets the employee (or a manager) review how ROBI has been performing. It's made up of several sections stacked vertically:</p>
+
+<h3>Weekly Summary Card</h3>
+<p class="file-ref">src/features/history/components/WeeklySummaryCard.jsx</p>
+<p>An AI-written paragraph summarizing the week's performance. It mentions total deliveries, failures, busiest day, and slowest order. It can reference specific orders (clickable) and highlight technical terms (hoverable tooltips).</p>
+
+<h3>Activity Chart</h3>
+<p class="file-ref">src/features/history/components/ActivityChart.jsx</p>
+<p>A bar chart showing daily activity. Each day has a stacked bar with three colors: green (delivered), amber (delivered with warnings), and red (failed). Above the chart are three summary tiles showing total counts and average timing. Below the chart, an AI caption describes what's notable about the data.</p>
+
+<p>The chart adapts to different time ranges:</p>
+<ul>
+  <li><strong>Today:</strong> Shows just 1 bar</li>
+  <li><strong>Week:</strong> Shows 7 bars with labels on each day</li>
+  <li><strong>Month:</strong> Shows up to 30 bars (narrower) with labels on every 4th day. Empty leading days are trimmed so the chart isn't mostly blank.</li>
+</ul>
+
+<h3>Orders List</h3>
+<p class="file-ref">src/features/history/components/OrdersList.jsx</p>
+<p>A filterable list of all orders, grouped by date. Each order shows:</p>
+<ul>
+  <li>An icon (green check, amber warning triangle, or red X)</li>
+  <li>The item name and order number</li>
+  <li>How long it took and when it finished</li>
+  <li>A status pill ("Delivered", "Delivered with warnings", "Couldn't deliver")</li>
+</ul>
+<p>Tapping an order expands it to show the step-by-step phases with timing and technical details. There's also a "Why so long? Ask ROBI" button that opens the chat pre-filled with a question about that specific order.</p>
+
+<h3>Chat Panel</h3>
+<p class="file-ref">src/features/history/components/ChatPanel.jsx</p>
+<p>A slide-in panel where the employee can ask ROBI's AI assistant questions in natural language. The AI streams its response word-by-word (like ChatGPT) and can reference specific orders and technical terms.</p>
+
+<div class="pagebreak"></div>
+
+<h1 id="ai-brain">7. The AI Brain (RAG Server)</h1>
+
+<p class="file-ref">src/rag/server.py</p>
+
+<p>This is a Python program that runs alongside the web app. It connects to <strong>Ollama</strong>, which is a tool that runs AI language models locally on your computer (no internet required, no data sent to the cloud).</p>
+
+<h3>What is Ollama?</h3>
+<p>Ollama is like having a small ChatGPT running on your own machine. We use two AI models through it:</p>
+
+<table>
+  <tr><th>Model</th><th>Purpose</th><th>Analogy</th></tr>
+  <tr><td><strong>qwen2.5:3b</strong></td><td>Language model &mdash; writes summaries, answers questions</td><td>The writer who reads facts and produces a report</td></tr>
+  <tr><td><strong>nomic-embed-text</strong></td><td>Embedding model &mdash; converts text to numbers for searching</td><td>The librarian who knows which books are about similar topics</td></tr>
+</table>
+
+<h3>The RAG server's jobs</h3>
+<ol>
+  <li><strong>Caption generation:</strong> The History screen asks "Write me a summary for this week's chart." The server gathers the real numbers, writes a prompt with those facts, sends it to the AI model, and returns the AI's text.</li>
+  <li><strong>Chat:</strong> The employee asks a question. The server searches for relevant orders, adds them as context, and streams the AI's answer back word-by-word.</li>
+  <li><strong>Caching:</strong> AI responses are saved to disk so the same question doesn't need to be re-generated. Old data that can't change anymore (e.g., last week's summary) is cached forever.</li>
+</ol>
+
+<div class="pagebreak"></div>
+
+<h1 id="rag-explained">8. How RAG Works in Our Case</h1>
+
+<p><strong>RAG</strong> stands for <strong>Retrieval-Augmented Generation</strong>. Let's break that down:</p>
+
+<div class="highlight">
+  <strong>The problem:</strong> The AI language model (qwen2.5:3b) doesn't know anything about ROBI's orders. It's a general-purpose writer. If you just ask it "How did ROBI do this week?", it would make something up.
+  <br><br>
+  <strong>The solution:</strong> Before asking the AI to write, we <em>retrieve</em> the actual data, put it in the prompt as facts, and then ask the AI to write about those facts. The AI never invents numbers &mdash; it only phrases them.
+</div>
+
+<h3>Step-by-step: How a caption gets generated</h3>
+
+<p>When you open the History page and it needs a weekly summary:</p>
+
+<div class="diagram">
+1. Frontend: "I need a weekly caption"
+       |
+       v
+2. RAG Server checks cache: "Have I already written this?"
+   - If yes: return the cached version instantly
+   - If no: continue...
+       |
+       v
+3. RAG Server reads data/orders.json
+   Computes stats IN PYTHON (not AI!):
+   - 187 delivered, 5 with warnings, 20 failed
+   - Average time: 115 seconds
+   - Busiest day: Monday with 179 orders
+   - Top failure: gripper_failed (12 times)
+       |
+       v
+4. RAG Server builds a prompt:
+   "Write a 2-paragraph weekly summary.
+    FACTS:
+    1. Orders this week: 212 (187 delivered, 5 warnings, 20 failed)
+    2. Average fetch time: 115 seconds
+    3. Busiest day: Monday with 179 orders
+    ..."
+       |
+       v
+5. Sends prompt to Ollama (local AI model)
+       |
+       v
+6. AI writes: "This week, ROBI handled 212 orders with a
+   strong 88% delivery rate. The [[gripper]] performed well
+   on most items..."
+       |
+       v
+7. Post-processor wraps any missed technical terms in [[brackets]]
+       |
+       v
+8. Response cached to disk, returned to frontend
+       |
+       v
+9. SmartCaption component renders [[gripper]] as a
+   teal-underlined tooltip, [cite:42] as a clickable chip</div>
+
+<h3>Why "deterministic stats"?</h3>
+<p>A critical rule in our system: <strong>the AI never does math.</strong> All numbers (counts, averages, percentages) are calculated by Python code. The AI model only receives pre-computed facts and writes prose about them. This prevents the AI from inventing wrong numbers like "ROBI delivered 300 orders" when the real number is 187.</p>
+
+<h3>The FAISS vector index (for chat)</h3>
+<p>When the employee asks a free-form question in the chat (like "Which orders had gripper problems?"), we need to find relevant orders to include as context. This is where <strong>FAISS</strong> comes in.</p>
+
+<p class="analogy">Imagine you have 200 order cards. You want to find the ones most relevant to a question. FAISS is like a magical card sorter &mdash; it converts each order into a list of numbers (a "vector") that represents its meaning, then quickly finds which orders are most similar to the question.</p>
+
+<ol>
+  <li>On startup, every order is converted to a text description ("Order #42: ballpoint pen, delivered, 95s total, phases: finding, grasping...")</li>
+  <li>Each description is sent through the <strong>nomic-embed-text</strong> model, which converts it into 768 numbers (a "vector")</li>
+  <li>All vectors are stored in a FAISS index (a fast search structure)</li>
+  <li>When a chat question arrives, the question is also converted to a vector</li>
+  <li>FAISS finds the 6 most similar orders and includes them in the AI prompt as context</li>
+</ol>
+
+<div class="pagebreak"></div>
+
+<h1 id="smart-captions">9. Smart Captions - Terms, Citations, and Suggestions</h1>
+
+<p class="file-ref">src/components/ui/SmartCaption.jsx</p>
+
+<p>AI-generated text isn't just plain text &mdash; it contains special markers that the frontend renders as interactive elements:</p>
+
+<table>
+  <tr><th>Marker</th><th>Example</th><th>What it renders as</th></tr>
+  <tr><td><code>[[slug]]</code></td><td><code>[[gripper]]</code></td><td>A teal-underlined word that shows a tooltip on hover explaining what a "gripper" is</td></tr>
+  <tr><td><code>[cite:N]</code></td><td><code>[cite:42]</code></td><td>A small clickable chip "#42" that scrolls to that order in the list</td></tr>
+  <tr><td><code>**text**</code></td><td><code>**Suggestion: check the gripper**</code></td><td>Bold teal text that visually highlights the actionable recommendation</td></tr>
+</table>
+
+<h3>The terms dictionary</h3>
+<p class="file-ref">src/lib/terms.js</p>
+<p>Contains 14 technical terms with plain-English definitions. When the AI mentions "gripper" or "SAM3" or "trajectory," the tooltip explains what it means to a non-technical employee. The AI is instructed to use <code>[[slug]]</code> markers, and a post-processor ensures they're present even if the AI forgets.</p>
+
+<h3>The wrap_terms() post-processor</h3>
+<p>After every AI response, a Python function scans the text and wraps the first mention of each known technical term in <code>[[brackets]]</code> if the AI didn't already do it. This is a safety net so tooltips always work, regardless of AI behavior.</p>
+
+<div class="pagebreak"></div>
+
+<h1 id="order-statuses">10. Order Statuses - Green, Amber, Red</h1>
+
+<p>Every order ROBI processes gets classified into one of three statuses:</p>
+
+<table>
+  <tr><th>Status</th><th>Color</th><th>Label</th><th>What it means</th></tr>
+  <tr><td><code>success</code></td><td style="background:#ecfdf5;color:#047857;font-weight:600;">Emerald</td><td>Delivered</td><td>ROBI picked up the item and handed it over with no problems</td></tr>
+  <tr><td><code>warning</code></td><td style="background:#fffbeb;color:#b45309;font-weight:600;">Amber</td><td>Delivered with warnings</td><td>ROBI delivered the item, but something went wrong along the way (e.g., camera couldn't find the item at first, had to retry)</td></tr>
+  <tr><td><code>failed</code></td><td style="background:#fff1f2;color:#be123c;font-weight:600;">Rose</td><td>Couldn't deliver</td><td>ROBI could not complete the order (gripper failure, timeout, emergency stop, etc.)</td></tr>
+</table>
+
+<h3>How the classification works</h3>
+<p>Inside the WebSocket server, every robot cycle tracks a list of "failures" at two severity levels:</p>
+<ul>
+  <li><strong>Red-level:</strong> Critical problems &mdash; gripper failure, emergency stop, robot error. These make the order <code>failed</code>.</li>
+  <li><strong>Orange-level:</strong> Recoverable problems &mdash; 0 detections on first try (but the robot recovered and delivered). These make the order <code>warning</code>.</li>
+  <li><strong>No failures:</strong> Everything went smoothly. The order is <code>success</code>.</li>
+</ul>
+
+<p>This three-way classification appears everywhere: tally tiles in the chart, bar chart colors, filter chips in the orders list, status icons, and status pills on each order row.</p>
+
+<div class="pagebreak"></div>
+
+<h1 id="file-by-file">11. File-by-File Guide</h1>
+
+<h2>Configuration Files (root)</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">package.json</span></td><td>Lists all the libraries the project uses (React, Tailwind, etc.) and defines commands like <code>npm run dev</code></td></tr>
+  <tr><td><span class="file-ref">vite.config.js</span></td><td>Configures the build tool (Vite). Very minimal &mdash; just enables React support</td></tr>
+  <tr><td><span class="file-ref">tailwind.config.js</span></td><td>Configures Tailwind CSS, the styling library that lets you write styles as class names like <code>px-4 py-2 rounded-lg</code></td></tr>
+  <tr><td><span class="file-ref">.env</span></td><td>Environment settings: server URLs, AI model names. Like a settings panel for the whole project</td></tr>
+  <tr><td><span class="file-ref">grocery_logs.txt</span></td><td>The raw recording of a real robot session. This is what the replay server plays back</td></tr>
+</table>
+
+<h2>The Servers</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">ws-test-server.js</span></td><td>The fake robot. Reads the log recording, plays it back with real timing, tracks orders, serves data. ~850 lines of JavaScript</td></tr>
+  <tr><td><span class="file-ref">src/rag/server.py</span></td><td>The AI brain. Connects to Ollama, computes statistics, builds prompts, generates captions, handles chat. ~700 lines of Python</td></tr>
+</table>
+
+<h2>Frontend Entry</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">index.html</span></td><td>The single HTML page. Contains one <code>&lt;div id="root"&gt;</code> where React mounts the app</td></tr>
+  <tr><td><span class="file-ref">src/main.jsx</span></td><td>Starts React, wraps the app in providers (routing, data context), renders into the root div</td></tr>
+  <tr><td><span class="file-ref">src/App.jsx</span></td><td>Defines the URL routes: <code>/live</code> &rarr; LiveScreen, <code>/history</code> &rarr; HistoryScreen, etc.</td></tr>
+  <tr><td><span class="file-ref">src/index.css</span></td><td>Global styles: color variables (--teal, --border, etc.), Tailwind imports, animations</td></tr>
+</table>
+
+<h2>Shared Components</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">components/ui/Card.jsx</span></td><td>A white rounded box with shadow &mdash; used as the container for almost every section</td></tr>
+  <tr><td><span class="file-ref">components/ui/SmartCaption.jsx</span></td><td>Parses AI text and renders <code>[[terms]]</code> as tooltips, <code>[cite:N]</code> as clickable chips, <code>**bold**</code> as highlighted text</td></tr>
+  <tr><td><span class="file-ref">components/ui/ConnectionIndicator.jsx</span></td><td>The green/red dot in the top bar showing if the WebSocket is connected</td></tr>
+  <tr><td><span class="file-ref">components/layout/TopBar.jsx</span></td><td>The header bar with the ROBI logo and connection status</td></tr>
+  <tr><td><span class="file-ref">components/layout/BottomTabBar.jsx</span></td><td>The tab navigation at the bottom: Live, History, Settings</td></tr>
+</table>
+
+<h2>History Screen Components</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">history/pages/HistoryScreen.jsx</span></td><td>The main page component. Manages the date range (Today/Week/Month), composes all sub-components, handles "Ask ROBI" button clicks</td></tr>
+  <tr><td><span class="file-ref">history/components/WeeklySummaryCard.jsx</span></td><td>Fetches and displays the AI weekly summary. Has a "Refresh" button to regenerate</td></tr>
+  <tr><td><span class="file-ref">history/components/ActivityChart.jsx</span></td><td>The stacked bar chart with tally tiles. Fetches order data from the WS server, AI caption from the RAG server</td></tr>
+  <tr><td><span class="file-ref">history/components/OrdersList.jsx</span></td><td>Filterable, paginated order list grouped by date. Each order is expandable to show step-by-step details</td></tr>
+  <tr><td><span class="file-ref">history/components/AiCaption.jsx</span></td><td>The teal-bordered box below charts/lists showing the AI's analysis. Shows loading skeleton while waiting</td></tr>
+  <tr><td><span class="file-ref">history/components/ChatPanel.jsx</span></td><td>Slide-in panel for free-form chat with the AI. Supports pre-filled questions from "Why so long?" buttons</td></tr>
+  <tr><td><span class="file-ref">history/components/ChatCard.jsx</span></td><td>Small card with "Ask ROBI" button that opens the chat panel</td></tr>
+</table>
+
+<h2>Hooks (Reusable Data Logic)</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">hooks/useRobotSocket.js</span></td><td>Manages the WebSocket connection to the replay server. Handles connecting, reconnecting, buffering messages</td></tr>
+  <tr><td><span class="file-ref">hooks/useRagCaption.js</span></td><td>Calls <code>POST /api/rag/caption</code> on the RAG server. Returns the AI text, loading state, and error state. Sets <code>_offline</code> flag if the AI server is unreachable</td></tr>
+  <tr><td><span class="file-ref">hooks/useRagChat.js</span></td><td>Calls <code>POST /api/rag/chat</code> with SSE streaming. Reads the response word-by-word and updates the chat in real time</td></tr>
+</table>
+
+<h2>Libraries</h2>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="file-ref">lib/terms.js</span></td><td>Dictionary of 14 technical terms (gripper, SAM3, trajectory, etc.) with slug, display name, and plain-English description</td></tr>
+  <tr><td><span class="file-ref">lib/phases.js</span></td><td>Maps the robot's raw stage numbers (1, 3, 4, ..., 12d) to 7 user-friendly phase names. Shared between frontend and WS server</td></tr>
+</table>
+
+<div class="pagebreak"></div>
+
+<h1 id="data-flow">12. How Data Flows Through the System</h1>
+
+<h2>Live Screen Data Flow</h2>
+
+<div class="diagram">
+  grocery_logs.txt
+        |
+        | (read once on startup)
+        v
+  ws-test-server.js
+        |
+        | WebSocket connection (persistent, real-time)
+        v
+  useRobotSocket.js hook
+        |
+        | dispatches actions to
+        v
+  DataSourceContext (React Context)
+        |
+        | messageMapper translates raw events
+        | into structured state (scenario object)
+        v
+  LiveScreen reads the state
+        |
+        +---> AttentionPanel (current order + progress)
+        +---> WorkflowTimeline (phase list with states)
+        +---> RobotStatusCard (hardware status)
+        +---> TechnicalDetails (raw parameters)</div>
+
+<h2>History Screen Data Flow</h2>
+
+<div class="diagram">
+  data/orders.json
+        |
+        | (read by both servers)
+        v
+  +-----+-----------+
+  |                   |
+  v                   v
+ws-test-server     rag/server.py
+(port 8765)        (port 5175)
+  |                   |
+  | HTTP GET          | HTTP POST
+  | /api/orders/daily | /api/rag/caption
+  | /api/orders/list  | /api/rag/chat (SSE)
+  |                   |
+  v                   v
+ActivityChart      useRagCaption hook / useRagChat hook
+OrdersList              |
+(tally tiles,           v
+ bar chart,        AiCaption component
+ order rows)       ChatPanel component
+                   WeeklySummaryCard</div>
+
+<div class="highlight">
+  <strong>Key insight:</strong> The left side (data) and right side (AI) are completely independent. If the AI server crashes, the chart and orders still work perfectly. This was a deliberate design choice so the core functionality never depends on AI availability.
+</div>
+
+<div class="pagebreak"></div>
+
+<h1 id="what-happens-when">13. What Happens When...</h1>
+
+<h3>...you open the History page?</h3>
+<ol>
+  <li>HistoryScreen mounts with "Week" selected (default)</li>
+  <li>ActivityChart sends <code>GET http://localhost:8765/api/orders/daily?from=2026-05-06&to=2026-05-12</code></li>
+  <li>OrdersList sends <code>GET http://localhost:8765/api/orders/list?from=2026-05-06&to=2026-05-12&status=all&item=all</code></li>
+  <li>Both components independently call <code>useRagCaption</code>, which sends <code>POST http://localhost:5175/api/rag/caption</code></li>
+  <li>WeeklySummaryCard also calls <code>useRagCaption('weekly')</code></li>
+  <li>Tally tiles and chart render immediately from step 2's response</li>
+  <li>AI captions show a pulsing skeleton while loading, then render when the AI responds</li>
+</ol>
+
+<h3>...you click "Month" instead of "Week"?</h3>
+<ol>
+  <li>HistoryScreen updates <code>dateFrom</code> to 30 days ago</li>
+  <li>Both ActivityChart and OrdersList re-fetch with the new date range</li>
+  <li>Both AI captions re-fetch with the new scope (and may use cache if available)</li>
+  <li>The chart trims leading empty days so it doesn't show 28 blank bars</li>
+  <li>Bar widths shrink and x-axis labels thin out for the wider range</li>
+</ol>
+
+<h3>...you tap the "Warnings" filter chip?</h3>
+<ol>
+  <li>OrdersList re-fetches with <code>status=warning</code></li>
+  <li>The AI caption re-fetches with the warning-specific scope</li>
+  <li>The RAG server filters orders to only warning orders before computing stats</li>
+  <li>A warning-specific prompt is used: "Explain what 'delivered with warnings' means, identify patterns, give a concrete suggestion"</li>
+  <li>The response includes <code>**Suggestion:**</code> text rendered in teal bold</li>
+</ol>
+
+<h3>...you click "Why so long? Ask ROBI" on an order?</h3>
+<ol>
+  <li>HistoryScreen sets <code>chatPrefill</code> to "Why did order #42 take 180s?"</li>
+  <li>ChatPanel opens and detects the prefill</li>
+  <li>It automatically sends the prefilled question via <code>useRagChat</code></li>
+  <li>The RAG server searches FAISS for orders similar to the question</li>
+  <li>It builds context with the matched orders + weekly stats</li>
+  <li>The AI streams its answer word-by-word via Server-Sent Events (SSE)</li>
+  <li>The chat updates in real time as each word arrives</li>
+</ol>
+
+<h3>...the AI server (Ollama) is not running?</h3>
+<ol>
+  <li>The frontend still loads &mdash; charts, numbers, orders all work fine (data comes from WS server)</li>
+  <li>AI caption requests timeout after 15 seconds</li>
+  <li>The caption shows "ROBI's report is unavailable right now &mdash; local AI is offline"</li>
+  <li>Chat panel shows an error message if you try to send a message</li>
+  <li>Nothing crashes. The page is fully usable without AI.</li>
+</ol>
+
+<hr style="margin-top: 50px;">
+<p style="text-align: center; color: #9ca3af; font-size: 13px;">
+  ServAI Documentation &bull; Generated May 2026
+  <br>
+  To save as PDF: open this file in a browser and use File &rarr; Print &rarr; Save as PDF
+</p>
+
+</body>
+</html>

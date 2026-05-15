@@ -22,6 +22,15 @@ const TERMS = [
   { slug: 'fanuc', name: 'FANUC CRX-10iA/L', desc: 'The collaborative robot arm used in this system — a FANUC CRX-10iA/L.' },
   { slug: 'curobo', name: 'cuRobo', desc: 'NVIDIA cuRobo — the GPU-accelerated motion planner that generates collision-free trajectories.' },
   { slug: 'intervention', name: 'Intervention', desc: 'When the robot pauses and asks an employee for help — e.g. an item is missing from the shelf.' },
+  { slug: 'voxels', name: 'Voxels', desc: 'A 3D grid representation of the workspace built from depth camera data, used for collision avoidance.' },
+  { slug: 'waypoint', name: 'Waypoint', desc: 'A predefined position the robot visits during search — e.g. top-shelve, bottom-corner, clothes-rack.' },
+  { slug: 'goalset', name: 'Goalset', desc: 'A set of candidate grasp poses (distance × azimuth × pitch) that the planner evaluates for reachability.' },
+  { slug: 'reachability', name: 'Reachability', desc: 'Whether the planner can find a collision-free path to a grasp pose. Fails when the target is obstructed.' },
+  { slug: 'scene-scan', name: 'Scene scan', desc: 'The initial sweep where the robot rotates to build a 3D map of the workspace before searching.' },
+  { slug: 'retry', name: 'Retry', desc: 'When a grasp attempt fails, the robot moves to a different viewpoint and tries again (up to 2 retries).' },
+  { slug: 'search-sweep', name: 'Search sweep', desc: 'The robot visits multiple waypoints looking for the item — if not found at one, it moves to the next.' },
+  { slug: 'zenoh', name: 'Zenoh', desc: 'The communication protocol used between the robot controller and the planning software.' },
+  { slug: 'd415', name: 'Intel D415', desc: 'The depth camera mounted on the robot that provides RGB + depth images for detection and grasping.' },
 ]
 
 export const TERM_MAP = {}

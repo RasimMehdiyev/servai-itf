@@ -1,0 +1,14 @@
+{
+  "text": "ROBI completed these deliveries but encountered issues along the way, leading to some orders being flagged with warnings. The most common warning reason was \"unknown\" affecting 18 out of the 19 orders that had any warnings. Orders [cite:1781] and [cite:1788] were impacted by this issue, both dealing with a pen. Warning orders took an average of 66 seconds to complete, which is slower than usual. To reduce these issues, ensure the shelves are well-stocked and items are clearly visible for ROBI's cameras during peak hours.",
+  "citations": [
+    1781,
+    1788
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-09",
+    "to": "2026-05-15",
+    "status": "warning"
+  },
+  "generated_at": "2026-05-15T10:19:17.626901+00:00"
+}

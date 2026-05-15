@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-const RAG_BASE = import.meta.env.VITE_RAG_URL || 'http://localhost:5174'
+const RAG_BASE = import.meta.env.VITE_RAG_URL || `http://${window.location.hostname}:5174`
 
 export default function useRagCaption(surface, scope) {
   const [caption, setCaption] = useState(null)

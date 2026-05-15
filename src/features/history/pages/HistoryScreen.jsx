@@ -45,7 +45,11 @@ export default function HistoryScreen() {
   }, [])
 
   const handleAskRobi = useCallback((order) => {
-    setChatPrefill(`Why did order #${order.order_number || order.id} take ${order.robot_seconds || order.total_seconds}s?`)
+    const id = order.order_number || order.id
+    const msg = order.status === 'failed'
+      ? `Why did order #${id} fail?`
+      : `Why did order #${id} take ${order.robot_seconds || order.total_seconds}s?`
+    setChatPrefill(msg)
     setChatOpen(true)
   }, [])
 
@@ -58,10 +62,6 @@ export default function HistoryScreen() {
     <>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text-secondary)" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       <span className="topbar-title">ROBI</span>
-      <select aria-label="Select robot" defaultValue="ROBI" style={{ marginLeft: 4 }}>
-        <option>ROBI</option>
-        <option>ROBI-2</option>
-      </select>
     </>
   )
 

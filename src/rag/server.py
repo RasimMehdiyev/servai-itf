@@ -61,6 +61,15 @@ TERMS = {
     "fanuc": "FANUC CRX-10iA/L",
     "curobo": "cuRobo",
     "intervention": "Intervention",
+    "voxels": "Voxels",
+    "waypoint": "Waypoint",
+    "goalset": "Goalset",
+    "reachability": "Reachability",
+    "scene-scan": "Scene scan",
+    "retry": "Retry",
+    "search-sweep": "Search sweep",
+    "zenoh": "Zenoh",
+    "d415": "Intel D415",
 }
 TERM_SLUGS = list(TERMS.keys())
 
@@ -101,7 +110,8 @@ def week_ago_str():
 def compute_stats(orders):
     total = len(orders)
     success = sum(1 for o in orders if o.get("status") in ("success", "ok"))
-    failed = total - success
+    warning = sum(1 for o in orders if o.get("status") == "warning")
+    failed = sum(1 for o in orders if o.get("status") == "failed")
 
     times = [o.get("total_seconds", 0) for o in orders if o.get("total_seconds", 0) > 0]
     avg_time = round(sum(times) / len(times)) if times else 0
@@ -132,13 +142,20 @@ def compute_stats(orders):
 
     slowest = max(orders, key=lambda o: o.get("total_seconds", 0)) if orders else None
 
+    total_retries = sum(o.get("retries", 0) for o in orders)
+    total_collisions = sum(o.get("collision_warnings", 0) for o in orders)
+    orders_with_retries = sum(1 for o in orders if o.get("retries", 0) > 0)
+
     return {
-        "total": total, "success": success, "failed": failed,
+        "total": total, "success": success, "warning": warning, "failed": failed,
         "avg_time": avg_time, "median_time": median_time, "avg_robot_time": avg_robot_time,
         "item_ranking": item_ranking,
         "busiest_day": {"date": busiest[0], "count": busiest[1]} if busiest else None,
         "failures": failures,
         "slowest": {"id": slowest.get("id"), "item": slowest.get("item"), "total_seconds": slowest.get("total_seconds", 0)} if slowest else None,
+        "total_retries": total_retries,
+        "total_collisions": total_collisions,
+        "orders_with_retries": orders_with_retries,
     }
 
 
@@ -156,11 +173,27 @@ last_rebuilt = None
 
 
 def order_to_text(o):
-    status = "delivered" if o.get("status") in ("success", "ok") else f"failed ({(o.get('failure') or {}).get('reason', 'unknown')})"
+    st = o.get("status", "unknown")
+    if st in ("success", "ok"):
+        status = "delivered"
+    elif st == "warning":
+        status = f"delivered with warnings ({(o.get('failure') or {}).get('reason', 'retries')})"
+    else:
+        status = f"failed ({(o.get('failure') or {}).get('reason', 'unknown')})"
     steps = ", ".join(s.get("friendly_name", s.get("phase", "?")) for s in (o.get("steps") or []))
+    retries = o.get("retries", 0)
+    waypoints = o.get("waypoints_searched", [])
+    collisions = o.get("collision_warnings", 0)
+    extra = ""
+    if retries > 0:
+        extra += f", {retries} retries"
+    if len(waypoints) > 1:
+        extra += f", searched {len(waypoints)} waypoints ({', '.join(waypoints)})"
+    if collisions > 0:
+        extra += f", {collisions} collision warnings"
     return (
         f"Order #{o.get('id')}: {o.get('item')}, {status}, "
-        f"{o.get('total_seconds', 0)}s total, {o.get('robot_seconds', 0)}s robot, "
+        f"{o.get('total_seconds', 0)}s total, {o.get('robot_seconds', 0)}s robot{extra}, "
         f"started {o.get('started_at', '?')[:16]}. Phases: {steps}"
     )
 
@@ -242,15 +275,17 @@ def weekly_prompt(stats):
         "user": f"""Write a 2-paragraph weekly summary. Each paragraph should be 2-3 sentences. No headings, no bullet points.
 
 FACTS:
-1. Orders this week: {stats['total']} ({stats['success']} delivered, {stats['failed']} failed)
+1. Orders this week: {stats['total']} ({stats['success']} delivered, {stats['warning']} delivered with warnings, {stats['failed']} failed)
 2. Average fetch time: {stats['avg_time']} seconds ({stats['avg_robot_time']}s robot work)
 3. Median fetch time: {stats['median_time']} seconds
 4. Items handled: {items}
 5. Busiest day: {busiest}
 6. Slowest order: {slowest}
 7. Failures: {failures_line}
+8. Total retries across all orders: {stats.get('total_retries', 0)} ({stats.get('orders_with_retries', 0)} orders needed retries)
+9. Total collision warnings: {stats.get('total_collisions', 0)}
 
-First paragraph: headline performance. Second: notable details or patterns.""",
+First paragraph: headline performance. Second: notable details or patterns (include retry/collision info if significant).""",
     }
 
 
@@ -263,7 +298,7 @@ def chart_prompt(stats):
 
 FACTS:
 1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
-2. Total orders: {stats['total']} ({stats['success']} delivered, {stats['failed']} failed)
+2. Total orders: {stats['total']} ({stats['success']} delivered, {stats['warning']} with warnings, {stats['failed']} failed)
 3. Average fetch time: {stats['avg_robot_time']}s (robot time only)
 4. Top items: {items}
 5. Busiest day: {busiest}
@@ -272,17 +307,95 @@ Be brief — this sits below a chart that already shows the data visually.""",
     }
 
 
-def orders_list_prompt(stats, status_filter="all"):
-    return {
-        "system": SYSTEM_PROMPT,
-        "user": f"""Write a 1-sentence summary for the orders list section. No headings.
+def orders_list_prompt(stats, status_filter="all", orders_subset=None):
+    failures_line = ", ".join(f"{r}: {c}" for r, c in stats["failures"].items()) if stats["failures"] else "None"
+    top_failure = max(stats["failures"].items(), key=lambda x: x[1]) if stats["failures"] else None
+    slowest = f"#{stats['slowest']['id']} ({stats['slowest']['item']}, {stats['slowest']['total_seconds']}s)" if stats.get("slowest") else "N/A"
+    items = ", ".join(f"{item} ({count})" for item, count in stats["item_ranking"][:5])
+
+    order_ids = []
+    if orders_subset:
+        order_ids = [o.get("id") for o in orders_subset[:8] if o.get("id")]
+
+    if status_filter == "warning":
+        cited = ", ".join(f"[cite:{oid}]" for oid in order_ids[:5])
+        return {
+            "system": SYSTEM_PROMPT,
+            "user": f"""Write a 3-4 sentence analysis of orders that were delivered but had warnings. No headings, no bullet points.
 
 FACTS:
-1. Showing: {status_filter} orders from {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
-2. Count: {stats['total']} orders ({stats['success']} delivered, {stats['failed']} failed)
-3. Average robot time: {stats['avg_robot_time']}s
+1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
+2. Warning orders: {stats['total']} out of {stats.get('all_total', '?')} total ({round(stats['total'] / max(stats.get('all_total', 1), 1) * 100)}% of all orders)
+3. Warning reasons: {failures_line}
+4. Top warning reason: {top_failure[0] if top_failure else 'N/A'} ({top_failure[1] if top_failure else 0} occurrences)
+5. Items affected: {items}
+6. Average time for warning orders: {stats['avg_time']}s (vs overall average may differ)
+7. Slowest warning order: {slowest}
+8. Example order IDs: {cited}
 
-One sentence only. Don't repeat what the filters already show.""",
+First sentence: explain what "delivered with warnings" means in plain language — ROBI completed these but ran into issues along the way.
+Second sentence: identify the most common warning reason and which items it affected most — cite specific orders as [cite:N].
+Third sentence: note if warning orders took longer than usual.
+Final sentence: give ONE specific, actionable **Suggestion:** for what the employee can do to reduce warnings (e.g., restock shelf, reposition items, check lighting). Make it concrete and practical.""",
+        }
+
+    if status_filter == "failed":
+        cited = ", ".join(f"[cite:{oid}]" for oid in order_ids[:5])
+        return {
+            "system": SYSTEM_PROMPT,
+            "user": f"""Write a 3-4 sentence analysis of failed orders. No headings, no bullet points.
+
+FACTS:
+1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
+2. Failed orders: {stats['total']} out of {stats.get('all_total', '?')} total ({round(stats['total'] / max(stats.get('all_total', 1), 1) * 100)}% failure rate)
+3. Failure reasons: {failures_line}
+4. Top failure: {top_failure[0] if top_failure else 'N/A'} ({top_failure[1] if top_failure else 0} occurrences)
+5. Items that failed: {items}
+6. Slowest failed order: {slowest}
+7. Example order IDs: {cited}
+
+First sentence: summarize the failure rate and whether it's concerning.
+Second sentence: break down the top failure reasons and cite the worst offenders as [cite:N].
+Third sentence: note any patterns — are failures clustered on specific items or times?
+Final sentence: give ONE specific, actionable **Suggestion:** for the employee to reduce failures. Be concrete (e.g., "check gripper calibration", "restock the top shelf", "ensure items face forward").""",
+        }
+
+    if status_filter == "delivered":
+        return {
+            "system": SYSTEM_PROMPT,
+            "user": f"""Write a 2-3 sentence summary of successfully delivered orders. No headings, no bullet points.
+
+FACTS:
+1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
+2. Delivered: {stats['total']} orders (out of {stats.get('all_total', '?')} total)
+3. Average robot time: {stats['avg_robot_time']}s, median: {stats['median_time']}s
+4. Top items: {items}
+5. Slowest successful order: {slowest}
+
+First sentence: summarize delivery performance positively.
+Second sentence: note the fastest and slowest items or any timing patterns.
+Final sentence: give ONE **Suggestion:** to maintain or improve performance — e.g., which items ROBI handles best, optimal ordering times.""",
+        }
+
+    # "all" filter
+    cited_fails = ", ".join(f"[cite:{oid}]" for oid in order_ids[:5]) if order_ids else ""
+    return {
+        "system": SYSTEM_PROMPT,
+        "user": f"""Write a 3-4 sentence summary for the orders list. No headings, no bullet points.
+
+FACTS:
+1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')}
+2. Total: {stats['total']} orders ({stats['success']} delivered, {stats['warning']} with warnings, {stats['failed']} failed)
+3. Average robot time: {stats['avg_robot_time']}s, median: {stats['median_time']}s
+4. Top items: {items}
+5. Failure breakdown: {failures_line}
+6. Top failure: {top_failure[0] if top_failure else 'None'} ({top_failure[1] if top_failure else 0} times)
+7. Slowest order: {slowest}
+
+First sentence: summarize overall performance — delivery rate, timing.
+Second sentence: highlight the top failure reason and which orders were affected — cite them as [cite:N].
+Third sentence: note any patterns in warnings or slow orders.
+Final sentence: give ONE concrete, actionable **Suggestion:** for the employee. Start with the bold marker. Relate it to the most common issue.""",
     }
 
 
@@ -297,6 +410,20 @@ def order_detail_prompt(order):
         f = order["failure"]
         failure_info = f" — {f.get('reason', '?')}: {f.get('detail', '?')}"
 
+    retries = order.get("retries", 0)
+    waypoints = order.get("waypoints_searched", [])
+    collisions = order.get("collision_warnings", 0)
+    grasp_width = order.get("grasp_width_mm")
+    extra_facts = ""
+    if retries > 0:
+        extra_facts += f"\n5. Retries: {retries} (ROBI tried different viewpoints before succeeding)"
+    if len(waypoints) > 1:
+        extra_facts += f"\n{'6' if retries > 0 else '5'}. Waypoints searched: {', '.join(waypoints)} (found at {order.get('waypoint_found_at', 'unknown')})"
+    if collisions > 0:
+        extra_facts += f"\n{'7' if retries > 0 and len(waypoints) > 1 else '6' if retries > 0 or len(waypoints) > 1 else '5'}. Collision warnings: {collisions} (planner had trouble finding a collision-free path)"
+    if grasp_width:
+        extra_facts += f"\n8. Grasp width: {grasp_width}mm"
+
     return {
         "system": SYSTEM_PROMPT,
         "user": f"""An employee tapped "Why so long? Ask ROBI" on order #{order.get('id')}.
@@ -306,9 +433,9 @@ FACTS:
 2. Status: {order.get('status')}{failure_info}
 3. Total time: {order.get('total_seconds', 0)}s (robot: {order.get('robot_seconds', '?')}s, human wait: {order.get('human_wait_seconds', '?')}s)
 4. Steps:
-  {steps}
+  {steps}{extra_facts}
 
-Explain in 2-3 sentences why this order took the time it did. Reference specific phases and numbers. If it failed, explain what went wrong.""",
+Explain in 2-3 sentences why this order took the time it did. Reference specific phases and numbers. If it failed, explain what went wrong. If there were retries or collision warnings, explain what that means in plain language.""",
     }
 
 
@@ -435,11 +562,25 @@ def generate_caption(surface, scope):
     elif surface == "orders_list":
         start = scope.get("from") or week_ago_str()
         end = scope.get("to") or today_str()
-        filtered = filter_by_date(orders, start, end)
+        status_filter = scope.get("status", "all")
+        all_in_range = filter_by_date(orders, start, end)
+        all_stats = compute_stats(all_in_range)
+        if status_filter == "delivered":
+            filtered = [o for o in all_in_range if o.get("status") in ("success", "ok")]
+        elif status_filter == "warning":
+            filtered = [o for o in all_in_range if o.get("status") == "warning"]
+        elif status_filter == "failed":
+            filtered = [o for o in all_in_range if o.get("status") == "failed"]
+        else:
+            filtered = all_in_range
         stats = compute_stats(filtered)
         stats["start_date"] = start
         stats["end_date"] = end
-        p = orders_list_prompt(stats, scope.get("status", "all"))
+        stats["all_total"] = all_stats["total"]
+        stats["all_success"] = all_stats["success"]
+        stats["all_warning"] = all_stats["warning"]
+        stats["all_failed"] = all_stats["failed"]
+        p = orders_list_prompt(stats, status_filter, filtered)
     elif surface == "order_detail":
         order = next((o for o in orders if o.get("id") == scope.get("order_id")), None)
         if not order:
@@ -595,13 +736,15 @@ def orders_daily(
     d = datetime.strptime(start, "%Y-%m-%d")
     end_d = datetime.strptime(end, "%Y-%m-%d")
     while d <= end_d:
-        buckets[d.strftime("%Y-%m-%d")] = {"delivered": 0, "failed": 0}
+        buckets[d.strftime("%Y-%m-%d")] = {"delivered": 0, "warning": 0, "failed": 0}
         d += timedelta(days=1)
 
     for o in filtered:
         date = (o.get("started_at") or "")[:10]
         if date in buckets:
-            if o.get("status") in ("success", "ok"):
+            if o.get("status") == "warning":
+                buckets[date]["warning"] += 1
+            elif o.get("status") in ("success", "ok"):
                 buckets[date]["delivered"] += 1
             else:
                 buckets[date]["failed"] += 1
@@ -612,6 +755,7 @@ def orders_daily(
     avg_fetch = round(sum(robot_times) / len(robot_times)) if robot_times else 0
 
     total_delivered = sum(d["delivered"] for d in days)
+    total_warning = sum(d["warning"] for d in days)
     total_failed = sum(d["failed"] for d in days)
 
     return {
@@ -620,6 +764,7 @@ def orders_daily(
         "days": days,
         "totals": {
             "delivered": total_delivered,
+            "warning": total_warning,
             "failed": total_failed,
             "avg_fetch_seconds": avg_fetch,
         },
@@ -646,7 +791,8 @@ def orders_list(
     # Counts before status/item filter
     all_count = len(filtered)
     delivered_count = sum(1 for o in filtered if o.get("status") in ("success", "ok"))
-    failed_count = all_count - delivered_count
+    warning_count = sum(1 for o in filtered if o.get("status") == "warning")
+    failed_count = sum(1 for o in filtered if o.get("status") == "failed")
 
     by_item = {}
     for o in filtered:
@@ -656,8 +802,10 @@ def orders_list(
     # Apply filters
     if status == "delivered":
         filtered = [o for o in filtered if o.get("status") in ("success", "ok")]
+    elif status == "warning":
+        filtered = [o for o in filtered if o.get("status") == "warning"]
     elif status == "failed":
-        filtered = [o for o in filtered if o.get("status") not in ("success", "ok")]
+        filtered = [o for o in filtered if o.get("status") == "failed"]
 
     if item != "all":
         filtered = [o for o in filtered if o.get("item") == item]
@@ -687,6 +835,7 @@ def orders_list(
         "counts": {
             "all": all_count,
             "delivered": delivered_count,
+            "warning": warning_count,
             "failed": failed_count,
             "by_item": dict(sorted(by_item.items(), key=lambda x: -x[1])),
         },

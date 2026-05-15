@@ -1,0 +1,14 @@
+{
+  "text": "ROBI completed these orders but ran into issues along the way, such as not finding some items or encountering unknown problems. The most common warning reason was \"unknown\" affecting 18 out of the 16 water bottles ordered [cite:1778], [cite:1795]. These warnings occurred more frequently than usual, with an average time of 66 seconds per order compared to a typical average of may differ. To reduce these warnings, ensure that shelves are properly stocked and items are clearly visible by checking lighting or repositioning items if needed.",
+  "citations": [
+    1778,
+    1795
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-04-16",
+    "to": "2026-05-15",
+    "status": "warning"
+  },
+  "generated_at": "2026-05-15T10:18:59.284732+00:00"
+}

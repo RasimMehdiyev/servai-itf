@@ -1,7 +1,7 @@
 {
-  "text": "This week ROBI handled a total of 363 orders, with 312 successfully delivered and 51 failures. The average fetch time was 228 seconds, which aligns closely with the median of 53 seconds. ROBI performed particularly well on May 11th, handling 302 orders in a single day. Notable details include frequent use of ballpoint pens (175 items) and water bottles (138), with plastic-wrapped towels making up only 50 units. The slowest order took over 6 hours to fetch and deliver, highlighting the importance of precise handling for delicate items like towels.\n\nAmong failures, [[gripper]] issues were the primary cause with 51 occurrences. This suggests that improving grip reliability could significantly enhance delivery efficiency.",
+  "text": "This week, ROBI handled a total of 297 orders with an average fetch time of 61 seconds, which included robot work at 54 seconds. The busiest day was May 15th when all 297 orders were processed successfully. Despite the high volume, there were still some slowest orders like #1800 for a pen that took over two and a half hours to fetch. ROBI encountered various types of failures including item_not_found (1), [[reachability]]_failed (63), unknown (80), no_valid_depth (46), [[handover]]_failed (46), and search_exhausted (60). These issues required 96 orders needing retries, totaling 192 attempts. Additionally, ROBI issued collision warnings on 960 occasions this week.\n\nNotable patterns included frequent failures related to item_not_found and reachability problems, which often led to [[retry]]ing the order or finding alternative solutions. The high number of collisions highlights areas where adjustments might be needed for smoother operation.",
   "citations": [],
   "surface": "weekly",
   "scope": {},
-  "generated_at": "2026-05-12T07:47:21.904855+00:00"
+  "generated_at": "2026-05-15T13:45:33.518262+00:00"
 }

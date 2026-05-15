@@ -3,7 +3,7 @@ import useRobotSocket from '../hooks/useRobotSocket'
 import { applyMessageToScenario } from '../services/messageMapper'
 
 const isLiveMode = import.meta.env.VITE_USE_WEBSOCKET === 'true'
-const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8765'
+const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
 
 const DataSourceContext = createContext(null)
 

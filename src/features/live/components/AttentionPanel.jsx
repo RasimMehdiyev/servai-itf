@@ -88,11 +88,11 @@ function StatusBanner({ cardState, itemName, explanationText, onIntervene }) {
           </span>
         </div>
         <div className="flex flex-col gap-2">
-          <button onClick={() => onIntervene?.('restock')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--warning)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+          <button onClick={() => onIntervene?.('restock')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--primary)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
             I'll restock the shelf
           </button>
           <div className="flex gap-2">
-            <button onClick={() => onIntervene?.('out_of_stock')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+            <button onClick={() => onIntervene?.('out_of_stock')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--primary)] border border-solid border-[var(--primary)] cursor-pointer hover:bg-[var(--bg)]">
               Tell customer we're out
             </button>
             <button onClick={() => onIntervene?.('cancel')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
@@ -118,11 +118,11 @@ function StatusBanner({ cardState, itemName, explanationText, onIntervene }) {
           </span>
         </div>
         <div className="flex flex-col gap-2">
-          <button onClick={() => onIntervene?.('on_my_way')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--danger)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+          <button onClick={() => onIntervene?.('on_my_way')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--primary)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
             I'm on my way
           </button>
           <div className="flex gap-2">
-            <button onClick={() => onIntervene?.('delayed')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)] cursor-pointer hover:bg-[var(--bg)]">
+            <button onClick={() => onIntervene?.('delayed')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--primary)] border border-solid border-[var(--primary)] cursor-pointer hover:bg-[var(--bg)]">
               Tell customer it's delayed
             </button>
             <button onClick={() => onIntervene?.('cancel')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">

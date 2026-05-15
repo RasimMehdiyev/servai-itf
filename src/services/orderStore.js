@@ -3,7 +3,7 @@
  * All persistence is server-side in data/orders.json.
  */
 
-const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8765'
+const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
 const API_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
 
 export const FAILURE_DESCRIPTIONS = {

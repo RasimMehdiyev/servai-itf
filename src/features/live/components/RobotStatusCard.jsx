@@ -13,10 +13,11 @@ function RecentlyDelivered({ list }) {
       <div className="flex flex-col gap-1.5">
         {list.slice(0, 4).map((o, i) => {
           const ago = formatDuration(Date.now() - new Date(o.completed_at).getTime())
+          const dotColor = o.status === 'failed' ? 'bg-[var(--danger)]' : o.status === 'warning' ? 'bg-[var(--warning)]' : 'bg-[var(--success)]'
           return (
             <div key={o.id || i} className="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--bg)]">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[var(--success)]" />
+                <span className={`w-2 h-2 rounded-full ${dotColor}`} />
                 <span className="font-medium text-[clamp(13px,1.5vw,14px)]">
                   {o.item?.charAt(0).toUpperCase() + o.item?.slice(1)}
                 </span>

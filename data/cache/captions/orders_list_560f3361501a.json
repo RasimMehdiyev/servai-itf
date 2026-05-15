@@ -1,0 +1,11 @@
+{
+  "text": "The failure rate is concerning at 81%, with [[reachability]]_failed being the worst offender at 33 occurrences. The pen and t-shirt are the worst offenders, each failing 33 times. Failures seem to be clustered on specific items like pens and shirts rather than particular days or times. \n\n**Suggestion:** Ensure that all items, especially pens and shirts, face forward for easier recognition by ROBI.",
+  "citations": [],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-09",
+    "to": "2026-05-15",
+    "status": "failed"
+  },
+  "generated_at": "2026-05-15T10:23:09.529958+00:00"
+}

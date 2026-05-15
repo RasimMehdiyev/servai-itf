@@ -11,6 +11,10 @@ const ROSE_50 = '#fff1f2'
 const ROSE_100 = '#ffe4e6'
 const ROSE_500 = '#f43f5e'
 const ROSE_700 = '#be123c'
+const AMBER_50 = '#fefce8'
+const AMBER_100 = '#fef9c3'
+const AMBER_500 = '#ca8a04'
+const AMBER_700 = '#854d0e'
 const GRAY_50 = '#f9fafb'
 const GRAY_100 = '#f3f4f6'
 const GRAY_200 = '#e5e7eb'
@@ -21,7 +25,7 @@ const TEAL_100 = '#ccfbf1'
 const TEAL_700 = '#0f766e'
 
 // Order data comes from the WS server (always available)
-const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8765'
+const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
 const DATA_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
 
 function todayStr() {
@@ -49,7 +53,7 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
   // AI caption is a separate optional layer
   const { caption, loading: captionLoading, error: captionError } = useRagCaption('chart', { from, to })
 
-  const totals = data?.totals || { delivered: 0, failed: 0, avg_fetch_seconds: 0 }
+  const totals = data?.totals || { delivered: 0, warning: 0, failed: 0, avg_fetch_seconds: 0 }
 
   const days = useMemo(() => {
     const raw = data?.days || []
@@ -59,7 +63,7 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
   }, [data])
 
   const { maxVal, yTicks } = useMemo(() => {
-    const peak = Math.max(...days.map(d => d.delivered + d.failed), 1)
+    const peak = Math.max(...days.map(d => (d.delivered || 0) + (d.warning || 0) + (d.failed || 0)), 1)
     let step
     if (peak <= 5) {
       step = 1
@@ -106,6 +110,17 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
         >
           <div className="text-[12px] font-medium" style={{ color: EMERALD_700 }}>Delivered</div>
           <div className="text-[28px] font-bold leading-tight" style={{ color: EMERALD_700 }}>{totals.delivered}</div>
+        </div>
+        <div
+          className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-solid"
+          style={{
+            background: AMBER_50,
+            borderColor: AMBER_100,
+            opacity: totals.warning === 0 ? 0.5 : 1,
+          }}
+        >
+          <div className="text-[12px] font-medium" style={{ color: AMBER_700 }}>With warnings</div>
+          <div className="text-[28px] font-bold leading-tight" style={{ color: AMBER_700 }}>{totals.warning}</div>
         </div>
         <div
           className="flex-1 min-w-[120px] px-4 py-3 rounded-xl border border-solid"
@@ -157,8 +172,10 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
           {/* Bar columns */}
           <div className="flex justify-around items-stretch relative" style={{ height: 'calc(100% - 44px)' }}>
             {days.map((day, i) => {
-              const total = day.delivered + day.failed
+              const warn = day.warning || 0
+              const total = day.delivered + warn + day.failed
               const deliveredH = maxVal > 0 ? (day.delivered / maxVal) * 100 : 0
+              const warningH = maxVal > 0 ? (warn / maxVal) * 100 : 0
               const failedH = maxVal > 0 ? (day.failed / maxVal) * 100 : 0
               const isToday = day.date === today
 
@@ -185,14 +202,14 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
                     <div
                       className="absolute z-10 px-2.5 py-1.5 rounded-lg text-[11px] whitespace-nowrap"
                       style={{
-                        bottom: `${deliveredH + failedH + 8}%`,
+                        bottom: `${deliveredH + warningH + failedH + 8}%`,
                         background: GRAY_900,
                         color: 'white',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                         pointerEvents: 'none',
                       }}
                     >
-                      {day.delivered} delivered{day.failed > 0 ? `, ${day.failed} couldn't deliver` : ''}
+                      {day.delivered} delivered{warn > 0 ? `, ${warn} with warnings` : ''}{day.failed > 0 ? `, ${day.failed} couldn't deliver` : ''}
                     </div>
                   )}
 
@@ -204,18 +221,29 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
                           className="rounded-t-md bar-animate"
                           style={{
                             height: `${failedH}%`,
-                            minHeight: day.failed > 0 ? 2 : 0,
+                            minHeight: 2,
                             background: ROSE_500,
+                            animationDelay: `${i * 50}ms`,
+                          }}
+                        />
+                      )}
+                      {warn > 0 && (
+                        <div
+                          className={`${day.failed === 0 ? 'rounded-t-md' : ''} bar-animate`}
+                          style={{
+                            height: `${warningH}%`,
+                            minHeight: 2,
+                            background: AMBER_500,
                             animationDelay: `${i * 50}ms`,
                           }}
                         />
                       )}
                       {day.delivered > 0 && (
                         <div
-                          className={`${day.failed === 0 ? 'rounded-t-md' : ''} bar-animate`}
+                          className={`${day.failed === 0 && warn === 0 ? 'rounded-t-md' : ''} bar-animate`}
                           style={{
                             height: `${deliveredH}%`,
-                            minHeight: day.delivered > 0 ? 2 : 0,
+                            minHeight: 2,
                             background: EMERALD_500,
                             animationDelay: `${i * 50}ms`,
                           }}
@@ -261,15 +289,14 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
             <span className="text-[12px]" style={{ color: GRAY_500 }}>Delivered</span>
           </div>
           <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm" style={{ background: AMBER_500 }} />
+            <span className="text-[12px]" style={{ color: GRAY_500 }}>With warnings</span>
+          </div>
+          <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm" style={{ background: ROSE_500 }} />
             <span className="text-[12px]" style={{ color: GRAY_500 }}>Couldn't deliver</span>
           </div>
         </div>
-        {totals.failed === 0 && (
-          <span className="text-[11px] italic" style={{ color: GRAY_400 }}>
-            No issues this week — failures would stack on top in red.
-          </span>
-        )}
       </div>
 
       {/* AI caption — loads independently, shows skeleton while waiting */}

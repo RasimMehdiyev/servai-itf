@@ -42,9 +42,9 @@ function CitationChip({ id, onClick }) {
 export default function SmartCaption({ text, onCitationClick }) {
   if (!text) return null
 
-  // Parse [[slug]] and [cite:N] markers into React elements
+  // Parse [[slug]], [cite:N], and **bold** markers into React elements
   const parts = []
-  const re = /(\[\[([a-z0-9-]+)\]\]|\[cite:(\d+)\])/g
+  const re = /(\[\[([a-z0-9-]+)\]\]|\[cite:(\d+)\]|\*\*(.+?)\*\*)/g
   let lastIndex = 0
   let match
 
@@ -54,7 +54,6 @@ export default function SmartCaption({ text, onCitationClick }) {
     }
 
     if (match[2]) {
-      // [[term-slug]]
       const slug = match[2]
       const term = TERM_MAP[slug]
       parts.push(
@@ -63,8 +62,9 @@ export default function SmartCaption({ text, onCitationClick }) {
         </TermTooltip>
       )
     } else if (match[3]) {
-      // [cite:N]
       parts.push(<CitationChip key={match.index} id={parseInt(match[3])} onClick={onCitationClick} />)
+    } else if (match[4]) {
+      parts.push(<strong key={match.index} style={{ color: 'var(--teal, #0d9488)' }}>{match[4]}</strong>)
     }
 
     lastIndex = match.index + match[0].length
