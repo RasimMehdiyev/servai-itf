@@ -3,8 +3,9 @@
  * All persistence is server-side in data/orders.json.
  */
 
-const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
-const API_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
+import { getApiBase } from '../lib/urls'
+
+const API_BASE = getApiBase()
 
 export const FAILURE_DESCRIPTIONS = {
   'gripper_failed': 'The gripper was not stable enough to hold onto the item.',

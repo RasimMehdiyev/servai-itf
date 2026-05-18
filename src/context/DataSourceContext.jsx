@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect, useRef, useState, useCallback } from 'react'
 import useRobotSocket from '../hooks/useRobotSocket'
 import { applyMessageToScenario } from '../services/messageMapper'
+import { getWsUrl, getApiBase } from '../lib/urls'
 
 const isLiveMode = import.meta.env.VITE_USE_WEBSOCKET === 'true'
-const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
+const wsUrl = getWsUrl()
 
 const DataSourceContext = createContext(null)
 
@@ -63,6 +64,7 @@ export function DataSourceProvider({ children }) {
   const { status, tick, drain, send } = useRobotSocket(isLiveMode ? wsUrl : null)
   const [liveData, dispatch] = useReducer(liveReducer, liveInitialState)
   const [recentOrders, setRecentOrders] = useState({ total: 0, failedCount: 0, recent: [] })
+  const [sourceMode, setSourceMode] = useState('unknown')
   const idleTimer = useRef(null)
 
   const resetIdleTimer = useCallback(() => {
@@ -73,7 +75,7 @@ export function DataSourceProvider({ children }) {
   }, [status])
 
   const fetchRecentOrders = useCallback(() => {
-    const base = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
+    const base = getApiBase()
     fetch(`${base}/api/recent-orders`)
       .then(r => r.json())
       .then(setRecentOrders)
@@ -89,6 +91,7 @@ export function DataSourceProvider({ children }) {
     let needsOrderRefresh = false
     for (const msg of msgs) {
       if (msg.type === 'heartbeat') continue
+      if (msg.type === 'source_mode') { setSourceMode(msg.mode); continue }
       dispatch({ type: 'ws_message', message: msg })
       if (msg.type === 'cycle_end') needsOrderRefresh = true
     }
@@ -116,6 +119,7 @@ export function DataSourceProvider({ children }) {
   const value = {
     mode: isLiveMode ? 'live' : 'mock',
     connectionStatus: isLiveMode ? status : 'mock',
+    sourceMode,
     liveData: isLiveMode ? liveData : null,
     recentOrders,
     sendMessage,

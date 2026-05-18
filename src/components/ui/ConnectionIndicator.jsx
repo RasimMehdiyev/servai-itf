@@ -9,10 +9,12 @@ const STATUS = {
 }
 
 export default function ConnectionIndicator() {
-  const { mode, connectionStatus } = useDataSource()
+  const { mode, connectionStatus, sourceMode } = useDataSource()
 
   const key = mode === 'mock' ? 'mock' : connectionStatus
-  const { label, color, dotCls } = STATUS[key] || STATUS.disconnected
+  const { label: baseLabel, color, dotCls } = STATUS[key] || STATUS.disconnected
+
+  const label = key === 'connected' && sourceMode === 'static' ? 'Static' : baseLabel
 
   return (
     <div className="flex items-center gap-1.5">

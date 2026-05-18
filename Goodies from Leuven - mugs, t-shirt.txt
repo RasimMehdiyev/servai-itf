@@ -1,0 +1,7 @@
+Goodies from Leuven - mugs, t-shirts (clearly branded by KUL), 2 categories - 10 items per category
+SharePoint -> channel for ITF (Andreas, Francis, and Mathieu), but they cannot share it outside through OneDrive, but we can use BelNet to receive videos from.
+zenoh.io -> communication protocol for robotics
+mergining the logs with the states from zenoh.io
+No anonymization is fine. 1500-2000, 100 drinks, but many more people approached the booth (500-600)
+Integrating the ordering application with our live translator
+24th of March -> or next week

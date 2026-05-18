@@ -39,7 +39,9 @@ from openai import OpenAI
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "http://localhost:11434/v1")
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "ollama")
 LLM_MODEL = os.environ.get("LLM_MODEL", "qwen2.5:3b")
+VISION_MODEL = os.environ.get("VISION_MODEL", "gemma3")
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "nomic-embed-text")
+IMAGES_DIR = ROOT / "data" / "images"
 
 llm = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 
@@ -487,6 +489,81 @@ def call_llm(system, user_msg, max_tokens=400):
         return {"text": "_ROBI's report is unavailable right now — local AI is offline._", "citations": []}
 
 
+# ── Vision analysis (gemma3) ────────────────────────────────────────────────
+
+VISION_CACHE_DIR = ROOT / "data" / "cache" / "vision"
+VISION_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+import base64
+
+def read_vision_cache(image_ids_key: str):
+    path = VISION_CACHE_DIR / f"{image_ids_key}.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+def write_vision_cache(image_ids_key: str, result: dict):
+    entry = {**result, "generated_at": datetime.now(timezone.utc).isoformat()}
+    path = VISION_CACHE_DIR / f"{image_ids_key}.json"
+    try:
+        path.write_text(json.dumps(entry, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+    return entry
+
+def load_image_b64(image_id: str) -> str | None:
+    for ext in (".jpg", ".bmp", ".png"):
+        p = IMAGES_DIR / f"{image_id}{ext}"
+        if p.exists():
+            data = p.read_bytes()
+            mime = {"jpg": "image/jpeg", "bmp": "image/bmp", "png": "image/png"}[ext.lstrip(".")]
+            return f"data:{mime};base64,{base64.b64encode(data).decode()}"
+    return None
+
+def analyze_failure_images(image_ids: list[str], failure_context: str = "") -> dict:
+    cache_key = hashlib.md5("_".join(sorted(image_ids)).encode()).hexdigest()[:16]
+    cached = read_vision_cache(cache_key)
+    if cached:
+        return cached
+
+    content = []
+    for img_id in image_ids:
+        data_url = load_image_b64(img_id)
+        if data_url:
+            content.append({"type": "image_url", "image_url": {"url": data_url}})
+
+    if not content:
+        return {"text": "No images available for analysis.", "generated_at": datetime.now(timezone.utc).isoformat()}
+
+    prompt_text = f"""You are analyzing camera feeds from a grocery-picking robot (ROBI) that just failed a task.
+{f"Failure context: {failure_context}" if failure_context else ""}
+
+Look at the image(s) and explain in 2-3 sentences:
+1. What you see in the scene (shelf layout, item positions, obstacles)
+2. Why the robot likely failed (e.g., item blocked, bad angle, cluttered shelf, item too small)
+3. What an employee could do to help (e.g., move items apart, reposition the target)
+
+Be specific about what you observe. Use plain language."""
+
+    content.append({"type": "text", "text": prompt_text})
+
+    try:
+        resp = llm.chat.completions.create(
+            model=VISION_MODEL,
+            messages=[{"role": "user", "content": content}],
+            temperature=0.3,
+            max_tokens=300,
+        )
+        text = resp.choices[0].message.content or ""
+        text = wrap_terms(text)
+        result = {"text": text}
+        return write_vision_cache(cache_key, result)
+    except Exception as e:
+        print(f"[RAG] Vision analysis error: {e}", file=sys.stderr)
+        return {"text": f"_Vision analysis unavailable — {VISION_MODEL} may not be running._", "generated_at": datetime.now(timezone.utc).isoformat()}
+
+
 # ── Caching ──────────────────────────────────────────────────────────────────
 
 CACHE_TTL_LIVE = {
@@ -537,7 +614,7 @@ def write_cache(surface, scope, result):
 
 # ── Caption generation ───────────────────────────────────────────────────────
 
-def generate_caption(surface, scope):
+def generate_caption(surface, scope, client_stats=None):
     cached = read_cache(surface, scope)
     if cached:
         return cached
@@ -558,6 +635,13 @@ def generate_caption(surface, scope):
         stats = compute_stats(filtered)
         stats["start_date"] = start
         stats["end_date"] = end
+        # Override counts with client-provided numbers so the caption
+        # matches what the chart already shows the user.
+        if client_stats:
+            stats["total"] = client_stats.get("total", stats["total"])
+            stats["success"] = client_stats.get("delivered", stats["success"])
+            stats["warning"] = client_stats.get("warning", stats["warning"])
+            stats["failed"] = client_stats.get("failed", stats["failed"])
         p = chart_prompt(stats)
     elif surface == "orders_list":
         start = scope.get("from") or week_ago_str()
@@ -580,6 +664,13 @@ def generate_caption(surface, scope):
         stats["all_success"] = all_stats["success"]
         stats["all_warning"] = all_stats["warning"]
         stats["all_failed"] = all_stats["failed"]
+        # Override with client-provided numbers for consistency
+        if client_stats:
+            stats["all_total"] = client_stats.get("total", stats["all_total"])
+            stats["all_success"] = client_stats.get("delivered", stats.get("all_success", 0))
+            stats["all_warning"] = client_stats.get("warning", stats.get("all_warning", 0))
+            stats["all_failed"] = client_stats.get("failed", stats.get("all_failed", 0))
+            stats["total"] = client_stats.get("filtered_count", stats["total"])
         p = orders_list_prompt(stats, status_filter, filtered)
     elif surface == "order_detail":
         order = next((o for o in orders if o.get("id") == scope.get("order_id")), None)
@@ -650,17 +741,61 @@ async def caption(request: Request):
     body = await request.json()
     surface = body.get("surface")
     scope = body.get("scope", {})
+    client_stats = body.get("stats")   # UI-provided numbers for consistency
     force = body.get("force", False)
+    cache_only = body.get("cache_only", False)
 
     if not surface:
         return JSONResponse({"error": "surface is required"}, status_code=400)
 
+    # When client sends stats, include the totals in the cache scope so
+    # a caption generated for 28 orders isn't reused when there are 32.
+    effective_scope = dict(scope)
+    if client_stats:
+        effective_scope["_totals"] = (
+            client_stats.get("total", 0),
+            client_stats.get("delivered", 0),
+            client_stats.get("warning", 0),
+            client_stats.get("failed", 0),
+        )
+
+    # Fast path: only return what's in the cache, never call the LLM
+    if cache_only:
+        cached = read_cache(surface, effective_scope)
+        if cached:
+            return cached
+        return JSONResponse({"text": None, "cache_miss": True})
+
     if force:
-        path = CACHE_DIR / cache_key(surface, scope)
+        path = CACHE_DIR / cache_key(surface, effective_scope)
         if path.exists():
             path.unlink()
 
-    result = generate_caption(surface, scope)
+    result = generate_caption(surface, effective_scope, client_stats)
+    return result
+
+
+# ── Vision analysis ─────────────────────────────────────────────────────────
+
+@app.post("/api/rag/vision")
+async def vision(request: Request):
+    body = await request.json()
+    image_ids = body.get("image_ids", [])
+    failure_context = body.get("failure_context", "")
+    cache_only = body.get("cache_only", False)
+
+    if not image_ids:
+        return JSONResponse({"error": "image_ids is required"}, status_code=400)
+
+    # Fast path: return cached result without calling the vision model
+    if cache_only:
+        cache_key_str = hashlib.md5("_".join(sorted(image_ids)).encode()).hexdigest()[:16]
+        cached = read_vision_cache(cache_key_str)
+        if cached:
+            return cached
+        return JSONResponse({"text": None, "cache_miss": True})
+
+    result = analyze_failure_images(image_ids, failure_context)
     return result
 
 

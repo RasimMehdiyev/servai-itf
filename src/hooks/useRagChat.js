@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef } from 'react'
 
-const RAG_BASE = import.meta.env.VITE_RAG_URL || `http://${window.location.hostname}:5174`
+import { getRagBase } from '../lib/urls'
+
+const RAG_BASE = getRagBase()
 
 export default function useRagChat() {
   const [messages, setMessages] = useState([])

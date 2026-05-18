@@ -1,0 +1,9 @@
+LOG structure
+_________________
+
+SessionID --> a continuous sessions of one or more pours.
+
+Breakdown of each pour into more interpretable blocks (if I am missing something, feel free to correct): 
+	Shaking Animation -> Picking up the bottle-opener -> Opening the bottleDetecting human(-s) -> Detecting glass(-es) -> Reaching for the bottle -> Picking up the bottle ->  -> Picking up the bottle -> Pouring.
+
+If there are more than one glasses, principle of choosing the first one to pour in -> collision free path? distance? etc.

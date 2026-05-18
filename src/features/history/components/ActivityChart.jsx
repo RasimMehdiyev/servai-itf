@@ -24,9 +24,10 @@ const GRAY_900 = '#111827'
 const TEAL_100 = '#ccfbf1'
 const TEAL_700 = '#0f766e'
 
+import { getApiBase } from '../../../lib/urls'
+
 // Order data comes from the WS server (always available)
-const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
-const DATA_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
+const DATA_BASE = getApiBase()
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
@@ -50,10 +51,26 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
       .finally(() => setLoading(false))
   }, [from, to])
 
-  // AI caption is a separate optional layer
-  const { caption, loading: captionLoading, error: captionError } = useRagCaption('chart', { from, to })
-
   const totals = data?.totals || { delivered: 0, warning: 0, failed: 0, avg_fetch_seconds: 0 }
+
+  // Build stats object from loaded data so the LLM prompt uses the same numbers
+  const captionStats = useMemo(() => {
+    if (!data) return null
+    return {
+      total: totals.delivered + totals.warning + totals.failed,
+      delivered: totals.delivered,
+      warning: totals.warning,
+      failed: totals.failed,
+      avg_fetch_seconds: totals.avg_fetch_seconds,
+    }
+  }, [data, totals.delivered, totals.warning, totals.failed, totals.avg_fetch_seconds])
+
+  // AI caption — cached version arrives with the data, no extra fetch
+  const {
+    caption, loading: captionLoading, error: captionError,
+    stale: captionStale,
+    generate: generateCaption, refresh: refreshCaption,
+  } = useRagCaption('chart', { from, to }, captionStats, data?.cached_caption)
 
   const days = useMemo(() => {
     const raw = data?.days || []
@@ -304,7 +321,10 @@ export default function ActivityChart({ dateFrom, dateTo, onCitationClick }) {
         caption={caption}
         loading={captionLoading}
         error={captionError}
+        stale={captionStale}
         onCitationClick={onCitationClick}
+        onGenerate={generateCaption}
+        onRefresh={refreshCaption}
       />
 
       <style>{`

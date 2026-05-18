@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import ReactDOM from 'react-dom'
 import Card from '../../../components/ui/Card'
 import AiCaption from './AiCaption'
 import useRagCaption from '../../../hooks/useRagCaption'
@@ -24,9 +25,9 @@ const GRAY_700 = '#374151'
 const GRAY_900 = '#111827'
 const TEAL_200 = '#99f6e4'
 
-// Order data comes from the WS server (always available)
-const wsUrl = import.meta.env.VITE_WS_URL || `ws://${window.location.hostname}:8765`
-const DATA_BASE = wsUrl.replace(/^ws/, 'http').replace(/\/$/, '')
+import { getApiBase, getRagBase } from '../../../lib/urls'
+
+const DATA_BASE = getApiBase()
 const PAGE_SIZE = 5
 
 function todayStr() {
@@ -160,11 +161,315 @@ function StepIcon({ status }) {
   )
 }
 
+function collectOrderImages(order) {
+  const images = []
+  for (const phase of (order.phases || [])) {
+    if (phase.images) {
+      for (const img of phase.images) images.push({ ...img, phase: phase.friendly_name || phase.phase })
+    }
+  }
+  return images
+}
+
+function hasImages(order) {
+  return (order.phases || []).some(p => p.images && p.images.length > 0)
+}
+
+function imageCount(order) {
+  let n = 0
+  for (const phase of (order.phases || [])) {
+    if (phase.images) n += phase.images.length
+  }
+  return n
+}
+
+function groupImagesByEvent(images) {
+  const groups = []
+  const seen = new Set()
+  for (const img of images) {
+    const key = img.imageId.replace(/_(?:d415|zed)$/, '')
+    if (seen.has(key)) continue
+    seen.add(key)
+    const pair = images.filter(i => i.imageId.replace(/_(?:d415|zed)$/, '') === key)
+    const wrist = pair.find(i => i.camera === 'd415')
+    const external = pair.find(i => i.camera === 'zed')
+    groups.push({ key, wrist, external, phase: img.phase })
+  }
+  return groups
+}
+
+const RAG_BASE = getRagBase()
+
+function CameraLabel({ camera }) {
+  const isZed = camera === 'zed'
+  return (
+    <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded inline-block"
+      style={{ background: isZed ? 'rgba(56,189,248,0.15)' : 'rgba(251,113,133,0.15)', color: isZed ? '#7dd3fc' : '#fda4af' }}>
+      {isZed ? 'External (ZED)' : 'Wrist (D415)'}
+    </span>
+  )
+}
+
+function CameraImage({ src, alt }) {
+  return (
+    <div className="mt-1.5 rounded-lg overflow-hidden" style={{ background: '#1a1a2e' }}>
+      <img
+        src={src}
+        alt={alt}
+        style={{ width: '100%', height: 'auto', display: 'block' }}
+      />
+    </div>
+  )
+}
+
+function VisionCaption({ imageIds, failureContext }) {
+  const [caption, setCaption] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const idsKey = imageIds?.join(',') || ''
+
+  // Silent cache check — no loading state, just pop in if found
+  useEffect(() => {
+    if (!imageIds || imageIds.length === 0) return
+    let cancelled = false
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 5_000)
+    fetch(`${RAG_BASE}/api/rag/vision`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_ids: imageIds, cache_only: true }),
+      signal: controller.signal,
+    })
+      .then(r => { clearTimeout(timeout); return r.ok ? r.json() : null })
+      .then(d => { if (!cancelled && d?.text) setCaption(d.text) })
+      .catch(() => { clearTimeout(timeout) })
+    return () => { cancelled = true; clearTimeout(timeout); controller.abort() }
+  }, [idsKey])
+
+  const generate = useCallback(() => {
+    if (!imageIds || imageIds.length === 0) return
+    setLoading(true)
+    setError(null)
+    fetch(`${RAG_BASE}/api/rag/vision`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_ids: imageIds, failure_context: failureContext || '' }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (d?.text) { setCaption(d.text); setError(null) }
+        else setError('No result')
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [idsKey, failureContext])
+
+  if (!imageIds || imageIds.length === 0) return null
+
+  // Has a cached caption
+  if (caption) {
+    return (
+      <div className="px-3 py-2.5 rounded-lg mt-3" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+          </svg>
+          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: AMBER_500 }}>AI Analysis</span>
+          {loading && (
+            <svg className="animate-spin ml-auto" width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ color: AMBER_500, opacity: 0.6 }}>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="50 100" />
+            </svg>
+          )}
+        </div>
+        <p className="text-[12px] leading-relaxed m-0" style={{ color: 'rgba(255,255,255,0.8)', opacity: loading ? 0.5 : 1, transition: 'opacity 0.3s' }}>{caption}</p>
+        {!loading && (
+          <button
+            onClick={generate}
+            className="mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded border border-solid cursor-pointer hover:opacity-80"
+            style={{ borderColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.4)', background: 'transparent' }}
+          >
+            Refresh
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  // Generating from scratch
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg mt-3" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="w-3 h-3 rounded-full animate-pulse" style={{ background: AMBER_500 }} />
+        <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Analyzing with vision AI…</span>
+      </div>
+    )
+  }
+
+  // No caption — show generate button
+  return (
+    <div className="flex items-center gap-3 px-3 py-2 rounded-lg mt-3" style={{ background: 'rgba(255,255,255,0.05)' }}>
+      {error ? (
+        <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Analysis failed — AI may be offline.</span>
+      ) : (
+        <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Vision analysis available.</span>
+      )}
+      <button
+        onClick={generate}
+        className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border-0 cursor-pointer hover:opacity-90"
+        style={{ background: AMBER_500, color: 'white' }}
+      >
+        {error ? 'Try again' : 'Analyze'}
+      </button>
+    </div>
+  )
+}
+
+function ImageOverlay({ images, order, onClose }) {
+  const groups = useMemo(() => groupImagesByEvent(images), [images])
+  const [eventIdx, setEventIdx] = useState(0)
+  const imageBase = `${DATA_BASE}/api/images`
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') onClose()
+    if (e.key === 'ArrowLeft') setEventIdx(i => (i - 1 + groups.length) % groups.length)
+    if (e.key === 'ArrowRight') setEventIdx(i => (i + 1) % groups.length)
+  }, [groups.length, onClose])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [handleKeyDown])
+
+  if (groups.length === 0) return null
+  const group = groups[eventIdx]
+  const failCtx = order?.failure ? `${order.failure.reason}: ${order.failure.detail}` : ''
+  const allIds = [group.wrist?.imageId, group.external?.imageId].filter(Boolean)
+
+  return ReactDOM.createPortal(
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ background: 'rgba(0,0,0,0.75)', zIndex: 9999, backdropFilter: 'blur(4px)' }}
+      onClick={onClose}
+    >
+      <div
+        className="relative rounded-xl overflow-hidden"
+        style={{ width: '70%', maxWidth: 1000, maxHeight: '85vh', background: GRAY_900 }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+            <span className="text-[13px] font-semibold" style={{ color: 'white' }}>Failure Camera Feed</span>
+            <span className="text-[11px]" style={{ color: GRAY_400 }}>— {group.phase}</span>
+          </div>
+          <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center border-0 cursor-pointer"
+            style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontSize: 16 }}>
+            ×
+          </button>
+        </div>
+
+        {/* Side-by-side camera feeds */}
+        <div className="flex gap-2 p-3" style={{ overflow: 'auto', maxHeight: 'calc(85vh - 140px)' }}>
+          {group.wrist && (
+            <div className="flex-1 min-w-0">
+              <CameraLabel camera="d415" />
+              <CameraImage src={`${imageBase}/${group.wrist.imageId}`} alt={group.wrist.description} />
+            </div>
+          )}
+          {group.external && (
+            <div className="flex-1 min-w-0">
+              <CameraLabel camera="zed" />
+              <CameraImage src={`${imageBase}/${group.external.imageId}`} alt={group.external.description} />
+            </div>
+          )}
+          {!group.wrist && !group.external && (
+            <div className="flex-1 text-center py-8" style={{ color: GRAY_400 }}>No images available</div>
+          )}
+        </div>
+
+        {/* Vision AI caption */}
+        <div className="px-3 pb-3">
+          <VisionCaption imageIds={allIds} failureContext={failCtx} />
+        </div>
+
+        {/* Navigation arrows (between failure events) */}
+        {groups.length > 1 && (
+          <>
+            <button
+              onClick={() => setEventIdx(i => (i - 1 + groups.length) % groups.length)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center border-0 cursor-pointer"
+              style={{ background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: 18 }}
+            >
+              ‹
+            </button>
+            <button
+              onClick={() => setEventIdx(i => (i + 1) % groups.length)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center border-0 cursor-pointer"
+              style={{ background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: 18 }}
+            >
+              ›
+            </button>
+            <div className="absolute top-3 right-14 text-[11px] font-medium px-2 py-1 rounded"
+              style={{ background: 'rgba(0,0,0,0.5)', color: 'rgba(255,255,255,0.8)' }}>
+              {eventIdx + 1} / {groups.length}
+            </div>
+          </>
+        )}
+      </div>
+    </div>,
+    document.body
+  )
+}
+
 function ExpandedDetail({ order, onAskRobi }) {
   const phases = order.phases || []
+  const allImages = useMemo(() => collectOrderImages(order), [order])
+  const [showOverlay, setShowOverlay] = useState(false)
+  const imageBase = `${DATA_BASE}/api/images`
 
   return (
     <div className="px-4 py-4 border-t border-solid" style={{ borderColor: TEAL_200, background: 'white' }}>
+      {/* Failure camera feed thumbnail — click to open overlay */}
+      {allImages.length > 0 && (
+        <div
+          className="mb-4 rounded-lg overflow-hidden cursor-pointer relative"
+          style={{ background: '#1a1a2e' }}
+          onClick={() => setShowOverlay(true)}
+        >
+          <div className="flex gap-1" style={{ height: 140 }}>
+            {allImages.slice(0, 2).map((img, i) => (
+              <img key={i}
+                src={`${imageBase}/${img.imageId}`}
+                alt={img.description}
+                loading="eager"
+                style={{ flex: 1, objectFit: 'cover', display: 'block', minWidth: 0, height: '100%' }}
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.25)' }}>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: 'rgba(0,0,0,0.6)' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              <span className="text-[12px] font-semibold" style={{ color: 'white' }}>View camera feed ({allImages.length})</span>
+            </div>
+          </div>
+        </div>
+      )}
+      {showOverlay && (
+        <ImageOverlay images={allImages} order={order} onClose={() => setShowOverlay(false)} />
+      )}
+
       <div className="text-[13px] font-semibold mb-3" style={{ color: GRAY_900 }}>Step-by-step</div>
       <div className="flex flex-col gap-2.5">
         {phases.map((phase, i) => {
@@ -239,10 +544,26 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
     setExpandedGroups({})
   }, [from, to])
 
-  const { caption, loading: captionLoading, error: captionError } = useRagCaption('orders_list', { from, to, status: statusFilter })
-
   const counts = data?.counts || { all: 0, delivered: 0, warning: 0, failed: 0, by_item: {} }
   const orders = data?.orders || []
+
+  // Build stats from loaded data so the LLM uses the same numbers the UI shows
+  const captionStats = useMemo(() => {
+    if (!data) return null
+    return {
+      total: counts.all,
+      delivered: counts.delivered,
+      warning: counts.warning,
+      failed: counts.failed,
+      filtered_count: orders.length,
+    }
+  }, [data, counts.all, counts.delivered, counts.warning, counts.failed, orders.length])
+
+  const {
+    caption, loading: captionLoading, error: captionError,
+    stale: captionStale,
+    generate: generateCaption, refresh: refreshCaption,
+  } = useRagCaption('orders_list', { from, to, status: statusFilter }, captionStats, data?.cached_caption)
 
   // Group orders by date
   const grouped = useMemo(() => {
@@ -344,7 +665,10 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
         caption={caption}
         loading={captionLoading}
         error={captionError}
+        stale={captionStale}
         onCitationClick={onCitationClick}
+        onGenerate={generateCaption}
+        onRefresh={refreshCaption}
       />
 
       {/* Orders grouped by date */}
@@ -417,6 +741,15 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
                             </div>
                           </div>
                           <StatusPill status={order.status} failure={order.failure} />
+                          {hasImages(order) && (
+                            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded" style={{ background: 'rgba(244,63,94,0.08)' }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                                <circle cx="12" cy="13" r="4" />
+                              </svg>
+                              <span className="text-[10px] font-semibold" style={{ color: ROSE_500 }}>{imageCount(order)}</span>
+                            </span>
+                          )}
                           <svg
                             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2"
                             style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease', shrinkFlexGrow: 0 }}

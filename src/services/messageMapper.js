@@ -3,7 +3,9 @@
  *
  * Event types from the new structured log format:
  *   init, cycle_start, object_selected, phase, gripper, motion,
- *   cycle_end, robot_status, system_event, search_progress, retry
+ *   cycle_end, robot_status, system_event, search_progress, retry,
+ *   calibration, system_state, prompt_activity, system_fault,
+ *   fault_recovery, image
  *
  * This is the single file to update when the log format changes.
  */
@@ -13,7 +15,7 @@ const PIPELINE = [
   { key: 'searching',     title: 'Searching for item',   components: ['SEARCH_DETECT'] },
   { key: 'anchor_select', title: 'Selecting target',     components: ['ANCHOR_SELECT'] },
   { key: 'closeup_move',  title: 'Moving closer',        components: ['CLOSEUP_MOVE'] },
-  { key: 'analyzing',     title: 'Analyzing the grasp',  components: ['CLOSEUP_MOLMO', 'CLOSEUP_REFINE', 'CLOSEUP_LIFT', 'SYNTHESISE'] },
+  { key: 'analyzing',     title: 'Analyzing the grasp',  components: ['CLOSEUP_MOLMO', 'CLOSEUP_REFINE', 'CLOSEUP_LIFT', 'SYNTHESISE', 'VISUALISE'] },
   { key: 'grasping',      title: 'Picking up',           components: ['EXECUTE_GRASP', 'CLOSEUP_RETRY'] },
   { key: 'transit',       title: 'Bringing it over',     components: ['HANDOVER_TRANSIT', 'HANDOVER_MOVE'] },
   { key: 'release',       title: 'Handing over',         components: ['HANDOVER_RELEASE'] },
@@ -24,6 +26,7 @@ const PIPELINE = [
 const WAYPOINT_LABELS = {
   'top-shelve': 'top shelf',
   'bottom-shelve': 'bottom shelf',
+  'left-shelve': 'left shelf',
   'top-corner': 'top corner',
   'bottom-corner': 'bottom corner',
   'clothes-rack': 'clothes rack',
@@ -49,6 +52,7 @@ function progressFromComponent(component, status) {
     'CLOSEUP_REFINE':   { milestone: 0, fraction: 0.40 },
     'CLOSEUP_LIFT':     { milestone: 0, fraction: 0.44 },
     'SYNTHESISE':       { milestone: 0, fraction: 0.50 },
+    'VISUALISE':        { milestone: 0, fraction: 0.54 },
     'EXECUTE_GRASP':    { milestone: 0, fraction: 0.58 },
     'CLOSEUP_RETRY':    { milestone: 0, fraction: 0.55 },
     'HANDOVER_TRANSIT': { milestone: 1, fraction: 0.72 },
@@ -120,6 +124,10 @@ function deriveCardState(data, event) {
   if (event.type === 'phase') {
     if (event.status === 'FAIL') {
       const d = event.detail || ''
+      // Operator abort (KeyboardInterrupt) → orange, not red
+      if (d.includes('KeyboardInterrupt') || d.includes('keyboard interrupt') || d.includes('operator abort')) {
+        return { state: 'orange', failure: { level: 'orange', message: 'Operator aborted the handover', ts } }
+      }
       const isCritical = event.component === 'EXECUTE_GRASP' || event.component === 'HANDOVER_MOVE'
         || event.component === 'CLOSEUP_LIFT'
         || d.includes('search exhausted') || d.includes('no valid depth') || d.includes('no_valid_depth')
@@ -373,6 +381,87 @@ export function applyMessageToScenario(currentData, message) {
     }
   }
 
+  // ── image ─────────────────────────────────────────────────────────────────
+  if (type === 'image') {
+    const images = [...(data._images || [])]
+    images.push({
+      imageId: message.imageId,
+      description: message.description,
+      camera: message.camera,
+      base64: message.base64,
+      ts: timestamp,
+    })
+    if (images.length > 20) images.shift()
+    return { ...data, _images: images }
+  }
+
+  // ── system_state (idle, calibrating — from throttled broadcasts) ─────────
+  if (type === 'system_state') {
+    return {
+      ...data,
+      liveStatus: 'live',
+      _systemState: message.state,
+      explanationTitle: 'STATUS',
+      explanationText: message.state === 'idle'
+        ? 'Waiting for next task…'
+        : data.explanationText,
+    }
+  }
+
+  // ── calibration (system startup progress) ────────────────────────────────
+  if (type === 'calibration') {
+    const step = message.action || 'starting up'
+    const friendlyStep = step.replace(/_/g, ' ').toLowerCase()
+    return {
+      ...data,
+      liveStatus: 'live',
+      _systemState: 'calibrating',
+      attentionTitle: 'System startup',
+      attentionLevel: 'ok',
+      explanationTitle: 'STATUS',
+      explanationText: message.status === 'SUCCESS'
+        ? `Calibration: ${friendlyStep} ✓`
+        : `Calibrating: ${friendlyStep}…`,
+    }
+  }
+
+  // ── prompt_activity (wheel watching, re-spins, ambiguity) ────────────────
+  if (type === 'prompt_activity') {
+    const text = message.detail || 'watching wheel'
+    return {
+      ...data,
+      liveStatus: 'live',
+      _systemState: 'prompt',
+      explanationTitle: 'STATUS',
+      explanationText: message.status === 'SKIP'
+        ? `Wheel re-spin: ${text}`
+        : `Waiting for input: ${text}`,
+    }
+  }
+
+  // ── system_fault (bridge fault, executor fault — recoverable) ────────────
+  if (type === 'system_fault') {
+    if (message.status === 'FAIL') {
+      return {
+        ...data,
+        _cardState: 'orange',
+        attentionLevel: 'needs_attention',
+        explanationText: `Hardware fault (${message.source || 'bridge'}): ${message.detail || 'temporary'}. Auto-recovering…`,
+      }
+    }
+    return data
+  }
+
+  // ── fault_recovery (bridge recovered from fault) ─────────────────────────
+  if (type === 'fault_recovery') {
+    return {
+      ...data,
+      _cardState: data._cardState === 'orange' ? 'green' : data._cardState,
+      attentionLevel: data._cardState === 'orange' ? 'ok' : data.attentionLevel,
+      explanationText: 'Fault recovered. Continuing…',
+    }
+  }
+
   return data
 }
 
@@ -436,6 +525,11 @@ function extractPhaseDescription(msg) {
     }
     return null
   }
+  if (component === 'VISUALISE') {
+    if (status === 'SUCCESS') return 'Visualization overlay complete'
+    if (status === 'BEGIN') return 'Rendering grasp overlay…'
+    return null
+  }
   if (component === 'EXECUTE_GRASP') {
     if (status === 'SUCCESS') return 'Picked up successfully'
     if (status === 'FAIL') return 'Can\'t reach — path blocked by obstacle'
@@ -480,6 +574,10 @@ function extractDetailLine(msg) {
 
   if (component === 'EXECUTE_GRASP' && status === 'FAIL') return 'Obstacle in the way — can\'t reach safely'
   if (component === 'HANDOVER_MOVE' && status === 'FAIL') return 'No clear path to hand over the item'
+  if (component === 'HANDOVER_RELEASE' && status === 'FAIL') {
+    if (detail.includes('KeyboardInterrupt') || detail.includes('operator abort')) return 'Operator aborted the handover'
+    return 'Handover release failed'
+  }
   if (component === 'CLOSEUP_LIFT' && status === 'FAIL') return 'Depth sensor couldn\'t get a reading'
   if (component === 'CLOSEUP_RETRY' && status === 'BEGIN') {
     const m = detail.match(/retry (\d+)\/(\d+)/)

@@ -1,0 +1,20 @@
+{
+  "text": "The robot successfully delivered 0 out of 336 orders within the given period, averaging 36 seconds per order but with a median time of just 5 seconds. The top failure reason was \"unknown\" (113 times), affecting orders such as [cite:7] and [cite:29]. Slowest orders often involved t-shirts, taking up to 2622 seconds. Given the high frequency of unknown failures, it's crucial to ensure clear communication channels between ROBI and staff for immediate [[intervention]] in case of unexpected issues.",
+  "citations": [
+    7,
+    29
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-12",
+    "to": "2026-05-18",
+    "status": "all",
+    "_totals": [
+      336,
+      0,
+      113,
+      223
+    ]
+  },
+  "generated_at": "2026-05-18T13:07:44.558958+00:00"
+}

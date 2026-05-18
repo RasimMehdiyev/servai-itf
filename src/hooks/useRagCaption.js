@@ -1,47 +1,80 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
-const RAG_BASE = import.meta.env.VITE_RAG_URL || `http://${window.location.hostname}:5174`
+import { getRagBase } from '../lib/urls'
 
-export default function useRagCaption(surface, scope) {
-  const [caption, setCaption] = useState(null)
-  const [loading, setLoading] = useState(true)
+const RAG_BASE = getRagBase()
+
+/**
+ * AI caption hook — displays cached content immediately, generates only on demand.
+ *
+ * @param {string} surface       - 'chart' | 'orders_list' | 'weekly' | 'order_detail'
+ * @param {object} scope         - date range, filters, etc.
+ * @param {object|undefined} [stats]       - UI stats for prompt consistency
+ * @param {object|null}      [initialCaption] - cached caption from the data response
+ */
+export default function useRagCaption(surface, scope, stats, initialCaption) {
+  const [caption, setCaption] = useState(initialCaption || null)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const inflightRef = useRef(0)
 
   const scopeKey = JSON.stringify(scope || {})
+  const statsKey = JSON.stringify(stats ?? 'none')
 
-  const fetchCaption = useCallback(async () => {
+  // When the parent passes a new initialCaption (data loaded), adopt it
+  useEffect(() => {
+    if (initialCaption?.text) setCaption(initialCaption)
+  }, [initialCaption?.text, initialCaption?.generated_at])
+
+  // ── Generate / refresh — only runs when user clicks a button ──
+  const generate = useCallback((force = false) => {
+    if (stats === null) return
+
+    const id = ++inflightRef.current
     setLoading(true)
     setError(null)
-    try {
-      const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 15000)
 
-      const res = await fetch(`${RAG_BASE}/api/rag/caption`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ surface, scope: scope || {} }),
-        signal: controller.signal,
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 60_000)
+
+    const body = { surface, scope: scope || {} }
+    if (stats !== undefined) body.stats = stats
+    if (force) body.force = true
+
+    fetch(`${RAG_BASE}/api/rag/caption`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    })
+      .then(res => {
+        clearTimeout(timeout)
+        if (!res.ok) throw new Error(`${res.status}`)
+        return res.json()
       })
-      clearTimeout(timeout)
-
-      if (!res.ok) throw new Error(`${res.status}`)
-      const data = await res.json()
-      setCaption(data)
-    } catch (err) {
-      setError(err.message)
-      setCaption({
-        text: '_ROBI\'s report is unavailable right now — local AI is offline._',
-        citations: [],
-        _offline: true,
+      .then(data => {
+        if (id !== inflightRef.current) return
+        setCaption(data)
+        setError(null)
+        setLoading(false)
       })
-    } finally {
-      setLoading(false)
-    }
-  }, [surface, scopeKey]) // eslint-disable-line react-hooks/exhaustive-deps
+      .catch(err => {
+        clearTimeout(timeout)
+        if (id !== inflightRef.current) return
+        setError(err.message)
+        setLoading(false)
+      })
+  }, [surface, scopeKey, statsKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    fetchCaption()
-  }, [fetchCaption])
+  const refresh = useCallback(() => generate(true), [generate])
 
-  return { caption, loading, error, refresh: fetchCaption }
+  return {
+    caption,
+    loading,
+    error,
+    generate,
+    refresh,
+    hasCaption: !!caption?.text,
+    stale: !!error && !!caption?.text,
+  }
 }

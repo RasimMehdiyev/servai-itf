@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-const MAX_BACKOFF = 30000
+const MAX_BACKOFF = 10000
 const INITIAL_BACKOFF = 1000
+const PING_INTERVAL = 15000
 
 export default function useRobotSocket(url) {
   const [status, setStatus] = useState('disconnected')
@@ -10,7 +11,21 @@ export default function useRobotSocket(url) {
   const wsRef = useRef(null)
   const backoffRef = useRef(INITIAL_BACKOFF)
   const reconnectTimer = useRef(null)
+  const pingTimer = useRef(null)
   const unmountedRef = useRef(false)
+
+  const stopPing = useCallback(() => {
+    if (pingTimer.current) { clearInterval(pingTimer.current); pingTimer.current = null }
+  }, [])
+
+  const startPing = useCallback(() => {
+    stopPing()
+    pingTimer.current = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ type: 'ping' }))
+      }
+    }, PING_INTERVAL)
+  }, [stopPing])
 
   const connect = useCallback(() => {
     if (unmountedRef.current || !url) return
@@ -23,6 +38,7 @@ export default function useRobotSocket(url) {
       if (unmountedRef.current) { ws.close(); return }
       backoffRef.current = INITIAL_BACKOFF
       setStatus('connected')
+      startPing()
     }
 
     ws.onmessage = (event) => {
@@ -38,17 +54,18 @@ export default function useRobotSocket(url) {
 
     ws.onclose = () => {
       if (unmountedRef.current) return
+      stopPing()
       setStatus('disconnected')
       scheduleReconnect()
     }
 
     ws.onerror = () => {}
-  }, [url])
+  }, [url, startPing, stopPing])
 
   function scheduleReconnect() {
     if (unmountedRef.current) return
     const delay = backoffRef.current
-    backoffRef.current = Math.min(delay * 2, MAX_BACKOFF)
+    backoffRef.current = Math.min(delay * 1.5, MAX_BACKOFF)
     reconnectTimer.current = setTimeout(connect, delay)
   }
 
@@ -65,13 +82,14 @@ export default function useRobotSocket(url) {
 
     return () => {
       unmountedRef.current = true
+      stopPing()
       clearTimeout(reconnectTimer.current)
       if (wsRef.current) {
         wsRef.current.onclose = null
         wsRef.current.close()
       }
     }
-  }, [connect])
+  }, [connect, stopPing])
 
   const send = useCallback((message) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
