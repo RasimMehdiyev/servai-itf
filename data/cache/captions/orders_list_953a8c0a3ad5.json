@@ -1,0 +1,19 @@
+{
+  "text": "The robot delivered one order successfully over five days, averaging 173 seconds per delivery, with no warnings and a single failure due to an unknown reason [cite:1]. The slowest order was for a pen, taking exactly 173 seconds. Given the frequent occurrence of unknown failures, it's crucial to double-check all orders carefully to identify any anomalies early on.",
+  "citations": [
+    1
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-13",
+    "to": "2026-05-19",
+    "status": "all",
+    "_totals": [
+      1,
+      0,
+      0,
+      1
+    ]
+  },
+  "generated_at": "2026-05-19T07:21:47.868253+00:00"
+}

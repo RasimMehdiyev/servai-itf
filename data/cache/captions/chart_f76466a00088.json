@@ -1,0 +1,16 @@
+{
+  "text": "During the week of May 13 to 19, ROBI handled an average of 12 orders per day with varied success rates and top items including ball, pen, water bottle, towel, and sock, reaching its busiest point on May 19 with 45 orders.",
+  "citations": [],
+  "surface": "chart",
+  "scope": {
+    "from": "2026-05-13",
+    "to": "2026-05-19",
+    "_totals": [
+      38,
+      12,
+      9,
+      17
+    ]
+  },
+  "generated_at": "2026-05-19T11:40:14.206526+00:00"
+}

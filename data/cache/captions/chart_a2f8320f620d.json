@@ -1,0 +1,16 @@
+{
+  "text": "During May 14 to 20, ROBI handled 108 orders with varying success rates and fastest times for fetching items like pens, balls, water bottles, socks, and coffee mugs, with the busiest day being May 19 when it processed 95 orders in just over a day.",
+  "citations": [],
+  "surface": "chart",
+  "scope": {
+    "from": "2026-05-14",
+    "to": "2026-05-20",
+    "_totals": [
+      108,
+      34,
+      21,
+      53
+    ]
+  },
+  "generated_at": "2026-05-20T08:20:46.185276+00:00"
+}

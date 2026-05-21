@@ -11,7 +11,7 @@ function RecentlyDelivered({ list }) {
       <div className="h-px bg-[var(--border)] mb-3" />
       <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Recently delivered</div>
       <div className="flex flex-col gap-1.5">
-        {list.slice(0, 4).map((o, i) => {
+        {list.slice(0, 2).map((o, i) => {
           const ago = formatDuration(Date.now() - new Date(o.completed_at).getTime())
           const dotColor = o.status === 'failed' ? 'bg-[var(--danger)]' : o.status === 'warning' ? 'bg-[var(--warning)]' : 'bg-[var(--success)]'
           return (

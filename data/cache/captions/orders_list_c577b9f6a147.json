@@ -1,0 +1,24 @@
+{
+  "text": "ROBI\u2019s operation from 2026-05-15 to 2026-05-21 fulfilled 58 orders with a total of 163 orders processed, averaging 98 seconds per order. The most frequent failure was \u2018unknown\u2019 (57 times), impacting orders [cite:2] and [cite:3], alongside \u2018search_exhausted\u2019 (26 times) affecting [cite:4] and [cite:5]. There were 37 orders with warnings and the slowest order, #2 (water bottle, 817s), demonstrates a need to investigate potential issues with the [[gripper]] or [[sam3]] during [[search-sweep]] operations. **Focus monitoring efforts on order [cite:2] and [cite:3] to assess the root cause of the \u2018unknown\u2019 failures, potentially involving a [[scene-scan]] to verify object [[detection]] and [[reachability]].**",
+  "citations": [
+    2,
+    3,
+    4,
+    5,
+    2,
+    3
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-15",
+    "to": "2026-05-21",
+    "status": "all",
+    "_totals": [
+      163,
+      58,
+      37,
+      68
+    ]
+  },
+  "generated_at": "2026-05-21T09:42:48.420539+00:00"
+}

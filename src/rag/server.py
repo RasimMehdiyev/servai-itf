@@ -38,7 +38,7 @@ from openai import OpenAI
 
 LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "http://localhost:11434/v1")
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "ollama")
-LLM_MODEL = os.environ.get("LLM_MODEL", "qwen2.5:3b")
+LLM_MODEL = os.environ.get("LLM_MODEL", "gemma3")
 VISION_MODEL = os.environ.get("VISION_MODEL", "gemma3")
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "nomic-embed-text")
 IMAGES_DIR = ROOT / "data" / "images"
@@ -263,31 +263,39 @@ Rules:
 1. Write in plain, friendly English. Use "ROBI" to refer to the robot.
 2. Wrap technical terms from this list in [[slug]] brackets when you mention them: {', '.join(TERM_SLUGS)}.
 3. Cite specific orders as [cite:N] where N is the order number.
-4. Never invent numbers. Only use the FACTS provided.
-5. Keep responses concise and factual."""
+4. NEVER invent numbers, durations, dates, or events. Only use the FACTS provided.
+5. NEVER refer to "sessions", "shifts", "periods of activity", or invent timeframes that aren't in the FACTS.
+6. Treat any duration value as exactly the unit stated in the FACTS — do not convert seconds into minutes/hours/etc. unless the FACTS already give a multi-unit value.
+7. Keep responses concise and factual."""
 
 
 def weekly_prompt(stats):
     items = ", ".join(f"{item} ({count})" for item, count in stats["item_ranking"])
     failures_line = ", ".join(f"{r}: {c}" for r, c in stats["failures"].items()) if stats["failures"] else "No failures"
     busiest = f"{stats['busiest_day']['date']} with {stats['busiest_day']['count']} orders" if stats.get("busiest_day") else "N/A"
-    slowest = f"#{stats['slowest']['id']} ({stats['slowest']['item']}, {stats['slowest']['total_seconds']}s)" if stats.get("slowest") else "N/A"
+    # Always state durations in seconds and clarify what "slowest" refers to: a
+    # single order, not a session.
+    slowest = (
+        f"order #{stats['slowest']['id']} for the {stats['slowest']['item']} took {stats['slowest']['total_seconds']} seconds (single order, not a session)"
+        if stats.get("slowest") else "N/A"
+    )
     return {
         "system": SYSTEM_PROMPT,
         "user": f"""Write a 2-paragraph weekly summary. Each paragraph should be 2-3 sentences. No headings, no bullet points.
 
 FACTS:
-1. Orders this week: {stats['total']} ({stats['success']} delivered, {stats['warning']} delivered with warnings, {stats['failed']} failed)
-2. Average fetch time: {stats['avg_time']} seconds ({stats['avg_robot_time']}s robot work)
-3. Median fetch time: {stats['median_time']} seconds
-4. Items handled: {items}
-5. Busiest day: {busiest}
-6. Slowest order: {slowest}
-7. Failures: {failures_line}
-8. Total retries across all orders: {stats.get('total_retries', 0)} ({stats.get('orders_with_retries', 0)} orders needed retries)
-9. Total collision warnings: {stats.get('total_collisions', 0)}
+1. Period: {stats.get('start_date', '?')} to {stats.get('end_date', '?')} (last 7 days)
+2. Orders this week: {stats['total']} ({stats['success']} delivered, {stats['warning']} delivered with warnings, {stats['failed']} failed)
+3. Average fetch time: {stats['avg_time']} seconds ({stats['avg_robot_time']}s robot work)
+4. Median fetch time: {stats['median_time']} seconds
+5. Items handled: {items}
+6. Busiest day: {busiest}
+7. Slowest order: {slowest}
+8. Failures: {failures_line}
+9. Total retries across all orders: {stats.get('total_retries', 0)} ({stats.get('orders_with_retries', 0)} orders needed retries)
+10. Total collision warnings: {stats.get('total_collisions', 0)}
 
-First paragraph: headline performance. Second: notable details or patterns (include retry/collision info if significant).""",
+Start the first paragraph by stating the date range and total. Second paragraph: notable details or patterns (include retry/collision info if significant). No headings, no bullet points.""",
     }
 
 
@@ -521,6 +529,36 @@ def load_image_b64(image_id: str) -> str | None:
             return f"data:{mime};base64,{base64.b64encode(data).decode()}"
     return None
 
+def load_image_context(image_id: str) -> dict | None:
+    """Load the surrounding-event context written by the WS server when the
+    image landed. Returns the parsed JSON or None if the file is missing."""
+    p = IMAGES_DIR / f"{image_id}.context.json"
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return None
+
+
+def format_image_context(ctx: dict) -> str:
+    """Render the event log into a compact, LLM-friendly bulleted timeline."""
+    if not ctx or not ctx.get("events"):
+        return ""
+    lines = [
+        f"Image was captured at {ctx.get('imageReceivedAt', '?')} (UI clock).",
+        f"Events in the {ctx.get('windowFrom', '?')} … {ctx.get('windowTo', '?')} window:",
+    ]
+    for e in ctx["events"][-40:]:  # cap at 40 lines so the prompt stays reasonable
+        comp = e.get("component") or e.get("type") or "?"
+        action = f":{e['action']}" if e.get("action") else ""
+        status = f" [{e['status']}]" if e.get("status") else ""
+        detail = e.get("detail")
+        detail_part = f" — {detail}" if detail else ""
+        lines.append(f"  • {e.get('serverTs', '?')}  {comp}{action}{status}{detail_part}")
+    return "\n".join(lines)
+
+
 def analyze_failure_images(image_ids: list[str], failure_context: str = "") -> dict:
     cache_key = hashlib.md5("_".join(sorted(image_ids)).encode()).hexdigest()[:16]
     cached = read_vision_cache(cache_key)
@@ -536,15 +574,28 @@ def analyze_failure_images(image_ids: list[str], failure_context: str = "") -> d
     if not content:
         return {"text": "No images available for analysis.", "generated_at": datetime.now(timezone.utc).isoformat()}
 
+    # Pull surrounding-event context for each image (synced to UI clock,
+    # not the robot's local time which can drift).
+    context_blocks = []
+    for img_id in image_ids:
+        ctx = load_image_context(img_id)
+        if ctx:
+            block = format_image_context(ctx)
+            if block:
+                context_blocks.append(f"=== Context for image {img_id} ===\n{block}")
+    event_context = "\n\n".join(context_blocks)
+
     prompt_text = f"""You are analyzing camera feeds from a grocery-picking robot (ROBI) that just failed a task.
 {f"Failure context: {failure_context}" if failure_context else ""}
 
+{f"Robot event log around the moment the image was captured (use this to ground your interpretation):{chr(10)}{event_context}" if event_context else ""}
+
 Look at the image(s) and explain in 2-3 sentences:
 1. What you see in the scene (shelf layout, item positions, obstacles)
-2. Why the robot likely failed (e.g., item blocked, bad angle, cluttered shelf, item too small)
+2. Why the robot likely failed (e.g., item blocked, bad angle, cluttered shelf, item too small) — cite the event log if relevant
 3. What an employee could do to help (e.g., move items apart, reposition the target)
 
-Be specific about what you observe. Use plain language."""
+Be specific about what you observe. Use plain language. Do NOT invent events that aren't in the log above."""
 
     content.append({"type": "text", "text": prompt_text})
 
@@ -627,6 +678,13 @@ def generate_caption(surface, scope, client_stats=None):
         stats = compute_stats(filtered)
         stats["start_date"] = start
         stats["end_date"] = end
+        # Honour client-provided totals if present so the weekly summary's
+        # numbers match what the chart / orders list already display.
+        if client_stats:
+            stats["total"] = client_stats.get("total", stats["total"])
+            stats["success"] = client_stats.get("delivered", stats["success"])
+            stats["warning"] = client_stats.get("warning", stats["warning"])
+            stats["failed"] = client_stats.get("failed", stats["failed"])
         p = weekly_prompt(stats)
     elif surface == "chart":
         start = scope.get("from") or week_ago_str()

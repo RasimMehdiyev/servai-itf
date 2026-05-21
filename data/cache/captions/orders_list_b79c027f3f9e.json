@@ -1,0 +1,20 @@
+{
+  "text": "The robot handled 3 out of 11 orders successfully within an average time of 195 seconds per order, with a median of just 95 seconds. The top failure reason was \"unknown\" issues, which occurred in [cite:2] and [cite:8], affecting both slowest and fastest delivery times. Slowest orders were often those requiring longer handling times like the water bottle (817s). \n\nTo improve efficiency, focus on identifying patterns for quick resolution of \"unknown\" failures, especially during slower deliveries where these issues are more prevalent.",
+  "citations": [
+    2,
+    8
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-13",
+    "to": "2026-05-19",
+    "status": "all",
+    "_totals": [
+      11,
+      3,
+      0,
+      8
+    ]
+  },
+  "generated_at": "2026-05-19T08:12:13.654965+00:00"
+}

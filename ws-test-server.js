@@ -60,8 +60,9 @@ function readLatestCaption(surfacePrefix) {
   } catch { return null }
 }
 
-// Source mode: 'live' (robot WS connected), 'static' (file replay)
-let sourceMode = ROBOT_WS ? 'live' : 'static'
+// Source mode: 'live' (robot WS connected), 'waiting' (still trying to reach robot)
+// Static file replay has been removed — the dashboard waits for the live robot.
+let sourceMode = 'waiting'
 
 // ── Valid stock items (anything else is treated as accidental input) ─────────
 const VALID_STOCK = ['pen', 'ball', 't-shirt', 'water bottle', 'phone holder', 'towel', 'sock', 'coffee mug']
@@ -271,13 +272,20 @@ function parseLine(rawLine) {
       return null
     }
     if (component === 'PROMPT' && status === 'BEGIN') {
-      return { ts: _parserState.lastTimestamp, type: 'prompt_activity', status, detail }
+      // Tag re-spin events explicitly so the dashboard can highlight them
+      const respun = /re-?spun by operator/i.test(detail) || /wheel re-spun/i.test(detail)
+      return { ts: _parserState.lastTimestamp, type: 'prompt_activity', status, detail, kind: respun ? 'respin' : 'watch' }
     }
     if (component === 'PROMPT' && status === 'SKIP') {
-      return { ts: _parserState.lastTimestamp, type: 'prompt_activity', status, detail }
+      return { ts: _parserState.lastTimestamp, type: 'prompt_activity', status, detail, kind: 'skip' }
     }
 
     if (component === 'IDLE') {
+      // "wheel-spin event consumed" on IDLE = operator just spun the wheel.
+      // Surface that as a distinct event so the dashboard can show it.
+      if (status === 'SUCCESS' && /wheel[-_ ]spin/i.test(detail)) {
+        return { ts: _parserState.lastTimestamp, type: 'wheel_spin', detail }
+      }
       return { ts: _parserState.lastTimestamp, type: 'idle_tick', status, detail }
     }
 
@@ -425,8 +433,11 @@ let currentEventIndex = 0
 let loopCount = 0
 let globalTimeout = null
 let heartbeatTimer = null
-let orderIdBase = nextOrderId()
-let cycleOffset = 0
+// The next order id we'll hand out. Only advances once a real order has been
+// written, so skipped/anomaly cycles don't leave gaps and the live "Order #"
+// always matches what eventually lands in orders.json.
+let nextOrderIdToAssign = nextOrderId()
+let cycleWritten = false           // guards against double-writes within a cycle
 let currentItem = null
 let cycleStartTime = null
 let rawStepLog = []
@@ -478,6 +489,114 @@ function saveImage(imageId, base64) {
   }
 }
 
+// ── Recent-event ring buffer (used as context for image analysis) ──────────
+// Every event we broadcast gets stamped with a *server* (UI-clock) timestamp
+// and appended here. Image context comes from the events surrounding the
+// image's server-side arrival time, NOT the robot's own timestamps (which
+// can drift hours from real time).
+const SERVER_EVENT_LOG_LIMIT = 800
+const serverEventLog = []
+function recordServerEvent(evt) {
+  if (!evt) return
+  // Skip super-frequent heartbeats — they add no diagnostic context
+  if (evt.type === 'heartbeat' || evt.type === 'idle_tick') return
+  serverEventLog.push({
+    serverTs: new Date().toISOString(),
+    type: evt.type,
+    component: evt.component || null,
+    action: evt.action || null,
+    status: evt.status || null,
+    detail: evt.detail || evt.text || evt.message || null,
+    cycleNum: evt.cycleNum || null,
+  })
+  if (serverEventLog.length > SERVER_EVENT_LOG_LIMIT) {
+    serverEventLog.splice(0, serverEventLog.length - SERVER_EVENT_LOG_LIMIT)
+  }
+}
+
+// Write a context snapshot alongside the image: events from the 30 s before
+// and 5 s after the image landed. The vision endpoint can then read this file
+// to ground its interpretation in what was actually happening.
+const IMAGE_CONTEXT_WINDOW_BEFORE_MS = 30_000
+const IMAGE_CONTEXT_WINDOW_AFTER_MS = 5_000
+
+// Compute a short human-readable caption from the surrounding event log.
+// Picks out the most recent phase / gripper / fault event before the image
+// so the UI can show "While analyzing the grasp · gripper closed" without
+// any LLM call.
+function composeImageCaption(events) {
+  if (!events || events.length === 0) return ''
+  const PHASE_LABELS = {
+    SCENE_SCAN: 'scanning the scene',
+    SEARCH_DETECT: 'searching for the item',
+    ANCHOR_SELECT: 'selecting a target',
+    CLOSEUP_MOVE: 'moving closer',
+    CLOSEUP_MOLMO: 'analyzing the grasp',
+    CLOSEUP_REFINE: 'analyzing the grasp',
+    CLOSEUP_LIFT: 'measuring distance',
+    SYNTHESISE: 'planning the grasp',
+    VISUALISE: 'previewing the grasp',
+    EXECUTE_GRASP: 'picking up',
+    CLOSEUP_RETRY: 'retrying the grasp',
+    HANDOVER_TRANSIT: 'bringing it over',
+    HANDOVER_MOVE: 'moving to handover',
+    HANDOVER_RELEASE: 'handing over',
+    HANDOVER_RETURN: 'returning',
+    RETURN_HOME: 'returning home',
+  }
+  let lastPhase = null
+  let lastGripper = null
+  let lastFault = null
+  for (const e of events) {
+    if (e.type === 'phase' && e.component && PHASE_LABELS[e.component]) {
+      lastPhase = { label: PHASE_LABELS[e.component], status: e.status }
+    }
+    if (e.type === 'gripper' || e.component === 'GRIPPER') {
+      const isOpen = /open/i.test(e.action || e.detail || '')
+      lastGripper = isOpen ? 'gripper open' : 'gripper closed'
+    }
+    if (e.type === 'system_fault' && e.status === 'FAIL') {
+      lastFault = (e.detail || '').slice(0, 60)
+    }
+  }
+  const parts = []
+  if (lastPhase) {
+    const verb = lastPhase.status === 'FAIL' ? 'failed while' : 'while'
+    parts.push(`${verb} ${lastPhase.label}`)
+  }
+  if (lastGripper) parts.push(lastGripper)
+  if (lastFault) parts.push(`hardware fault: ${lastFault}`)
+  if (parts.length === 0) return ''
+  const first = parts[0].charAt(0).toUpperCase() + parts[0].slice(1)
+  return [first, ...parts.slice(1)].join(' · ')
+}
+
+function saveImageContext(imageId, serverTs) {
+  try {
+    const t = new Date(serverTs).getTime()
+    const from = t - IMAGE_CONTEXT_WINDOW_BEFORE_MS
+    const to = t + IMAGE_CONTEXT_WINDOW_AFTER_MS
+    const events = serverEventLog.filter(e => {
+      const et = new Date(e.serverTs).getTime()
+      return et >= from && et <= to
+    })
+    const caption = composeImageCaption(events)
+    const ctxPath = path.join(IMAGES_DIR, `${imageId}.context.json`)
+    fs.writeFileSync(ctxPath, JSON.stringify({
+      imageId,
+      imageReceivedAt: serverTs,
+      windowFrom: new Date(from).toISOString(),
+      windowTo: new Date(to).toISOString(),
+      caption,
+      events,
+    }, null, 2))
+    return caption
+  } catch (e) {
+    console.log(`  Failed to save image context for ${imageId}: ${e.message}`)
+    return ''
+  }
+}
+
 function broadcast(data) {
   const msg = JSON.stringify(data)
   for (const ws of wss.clients) {
@@ -503,8 +622,7 @@ function saveReplayState() {
     fs.writeFileSync(STATE_FILE, JSON.stringify({
       eventIndex: currentEventIndex,
       loopCount,
-      cycleOffset,
-      orderIdBase,
+      nextOrderIdToAssign,
       currentItem,
       savedAt: new Date().toISOString(),
     }))
@@ -527,33 +645,41 @@ function flushStep() {
 // ── Write an order record ───────────────────────────────────────────────────
 
 function writeCompletedOrder(outcome, failDetail) {
+  if (cycleWritten) return   // refuse a second write for the same cycle
   flushStep()
-  const orderId = orderIdBase + cycleOffset - 1
+  const orderId = nextOrderIdToAssign
+  const cycleSucceeded = outcome !== 'FAIL'
   const hasCritical = cycleFailures.some(f => f.level === 'red')
-  const hasOrange = cycleFailures.some(f => f.level === 'orange')
+  // Orange-level failures (retries, search misses at one waypoint, bridge
+  // faults) are only considered a "warning" when the cycle ultimately failed.
+  // If the cycle succeeded, those recoveries worked and don't deserve flagging.
+  const hasUnrecoveredOrange = !cycleSucceeded && cycleFailures.some(f => f.level === 'orange')
 
   let status
   if (outcome === 'FAIL') status = 'failed'
-  else if (hasCritical || hasOrange || retryCount > 0) status = 'warning'
-  else status = 'success'
+  else if (hasCritical) status = 'warning'   // red recovered but worth noting
+  else status = 'success'                    // retries/oranges that recovered → success
+
+  // Resolve a failure's phase, preferring the explicit phase recorded on the
+  // failure object (set when GRIPPER / BRIDGE etc. fail), falling back to the
+  // component → phase mapping.
+  const phaseOfFailure = (f) => f?.phase || _compToPhase[f?.component]?.phase || null
 
   let failure = null
   if (status === 'failed') {
     const f = cycleFailures.find(f => f.level === 'red') || { message: failDetail || 'Unknown failure' }
-    const phase = _compToPhase[f.component]
     failure = {
       reason: classifyFailure(f.message || failDetail),
       detail: f.message || failDetail,
-      at_phase: phase?.phase || null,
+      at_phase: phaseOfFailure(f),
     }
   } else if (status === 'warning') {
-    const f = cycleFailures.find(f => f.level === 'orange')
+    const f = cycleFailures.find(f => f.level === 'red')
     if (f) {
-      const phase = _compToPhase[f.component]
       failure = {
         reason: classifyFailure(f.message),
         detail: f.message,
-        at_phase: phase?.phase || 'analyzing',
+        at_phase: phaseOfFailure(f) || 'analyzing',
       }
     }
   }
@@ -562,14 +688,15 @@ function writeCompletedOrder(outcome, failDetail) {
 
   // Annotate each step with failure status for history UI coloring
   for (const step of steps) {
-    const phaseFailures = cycleFailures.filter(f => {
-      const failPhase = _compToPhase[f.component]
-      return failPhase && failPhase.phase === step.phase
-    })
+    const phaseFailures = cycleFailures.filter(f => phaseOfFailure(f) === step.phase)
     const hasRed = phaseFailures.some(f => f.level === 'red')
-    const hasOrange = phaseFailures.some(f => f.level === 'orange')
+    // Treat orange failures as warnings only when the cycle ultimately failed.
+    // A successful cycle means every retry/recovery in this step worked → 'ok'.
+    const hasOrange = !cycleSucceeded && phaseFailures.some(f => f.level === 'orange')
     if (hasRed) {
-      step.status = 'failed'
+      // If the cycle succeeded despite this red, downgrade the step to a warning
+      // (something serious happened but the robot recovered).
+      step.status = cycleSucceeded ? 'warning' : 'failed'
       step.failure_detail = classifyFailureFriendly(phaseFailures.find(f => f.level === 'red').message)
     } else if (hasOrange) {
       step.status = 'warning'
@@ -584,7 +711,16 @@ function writeCompletedOrder(outcome, failDetail) {
         const imgPhase = _compToPhase[img.failComponent]
         return imgPhase && imgPhase.phase === step.phase
       })
-      .map(img => ({ imageId: img.imageId, camera: img.camera, description: img.description }))
+      .map(img => ({
+        imageId: img.imageId,
+        camera: img.camera,
+        description: img.description,
+        // Short caption synthesised from log lines around the moment the
+        // image was captured — used by the UI to label each image with what
+        // was happening, no LLM needed.
+        log_caption: img.logCaption || '',
+        captured_at: img.serverReceivedAt || null,
+      }))
     if (stepImages.length > 0) step.images = stepImages
   }
 
@@ -615,6 +751,8 @@ function writeCompletedOrder(outcome, failDetail) {
     timestamp,
     rating: status === 'success' ? 5 : status === 'warning' ? 3 : 1,
   })
+  cycleWritten = true
+  nextOrderIdToAssign = orderId + 1
   console.log(`  Order #${orderId} (${currentItem}) [${status}] written to orders.json`)
 }
 
@@ -633,7 +771,15 @@ function processLiveEvent(evt) {
 
   // ── Cycle bookkeeping (same logic as replay)
   if (evt.type === 'cycle_start') {
-    cycleOffset++
+    // If the previous cycle never got a chance to write (no CYCLE end +
+    // no executor shutdown), close it out as failed so we don't end up
+    // with two cycles fighting over one order id.
+    if (cycleStartTime && currentItem && !currentCycleIsAnomaly && !cycleWritten) {
+      writeCompletedOrder('FAIL', 'Cycle abandoned (no terminator before new cycle)')
+    }
+    // Don't advance the order id here — it advances on a successful write.
+    // That way anomaly cycles (invalid input) don't burn a number.
+    cycleWritten = false
     currentItem = null
     currentCycleIsAnomaly = false
     cycleStartTime = Date.now()
@@ -660,18 +806,26 @@ function processLiveEvent(evt) {
     }
   }
 
+  // Stamp the event with server (UI-clock) time and append to the ring buffer
+  // so subsequent images get a properly synced context window.
+  recordServerEvent(evt)
+
   // Save failure images to disk and associate with the preceding failure
   if (evt.type === 'image') {
     const filePath = saveImage(evt.imageId, evt.base64)
     if (filePath) {
+      const serverReceivedAt = new Date().toISOString()
+      const logCaption = saveImageContext(evt.imageId, serverReceivedAt) || ''
       cycleImages.push({
         imageId: evt.imageId,
         camera: evt.camera,
         description: evt.description,
         failComponent: lastFailComponent,
-        ts: evt.ts,
+        ts: evt.ts,                       // robot-side timestamp (possibly drifting)
+        serverReceivedAt,                 // UI-clock timestamp (authoritative)
+        logCaption,                       // brief caption built from surrounding logs
       })
-      console.log(`  Image saved: ${evt.imageId} (${evt.camera}) → ${lastFailComponent || 'no failure context'}`)
+      console.log(`  Image saved: ${evt.imageId} (${evt.camera}) → ${lastFailComponent || 'no failure context'} [+context]`)
     }
     return
   }
@@ -735,7 +889,17 @@ function processLiveEvent(evt) {
 
   if (evt.type === 'collision_warning') { collisionWarnings++; return }
   if (evt.type === 'gripper' && !evt.success) {
-    cycleFailures.push({ level: 'red', message: evt.message || 'Gripper failure', component: 'GRIPPER' })
+    // Attribute the gripper failure to whichever pipeline phase is active
+    // right now (CLOSE → grasping, OPEN → handing_over usually). This lets
+    // the order's step-by-step list colour the right step yellow/red even
+    // though GRIPPER itself isn't in the PHASES array.
+    const activePhase = _compToPhase[stepComponent]?.phase || null
+    cycleFailures.push({
+      level: 'red',
+      message: evt.message || 'Gripper failure',
+      component: 'GRIPPER',
+      phase: activePhase,
+    })
   }
   if (evt.type === 'motion' && stepComponent) { stepMeta.trajectory_duration = evt.duration }
 
@@ -777,7 +941,13 @@ function processLiveEvent(evt) {
   // ── System faults (bridge, executor): track + broadcast ───────────────────
   if (evt.type === 'system_fault') {
     if (evt.status === 'FAIL') {
-      cycleFailures.push({ level: 'orange', message: evt.detail || `${evt.source} fault`, component: evt.source?.toUpperCase() || 'BRIDGE' })
+      const activePhase = _compToPhase[stepComponent]?.phase || null
+      cycleFailures.push({
+        level: 'orange',
+        message: evt.detail || `${evt.source} fault`,
+        component: evt.source?.toUpperCase() || 'BRIDGE',
+        phase: activePhase,
+      })
     }
     broadcast(evt)
     startHeartbeat()
@@ -791,11 +961,18 @@ function processLiveEvent(evt) {
     return
   }
 
+  // ── Wheel spin: ephemeral, do not persist in catch-up history ─────────────
+  if (evt.type === 'wheel_spin') {
+    broadcast(evt)
+    startHeartbeat()
+    return
+  }
+
   if (evt.type === 'system_event') return
 
   const payload = { ...evt }
   if (payload.type === 'cycle_start') {
-    payload.cycleNum = orderIdBase + cycleOffset - 1
+    payload.cycleNum = nextOrderIdToAssign
   }
 
   cycleHistory.push(payload)
@@ -807,7 +984,7 @@ function connectToRobot() {
   if (!ROBOT_WS) return
 
   liveAttempts++
-  console.log(`  Connecting to robot at ${ROBOT_WS} (attempt ${liveAttempts}/${LIVE_RECONNECT_ATTEMPTS})…`)
+  console.log(`  Connecting to robot at ${ROBOT_WS} (attempt ${liveAttempts})…`)
 
   try {
     robotWs = new WebSocket(ROBOT_WS, { handshakeTimeout: 5000 })
@@ -851,51 +1028,27 @@ function stopStaticReplay() {
 
 function handleRobotDisconnect() {
   robotWs = null
-  if (liveAttempts < LIVE_RECONNECT_ATTEMPTS) {
-    const backoff = Math.min(500 * Math.pow(2, liveAttempts), 10000)
-    console.log(`  Retrying in ${(backoff / 1000).toFixed(1)}s…`)
-    setTimeout(connectToRobot, backoff)
-  } else {
-    console.log(`  ${LIVE_RECONNECT_ATTEMPTS} attempts failed — falling back to static replay`)
-    sourceMode = 'static'
+  // Keep trying to reach the robot indefinitely — capped exponential backoff.
+  // The dashboard sits in 'waiting' mode until the robot comes online.
+  if (sourceMode !== 'waiting') {
+    sourceMode = 'waiting'
     broadcastSourceMode()
-    globalReplay()
-    startRobotProbe()
   }
+  const backoff = Math.min(1000 * Math.pow(2, Math.min(liveAttempts, 5)), 15000)
+  console.log(`  Waiting for robot — retrying in ${(backoff / 1000).toFixed(1)}s…`)
+  setTimeout(connectToRobot, backoff)
 }
 
-/** Periodically try to reach the robot while running in static mode */
-function startRobotProbe() {
-  if (robotProbeTimer) return
-  robotProbeTimer = setInterval(() => {
-    if (sourceMode === 'live') { stopRobotProbe(); return }
-    console.log(`  Probing robot at ${ROBOT_WS}…`)
-    try {
-      const probe = new WebSocket(ROBOT_WS, { handshakeTimeout: 3000 })
-      probe.on('open', () => {
-        probe.close()
-        console.log(`  Robot is back online — switching to live`)
-        stopRobotProbe()
-        stopStaticReplay()
-        liveAttempts = 0
-        connectToRobot()
-      })
-      probe.on('error', () => {})
-      probe.on('close', () => {})
-    } catch {}
-  }, ROBOT_PROBE_INTERVAL)
-}
-
-function stopRobotProbe() {
-  if (robotProbeTimer) { clearInterval(robotProbeTimer); robotProbeTimer = null }
-}
+// No-op shims kept for backward compatibility with older call sites.
+function startRobotProbe() {}
+function stopRobotProbe() {}
 
 // ── Global replay loop (static mode) ────────────────────────────────────────
 
 function globalReplay() {
   loopCount++
-  orderIdBase = nextOrderId()
-  cycleOffset = 0
+  nextOrderIdToAssign = nextOrderId()
+  cycleWritten = false
   currentItem = null
   cycleHistory = []
 
@@ -913,7 +1066,7 @@ function globalReplay() {
 
     // ── Cycle bookkeeping
     if (evt.type === 'cycle_start') {
-      cycleOffset++
+      cycleWritten = false
       currentItem = null
       currentCycleIsAnomaly = false
       cycleStartTime = Date.now()
@@ -1097,7 +1250,7 @@ function globalReplay() {
     // Prepare payload
     const payload = { ...evt }
     if (payload.type === 'cycle_start') {
-      payload.cycleNum = orderIdBase + cycleOffset - 1
+      payload.cycleNum = nextOrderIdToAssign
     }
 
     cycleHistory.push(payload)
@@ -1129,7 +1282,7 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/recent-orders') {
     const orders = readOrders()
-    const recent = orders.slice(-4).reverse()
+    const recent = orders.slice(-2).reverse()
     const failed = orders.filter(o => o.status === 'failed').length
     const weeklyCaption = readLatestCaption('weekly')
     res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -1309,7 +1462,7 @@ const wss = new WebSocketServer({ server })
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  WebSocket: ws://0.0.0.0:${PORT}`)
   console.log(`  HTTP API:  http://0.0.0.0:${PORT}/api/recent-orders`)
-  console.log(`  Robot:     ${ROBOT_WS} (auto-switch between live/static)\n`)
+  console.log(`  Robot:     ${ROBOT_WS} (waiting for live connection — no static fallback)\n`)
   connectToRobot()
 })
 
@@ -1327,6 +1480,14 @@ wss.on('connection', (ws) => {
     }
   }
 
+  // ── Liveness: ping every 25 s, drop the socket if no pong by the next tick.
+  // iPads/iOS aggressively sleep idle TCP sockets; without server-side pings
+  // the connection appears alive on the JS side long after the network died,
+  // and the dashboard sits silent. ws auto-replies to pongs so the JS client
+  // doesn't need any handling.
+  ws.isAlive = true
+  ws.on('pong', () => { ws.isAlive = true })
+
   ws.on('message', (raw) => {
     try {
       const msg = JSON.parse(raw)
@@ -1338,3 +1499,16 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => console.log('Client disconnected'))
 })
+
+// Global keep-alive sweep
+setInterval(() => {
+  for (const ws of wss.clients) {
+    if (ws.isAlive === false) {
+      console.log('  Client failed ping — terminating')
+      try { ws.terminate() } catch {}
+      continue
+    }
+    ws.isAlive = false
+    try { ws.ping() } catch {}
+  }
+}, 25_000)

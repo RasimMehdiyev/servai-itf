@@ -1,0 +1,19 @@
+{
+  "text": "The robot handled 34 out of 108 orders successfully within an average time of 100 seconds per order, with a median of 94 seconds, showing steady performance despite some challenges. The top failure reason was \"unknown\" (39 times), affecting several orders including #2 and #67 [cite:2]. Orders that took longer than usual often had issues related to the unknown category, suggesting they might have encountered unexpected obstacles or objects during their pick-up process. To address this, ROBI could be programmed to perform a more thorough [[scene-scan]] before each order, increasing its understanding of the environment and reducing the likelihood of encountering unanticipated items.",
+  "citations": [
+    2
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-14",
+    "to": "2026-05-20",
+    "status": "all",
+    "_totals": [
+      108,
+      34,
+      21,
+      53
+    ]
+  },
+  "generated_at": "2026-05-20T08:15:44.767680+00:00"
+}

@@ -99,6 +99,38 @@ const REASON_SHORT = {
   gripper_failed: 'Grip failed',
   e_stopped: 'E-stop',
   timeout: 'Timeout',
+  operator_abort: 'Operator aborted',
+  bridge_fault: 'Hardware fault',
+}
+
+// Resolve a friendly step name from either order.failure.at_phase or by
+// inspecting the order's per-step status. Returns null if the order had no
+// notable step (i.e. successful or completely missing failure info).
+const PHASE_FRIENDLY = {
+  scene_scan: 'Scene scan',
+  searching: 'Searching for item',
+  anchor_select: 'Selecting target',
+  closeup_move: 'Moving closer',
+  analyzing: 'Analyzing the grasp',
+  grasping: 'Picking up',
+  bringing_over: 'Bringing it over',
+  handing_over: 'Handing over',
+  returning: 'Returning',
+}
+
+function notableStepName(order) {
+  // Prefer the explicit at_phase if present
+  const atPhase = order?.failure?.at_phase
+  if (atPhase) {
+    return PHASE_FRIENDLY[atPhase] || atPhase.replace(/_/g, ' ')
+  }
+  // Otherwise look at the first warning/failed step
+  for (const p of (order?.phases || [])) {
+    if (p.status === 'warning' || p.status === 'failed') {
+      return p.friendly_name || (p.phase ? p.phase.replace(/_/g, ' ') : null)
+    }
+  }
+  return null
 }
 
 function StatusPill({ status, failure }) {
@@ -193,9 +225,24 @@ function groupImagesByEvent(images) {
     const pair = images.filter(i => i.imageId.replace(/_(?:d415|zed)$/, '') === key)
     const wrist = pair.find(i => i.camera === 'd415')
     const external = pair.find(i => i.camera === 'zed')
-    groups.push({ key, wrist, external, phase: img.phase })
+    // Per-image log-caption / captured-at carry through from the WS server.
+    // Pair members share the same moment, so either copy works.
+    const logCaption = wrist?.log_caption || external?.log_caption || ''
+    const capturedAt = wrist?.captured_at || external?.captured_at || null
+    groups.push({ key, wrist, external, phase: img.phase, logCaption, capturedAt })
   }
   return groups
+}
+
+// Render a small UTC-safe HH:MM:SS from an ISO string (local time)
+function localHHMMSS(iso) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return ''
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  const ss = String(d.getSeconds()).padStart(2, '0')
+  return `${hh}:${mm}:${ss}`
 }
 
 const RAG_BASE = getRagBase()
@@ -378,7 +425,7 @@ function ImageOverlay({ images, order, onClose }) {
         </div>
 
         {/* Side-by-side camera feeds */}
-        <div className="flex gap-2 p-3" style={{ overflow: 'auto', maxHeight: 'calc(85vh - 140px)' }}>
+        <div className="flex gap-2 p-3" style={{ overflow: 'auto', maxHeight: 'calc(85vh - 200px)' }}>
           {group.wrist && (
             <div className="flex-1 min-w-0">
               <CameraLabel camera="d415" />
@@ -395,6 +442,23 @@ function ImageOverlay({ images, order, onClose }) {
             <div className="flex-1 text-center py-8" style={{ color: GRAY_400 }}>No images available</div>
           )}
         </div>
+
+        {/* Log-derived caption: what was happening when the image was taken */}
+        {group.logCaption && (
+          <div
+            className="mx-3 mb-3 px-3 py-2 rounded-lg text-[12px]"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.85)',
+              border: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
+            <span style={{ color: GRAY_400, fontWeight: 600, marginRight: 6 }}>
+              {group.capturedAt ? localHHMMSS(group.capturedAt) : ''}
+            </span>
+            {group.logCaption}
+          </div>
+        )}
 
         {/* Vision AI caption */}
         <div className="px-3 pb-3">

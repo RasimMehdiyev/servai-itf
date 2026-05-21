@@ -1,0 +1,16 @@
+{
+  "text": "During the period from May 13 to May 19, ROBI handled a total of 74 orders, with an average fetch time of 103 seconds per order, serving busily on May 19 when all 74 orders were processed in just one day, handling top items like pens and balls.",
+  "citations": [],
+  "surface": "chart",
+  "scope": {
+    "from": "2026-05-13",
+    "to": "2026-05-19",
+    "_totals": [
+      74,
+      22,
+      15,
+      37
+    ]
+  },
+  "generated_at": "2026-05-19T14:17:12.163291+00:00"
+}

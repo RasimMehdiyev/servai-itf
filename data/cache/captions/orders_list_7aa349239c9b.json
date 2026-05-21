@@ -1,0 +1,19 @@
+{
+  "text": "The robot delivered 1 out of 3 orders successfully within an average time of 373 seconds per order, with a median of 173 seconds. The unknown failure reason affected both failed orders [cite:2] and led to significant delays in one case where the water bottle took over 800 seconds to deliver. Slowest order was also related to the unknown issue at 817 seconds. To address this, focus on improving [[detection]] accuracy for items like bottles which are often overlooked or misidentified by ROBI.",
+  "citations": [
+    2
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-13",
+    "to": "2026-05-19",
+    "status": "all",
+    "_totals": [
+      3,
+      1,
+      0,
+      2
+    ]
+  },
+  "generated_at": "2026-05-19T07:48:01.973265+00:00"
+}
