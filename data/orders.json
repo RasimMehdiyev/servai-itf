@@ -40000,5 +40000,91 @@
     ],
     "timestamp": "14:01",
     "rating": 5
+  },
+  {
+    "id": 258,
+    "order_number": "258",
+    "status": "failed",
+    "failure": {
+      "reason": "no_valid_depth",
+      "detail": "no valid depth in 5px window around (774, 377)",
+      "at_phase": "analyzing"
+    },
+    "item": "ball",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:02:36.715Z",
+    "completed_at": "2026-06-04T12:03:04.469Z",
+    "total_seconds": 28,
+    "robot_seconds": 22,
+    "human_wait_seconds": 6,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve",
+      "top-corner"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": null,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 14,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "anchor_distance_cm": 59,
+          "anchor_score": 0.7
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 16
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "refine_score": 0.84,
+          "refine_area_px": 19786
+        },
+        "status": "failed",
+        "failure_detail": "Depth measurement failed"
+      }
+    ],
+    "timestamp": "14:02",
+    "rating": 1
   }
 ]
