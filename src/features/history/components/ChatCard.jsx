@@ -20,11 +20,7 @@ export default function ChatCard({ onOpenChat }) {
             </div>
           </div>
         </div>
-        <button
-          onClick={onOpenChat}
-          className="px-4 py-2 rounded-lg text-[13px] font-semibold border-0 cursor-pointer hover:opacity-90 transition-opacity shrink-0"
-          style={{ background: 'var(--teal, #14b8a6)', color: 'white' }}
-        >
+        <button onClick={onOpenChat} className="btn btn-sm btn-accent shrink-0">
           Ask ROBI
         </button>
       </div>

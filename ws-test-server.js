@@ -28,6 +28,10 @@ const REPLAY_SPEED = parseFloat(process.env.REPLAY_SPEED || '1.0')
 const ROBOT_WS = process.env.ROBOT_WS || 'ws://olifant.local:7878'
 const LIVE_RECONNECT_ATTEMPTS = parseInt(process.env.LIVE_RETRIES || '5', 10)
 const ROBOT_PROBE_INTERVAL = 30_000  // check for robot every 30s while in static mode
+// Serve a replay of grocery_logs.txt when no live robot is reachable, so the
+// dashboard always has something to show for testing. Set STATIC_REPLAY=0 to
+// disable and sit in plain "waiting for robot" mode instead.
+const ENABLE_STATIC_REPLAY = process.env.STATIC_REPLAY !== '0'
 const LOG_FILE = path.join(__dirname, 'grocery_logs.txt')
 const ORDERS_DIR = path.join(__dirname, 'data')
 const ORDERS_FILE = path.join(ORDERS_DIR, 'orders.json')
@@ -60,8 +64,10 @@ function readLatestCaption(surfacePrefix) {
   } catch { return null }
 }
 
-// Source mode: 'live' (robot WS connected), 'waiting' (still trying to reach robot)
-// Static file replay has been removed — the dashboard waits for the live robot.
+// Source mode, broadcast to clients so the UI can label the feed:
+//   'live'    — connected to the real robot WS
+//   'static'  — replaying grocery_logs.txt (no robot, demo/test data)
+//   'waiting' — no robot and static replay disabled (STATIC_REPLAY=0)
 let sourceMode = 'waiting'
 
 // ── Valid stock items (anything else is treated as accidental input) ─────────
@@ -1021,27 +1027,57 @@ function connectToRobot() {
 }
 
 let robotProbeTimer = null
+let staticReplayActive = false
+
+// ── Static replay (fallback when no live robot) ─────────────────────────────
+
+function startStaticReplay() {
+  if (staticReplayActive) return
+  if (!allEvents.length) {
+    console.log('  Static replay requested but grocery_logs.txt has no events.')
+    return
+  }
+  staticReplayActive = true
+  sourceMode = 'static'
+  broadcastSourceMode()
+  console.log(`  No live robot — serving static replay of ${allEvents.length} events (mode: static).`)
+  globalReplay()
+}
 
 function stopStaticReplay() {
   if (globalTimeout) { clearTimeout(globalTimeout); globalTimeout = null }
+  staticReplayActive = false
+}
+
+// Gently poll for the real robot while we're serving static data, so a robot
+// that comes online later gets picked up without restarting this server.
+function startRobotProbe() {
+  if (robotProbeTimer || !ROBOT_WS) return
+  robotProbeTimer = setInterval(() => {
+    if (!robotWs) {
+      console.log(`  Probing for robot at ${ROBOT_WS}…`)
+      connectToRobot()
+    }
+  }, ROBOT_PROBE_INTERVAL)
+}
+
+function stopRobotProbe() {
+  if (robotProbeTimer) { clearInterval(robotProbeTimer); robotProbeTimer = null }
 }
 
 function handleRobotDisconnect() {
   robotWs = null
-  // Keep trying to reach the robot indefinitely — capped exponential backoff.
-  // The dashboard sits in 'waiting' mode until the robot comes online.
-  if (sourceMode !== 'waiting') {
+  // No live robot. Fall back to static replay (if enabled) so the dashboard
+  // still has data, and keep probing for the robot in the background.
+  if (ENABLE_STATIC_REPLAY) {
+    startStaticReplay()
+  } else if (sourceMode !== 'waiting') {
     sourceMode = 'waiting'
     broadcastSourceMode()
+    console.log(`  Waiting for robot at ${ROBOT_WS} (static replay disabled)…`)
   }
-  const backoff = Math.min(1000 * Math.pow(2, Math.min(liveAttempts, 5)), 15000)
-  console.log(`  Waiting for robot — retrying in ${(backoff / 1000).toFixed(1)}s…`)
-  setTimeout(connectToRobot, backoff)
+  startRobotProbe()
 }
-
-// No-op shims kept for backward compatibility with older call sites.
-function startRobotProbe() {}
-function stopRobotProbe() {}
 
 // ── Global replay loop (static mode) ────────────────────────────────────────
 
@@ -1323,13 +1359,15 @@ const server = http.createServer(async (req, res) => {
     const totalWarning = days.reduce((s, d) => s + d.warning, 0)
     const totalFailed = days.reduce((s, d) => s + d.failed, 0)
 
-    const cachedCaption = readLatestCaption('chart')
+    // The chart no longer renders an AI caption — the weekly summary in the
+    // top card is the single source of narrative summary, and the chart's
+    // tiles already convey the numbers directly. So we don't embed a cached
+    // caption here either; saves a disk read on every fetch.
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({
       from, to,
       days,
       totals: { delivered: totalDelivered, warning: totalWarning, failed: totalFailed, avg_fetch_seconds: avgFetch },
-      cached_caption: cachedCaption,
     }))
 
   } else if (pathname === '/api/orders/list') {
@@ -1340,31 +1378,38 @@ const server = http.createServer(async (req, res) => {
     const statusFilter = query.status || 'all'
     const itemFilter = query.item || 'all'
 
-    let filtered = orders.filter(o => {
+    let inRange = orders.filter(o => {
       const dt = (o.started_at || '').slice(0, 10)
       return dt >= from && dt <= to
     })
 
-    const allCount = filtered.length
-    const deliveredCount = filtered.filter(o => o.status === 'success' || o.status === 'ok').length
-    const warningCount = filtered.filter(o => o.status === 'warning').length
-    const failedCount = filtered.filter(o => o.status === 'failed').length
+    const allCount = inRange.length
+
+    // Helper predicates so we can compose status + item filters.
+    const matchStatus = (o, s) =>
+      s === 'all' ? true
+      : s === 'delivered' ? (o.status === 'success' || o.status === 'ok')
+      : o.status === s
+    const matchItem = (o, it) => it === 'all' ? true : o.item === it
+
+    // Status chip counts reflect the *currently active item filter* so when
+    // sock is selected, "Failed" shows the number of failed socks, not the
+    // number of failed orders overall.
+    const itemScoped = inRange.filter(o => matchItem(o, itemFilter))
+    const deliveredCount = itemScoped.filter(o => matchStatus(o, 'delivered')).length
+    const warningCount   = itemScoped.filter(o => matchStatus(o, 'warning')).length
+    const failedCount    = itemScoped.filter(o => matchStatus(o, 'failed')).length
+
+    // Item chip counts likewise reflect the active status filter.
+    const statusScoped = inRange.filter(o => matchStatus(o, statusFilter))
     const byItem = {}
-    for (const o of filtered) {
+    for (const o of statusScoped) {
       const item = o.item || 'unknown'
       byItem[item] = (byItem[item] || 0) + 1
     }
 
-    if (statusFilter === 'delivered') {
-      filtered = filtered.filter(o => o.status === 'success' || o.status === 'ok')
-    } else if (statusFilter === 'warning') {
-      filtered = filtered.filter(o => o.status === 'warning')
-    } else if (statusFilter === 'failed') {
-      filtered = filtered.filter(o => o.status === 'failed')
-    }
-    if (itemFilter !== 'all') {
-      filtered = filtered.filter(o => o.item === itemFilter)
-    }
+    // The actual rows shown — both filters applied.
+    let filtered = inRange.filter(o => matchStatus(o, statusFilter) && matchItem(o, itemFilter))
 
     filtered.sort((a, b) => ((b.completed_at || b.started_at || '')).localeCompare(a.completed_at || a.started_at || ''))
 
@@ -1390,13 +1435,13 @@ const server = http.createServer(async (req, res) => {
     const byItemObj = {}
     for (const [k, v] of sortedByItem) byItemObj[k] = v
 
-    const cachedCaption = readLatestCaption('orders_list')
+    // Orders list no longer carries an AI caption — the chips and rows
+    // already show everything the caption used to summarise.
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({
       filter: { from, to, status: statusFilter, item: itemFilter },
       counts: { all: allCount, delivered: deliveredCount, warning: warningCount, failed: failedCount, by_item: byItemObj },
       orders: resultOrders,
-      cached_caption: cachedCaption,
     }))
 
   } else if (pathname === '/api/orders') {
@@ -1462,7 +1507,11 @@ const wss = new WebSocketServer({ server })
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  WebSocket: ws://0.0.0.0:${PORT}`)
   console.log(`  HTTP API:  http://0.0.0.0:${PORT}/api/recent-orders`)
-  console.log(`  Robot:     ${ROBOT_WS} (waiting for live connection — no static fallback)\n`)
+  console.log(`  Robot:     ${ROBOT_WS} (static replay fallback: ${ENABLE_STATIC_REPLAY ? 'on' : 'off'})\n`)
+  // Start serving static replay immediately so the dashboard has data on first
+  // load, then try the real robot in the background. If the robot connects,
+  // robotWs.on('open') stops the replay and switches to live.
+  if (ENABLE_STATIC_REPLAY) startStaticReplay()
   connectToRobot()
 })
 

@@ -1,6 +1,0 @@
-ITF proposal
-------------
-
-The [X] is a Vision-Language Action model powered robot that takes customer requests on fetching foods from shelf behind (e.g., chips, chocolate bars, etc.).
-The decision-making process of such a complex model is often not understandable for a naive user, which can cause disruption in human-robot interaction.
-Therefore, the researcher presents a mobile web application that translates robot's internal states from logs into human-interpretable format on-line. Moreover, it provides a previous session overview with the images captured from the session. 

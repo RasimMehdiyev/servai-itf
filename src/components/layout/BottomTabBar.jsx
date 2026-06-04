@@ -9,11 +9,11 @@ const tabs = [
 
 export default function BottomTabBar() {
   return (
-    <nav className="bottombar" aria-label="Main navigation">
+    <nav className="dock" aria-label="Main navigation">
       {tabs.map(t => (
-        <NavLink key={t.to} to={t.to} className={({ isActive }) => isActive ? 'active' : ''} aria-label={t.label}>
+        <NavLink key={t.to} to={t.to} className={({ isActive }) => isActive ? 'dock-active' : ''} aria-label={t.label}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d={t.icon} /></svg>
-          <span>{t.label}</span>
+          <span className="dock-label">{t.label}</span>
         </NavLink>
       ))}
     </nav>

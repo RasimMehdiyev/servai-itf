@@ -40,8 +40,8 @@
     --primary: #2B7FFF;
     --primary-bg: #F9FAFB;
     --live-dot: #10b981;
-    --teal: #0d9488;
-    --teal-bg: #f0fdfa;
+    --teal: #11bfb1;
+    --teal-bg: #e8fcf8;
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -954,6 +954,115 @@ body {
 }
 .animate-fadeIn {
   animation: fadeIn 0.2s ease;
+}
+
+/* ---- daisyUI "list" component (ported) ----
+   The daisyUI `list` is a v5-only component and we're on daisyUI 4 / Tailwind 3,
+   so its CSS is ported here as plain rules using our own design tokens. Markup
+   mirrors daisyUI: <ul class="list"> with <li class="list-row"> rows, a growing
+   `list-col-grow` content column, and `list-col-wrap` for a full-width second row. */
+.list {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+}
+.list-row {
+  /* icon · grow content · trailing controls — explicit tracks (not auto-flow
+     columns) so a `list-col-wrap` can span the full width via grid-column:1/-1 */
+  --list-grid-cols: auto 1fr auto;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--list-grid-cols);
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.5rem;
+  border-radius: var(--radius-md);
+  word-break: break-word;
+}
+.list-row > * {
+  grid-row-start: 1;
+}
+/* Divider between rows (not after the last one) */
+.list-row:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0;
+  border-bottom: 1px solid var(--border);
+}
+/* The flexible content column */
+.list-col-grow {
+  grid-column-start: 2;
+}
+/* Full-width wrap onto a second row (e.g. expanded detail) */
+.list-col-wrap {
+  grid-column: 1 / -1;
+  grid-row-start: 2;
+}
+
+/* ---- daisyUI "dock" component (ported) ----
+   The dock is v5-only in daisyUI; ported here for our v4 / Tailwind 3 setup as
+   the bottom navigation bar. Not position:fixed — the app shell already reserves
+   the bar's space via flex layout. The active item keeps our colour coding
+   (primary) plus a dock-style top accent. */
+.dock {
+  flex: 0 0 var(--bottombar-h);
+  padding-bottom: var(--safe-bottom);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  align-items: stretch;
+  width: 100%;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 10;
+}
+.dock > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: inset 0 2px 0 0 transparent;
+  transition: color 0.15s ease;
+}
+.dock-label {
+  font-size: clamp(11px, 1.5vw, 13px);
+  font-weight: 500;
+}
+.dock-active {
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: inset 0 2px 0 0 var(--primary);
+}
+
+/* daisyUI tooltips: allow multi-sentence tips (e.g. term definitions) to wrap
+   to a readable width instead of forming one very wide line. */
+.tooltip:before {
+  white-space: normal;
+  width: max-content;
+  max-width: 16rem;
+  text-align: left;
+}
+
+/* Thinner outline borders on filter chips / status badges (−20%, 1px → 0.8px). */
+.btn-outline { border-width: 0.8px; }
+.badge-outline { border-width: 0.8px; }
+
+/* Recharts: never draw a focus outline when clicking chart elements
+   (e.g. the clickable radar failure labels). */
+.recharts-wrapper:focus,
+.recharts-wrapper :focus,
+.recharts-surface,
+.recharts-surface :focus {
+  outline: none;
 }
 
 /* ---- Responsive ---- */

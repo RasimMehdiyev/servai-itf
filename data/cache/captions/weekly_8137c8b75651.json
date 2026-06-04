@@ -1,7 +1,7 @@
 {
-  "text": "This summary covers the period from 2026-05-15 to 2026-05-21, encompassing 7 days of ROBI\u2019s operation. During this time, ROBI processed a total of 163 orders, with 58 successfully delivered, 37 delivered with warnings, and 68 orders failing. The average fetch time was 97 seconds, and the median fetch time was 95 seconds, primarily utilizing the [[gripper]] for item retrieval.\n\nNotably, 2026-05-19 was the busiest day with 95 orders, while order #2 for the water bottle experienced a significant delay of 817 seconds, primarily due to a [[search_exhausted]] failure. Across all orders, there were 25 [[retries]] (21 orders needing them), with the most frequent failure types being [[reachability_failed]] (20 times) and [[search_exhausted]] (26 times). There were no [[collision warnings]] recorded during the week.",
+  "text": "This summary covers the period from 2026-05-29 to 2026-06-04, encompassing 73 orders processed by ROBI. Of these, 12 were delivered, 12 delivered with warnings, and 49 resulted in a failed status. The average fetch time was 54 seconds, with a median of 58 seconds, and ROBI primarily handled pens (25), t-shirts (24), water bottles (12), and balls (12) during this time.\n\nNotably, ROBI experienced a high number of failures this week, with [[reachability]]_failed occurring 25 times, [[no-valid-depth]] 12 times, and [[handover]]_failed 12 times, alongside 12 [[search-exhausted]] events. A total of 50 retries were recorded across all orders, with 25 orders specifically requiring a [[retry]]. Furthermore, ROBI issued 252 collision warnings, indicating a significant level of interaction with the environment.",
   "citations": [],
   "surface": "weekly",
   "scope": {},
-  "generated_at": "2026-05-21T09:42:00.375119+00:00"
+  "generated_at": "2026-06-04T11:35:07.131412+00:00"
 }

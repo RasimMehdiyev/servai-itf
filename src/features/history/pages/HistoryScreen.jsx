@@ -5,6 +5,7 @@ import WeeklySummaryCard from '../components/WeeklySummaryCard'
 import ChatCard from '../components/ChatCard'
 import ActivityChart from '../components/ActivityChart'
 import OrdersList from '../components/OrdersList'
+import FailureRadar from '../components/FailureRadar'
 import ChatPanel from '../components/ChatPanel'
 import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
 
@@ -91,11 +92,7 @@ export default function HistoryScreen() {
             <button
               key={chip.label}
               onClick={() => setRangeIdx(i)}
-              className="px-4 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer transition-colors"
-              style={i === rangeIdx
-                ? { background: '#111827', color: 'white', borderColor: '#111827' }
-                : { background: 'white', color: '#374151', borderColor: '#e5e7eb' }
-              }
+              className={`btn btn-sm rounded-full ${i === rangeIdx ? 'btn-neutral' : 'btn-outline'}`}
             >
               {chip.label}
             </button>
@@ -111,8 +108,10 @@ export default function HistoryScreen() {
           />
         </div>
 
-        {/* Orders list */}
+        {/* Failure radar + orders list — stacked in one block, chart first.
+            The radar summarises which issues drove the orders listed below. */}
         <div className="mt-lg">
+          <FailureRadar dateFrom={dateFrom} dateTo={dateTo} />
           <OrdersList
             dateFrom={dateFrom}
             dateTo={dateTo}

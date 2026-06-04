@@ -30,35 +30,38 @@ export function formatSeconds(sec) {
   return `${s}s`
 }
 
-function ProgressBar({ fraction, animDuration, milestone }) {
-  const pct = Math.min(Math.max(fraction * 100, 0), 100)
-  const milestones = [
-    { pct: 33, label: 'Started' },
-    { pct: 66, label: 'Picked up' },
-    { pct: 100, label: 'Handover' },
-  ]
+// Progress bar — daisyUI `progress` component inside a label/value header row
+// (the ReUI "c-progress-3" layout). The label carries the current milestone
+// name so no phase info is lost; the value shows live percentage. Colour comes
+// from daisyUI's `progress-primary` (mapped to --primary in the servai theme).
+// Note: the native <progress> updates discretely, so the old animDuration-synced
+// fill animation is no longer used — a light CSS transition softens the jumps.
+const STAGE_LABELS = ['Started', 'Picked up', 'Handover']
+
+function ProgressBar({ fraction, milestone }) {
+  const pct = Math.round(Math.min(Math.max(fraction * 100, 0), 100))
+  const label = STAGE_LABELS[Math.min(Math.max(milestone, 0), STAGE_LABELS.length - 1)] || 'In progress'
 
   return (
     <div className="mt-4">
-      <div className="relative h-3 rounded-full bg-[var(--border)] overflow-hidden">
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-[var(--primary)] stripes"
-          style={{
-            width: `${pct}%`,
-            transition: animDuration > 0 ? `width ${animDuration}s linear` : 'width 0.3s ease',
-          }}
-        />
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[clamp(13px,1.5vw,14px)] font-medium text-[var(--text-secondary)]">
+          {label}
+        </span>
+        <span className="text-[clamp(13px,1.5vw,14px)] text-[var(--text-tertiary)] tabular-nums">
+          {pct}%
+        </span>
       </div>
-      <div className="flex justify-between mt-1.5">
-        {milestones.map((m, i) => (
-          <div key={i} className="flex flex-col items-center" style={{ width: '33.3%' }}>
-            <div className={`w-2.5 h-2.5 rounded-full border-2 border-solid -mt-[11px] relative z-10 ${
-              milestone >= i ? 'bg-[var(--primary)] border-[var(--primary)]' : 'bg-[var(--surface)] border-[var(--border)]'
-            }`} />
-            <span className="text-[10px] text-[var(--text-tertiary)] mt-1 font-medium">{m.label}</span>
-          </div>
-        ))}
-      </div>
+      <progress
+        className="progress progress-primary w-full h-3"
+        value={pct}
+        max="100"
+        aria-label={`${label} — ${pct}% complete`}
+      />
+      <style>{`
+        progress.progress::-webkit-progress-value { transition: inline-size 0.4s ease; }
+        progress.progress::-moz-progress-bar { transition: inline-size 0.4s ease; }
+      `}</style>
     </div>
   )
 }

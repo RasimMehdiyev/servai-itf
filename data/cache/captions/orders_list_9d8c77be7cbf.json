@@ -1,0 +1,22 @@
+{
+  "text": "ROBI\u2019s performance over the last week was good, with 58 orders successfully delivered and an average robot time of 98 seconds. The most frequent cause of failure was \u2018unknown\u2019 status, occurring 57 times, particularly impacting orders [cite:2] and [cite:3]. Several orders also experienced slow times, most notably order [cite:7] with a water bottle taking 817 seconds to complete. **It would be beneficial to investigate the \u2018unknown\u2019 failure reason more closely, focusing on the areas where it\u2019s most prevalent.**",
+  "citations": [
+    2,
+    3,
+    7
+  ],
+  "surface": "orders_list",
+  "scope": {
+    "from": "2026-05-18",
+    "to": "2026-05-24",
+    "status": "all",
+    "item": "all",
+    "_totals": [
+      163,
+      58,
+      37,
+      68
+    ]
+  },
+  "generated_at": "2026-05-24T17:47:35.150601+00:00"
+}

@@ -15,7 +15,10 @@
       "PowerShell(Start-Sleep 5; Get-Content \"$env:LOCALAPPDATA\\\\Temp\\\\claude\\\\C--Workdir-Develop-servai\\\\db1b86ab-1dee-48bd-9f50-5daa4efdccf9\\\\tasks\\\\bxp3sqfe3.output\")",
       "Bash(node -c ws-test-server.js)",
       "Bash(node ws-test-server.js)",
-      "PowerShell($env:ROBOT_WS = \"ws://192.168.99.99:7878\"; $env:WS_PORT = \"8766\"; node ws-test-server.js 2>&1 | Select-Object -First 10)"
+      "PowerShell($env:ROBOT_WS = \"ws://192.168.99.99:7878\"; $env:WS_PORT = \"8766\"; node ws-test-server.js 2>&1 | Select-Object -First 10)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('src/rag/server.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Bash(python *)",
+      "WebFetch(domain:reui.io)"
     ]
   }
 }

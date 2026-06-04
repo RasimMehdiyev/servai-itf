@@ -1,0 +1,16 @@
+{
+  "text": "ROBI\u2019s activity from 2026-05-18 to 2026-05-24 included 163 orders, with 95 processed on 2026-05-19 and an average fetch time of 98 seconds. The most frequently picked items were pens and balls.",
+  "citations": [],
+  "surface": "chart",
+  "scope": {
+    "from": "2026-05-18",
+    "to": "2026-05-24",
+    "_totals": [
+      163,
+      58,
+      37,
+      68
+    ]
+  },
+  "generated_at": "2026-05-24T17:47:12.938774+00:00"
+}

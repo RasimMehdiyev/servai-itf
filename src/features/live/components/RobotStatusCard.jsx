@@ -53,18 +53,18 @@ export default function RobotStatusCard({ params, suggestion, style }) {
       <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Session overview</div>
       <h2 className="text-[clamp(18px,2.2vw,22px)] font-bold text-[var(--text-primary)] m-0 mb-4">Today so far</h2>
 
-      <div className="grid grid-cols-3 gap-3">
-        <div className="text-center px-2 py-3 rounded-lg bg-[var(--bg)]">
-          <div className="text-[clamp(20px,2.5vw,26px)] font-bold text-[var(--text-primary)] tabular-nums">{totalOrders}</div>
-          <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">orders</div>
+      <div className="stats stats-horizontal w-full shadow-none border border-solid" style={{ borderColor: 'var(--border)' }}>
+        <div className="stat place-items-center px-2">
+          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{totalOrders}</div>
+          <div className="stat-title text-[11px]">orders</div>
         </div>
-        <div className="text-center px-2 py-3 rounded-lg bg-[var(--bg)]">
-          <div className="text-[clamp(20px,2.5vw,26px)] font-bold text-[var(--text-primary)] tabular-nums">{formatSeconds(avgTime)}</div>
-          <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">avg time</div>
+        <div className="stat place-items-center px-2">
+          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{formatSeconds(avgTime)}</div>
+          <div className="stat-title text-[11px]">avg time</div>
         </div>
-        <div className="text-center px-2 py-3 rounded-lg bg-[var(--bg)]">
-          <div className="text-[clamp(20px,2.5vw,26px)] font-bold text-[var(--text-primary)] tabular-nums">{helpCount}</div>
-          <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">needed help</div>
+        <div className="stat place-items-center px-2">
+          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{helpCount}</div>
+          <div className="stat-title text-[11px]">needed help</div>
         </div>
       </div>
 

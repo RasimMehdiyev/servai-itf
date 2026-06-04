@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import ReactDOM from 'react-dom'
 import Card from '../../../components/ui/Card'
-import AiCaption from './AiCaption'
-import useRagCaption from '../../../hooks/useRagCaption'
 
 const EMERALD_50 = '#ecfdf5'
 const EMERALD_100 = '#d1fae5'
@@ -134,17 +132,19 @@ function notableStepName(order) {
 }
 
 function StatusPill({ status, failure }) {
+  // daisyUI badges — outline variants keep the soft look; colours map to the
+  // servai theme (success=emerald, warning=amber, error=rose).
   if (status === 'success' || status === 'ok') {
-    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: EMERALD_50, color: EMERALD_700, border: `1px solid ${EMERALD_100}` }}>Delivered</span>
+    return <span className="badge badge-sm badge-success badge-outline">Delivered</span>
   }
   const reasonLabel = failure?.reason ? REASON_SHORT[failure.reason] : null
   if (status === 'warning') {
-    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: AMBER_50, color: AMBER_700, border: `1px solid ${AMBER_100}` }}>{reasonLabel || 'Warning'}</span>
+    return <span className="badge badge-sm badge-warning badge-outline">{reasonLabel || 'Warning'}</span>
   }
   if (status === 'failed') {
-    return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: ROSE_50, color: ROSE_700, border: `1px solid ${ROSE_100}` }}>{reasonLabel || 'Failed'}</span>
+    return <span className="badge badge-sm badge-error badge-outline">{reasonLabel || 'Failed'}</span>
   }
-  return <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold" style={{ background: GRAY_50, color: GRAY_500, border: `1px solid ${GRAY_200}` }}>Unknown</span>
+  return <span className="badge badge-sm badge-ghost">Unknown</span>
 }
 
 function formatMeta(phase) {
@@ -564,11 +564,7 @@ function ExpandedDetail({ order, onAskRobi }) {
       </div>
 
       <div className="flex items-center gap-3 mt-4 pt-3 border-t border-solid" style={{ borderColor: GRAY_200 }}>
-        <button
-          onClick={() => onAskRobi?.(order)}
-          className="px-3 py-2 rounded-lg text-[12px] font-semibold border-0 cursor-pointer hover:opacity-90"
-          style={{ background: 'var(--teal, #0d9488)', color: 'white' }}
-        >
+        <button onClick={() => onAskRobi?.(order)} className="btn btn-sm btn-accent">
           {order.status === 'failed' ? 'Why did you fail?' : 'Why so long? Ask ROBI'}
         </button>
         <span className="text-[12px] cursor-pointer hover:underline" style={{ color: GRAY_400 }}>
@@ -611,24 +607,6 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
   const counts = data?.counts || { all: 0, delivered: 0, warning: 0, failed: 0, by_item: {} }
   const orders = data?.orders || []
 
-  // Build stats from loaded data so the LLM uses the same numbers the UI shows
-  const captionStats = useMemo(() => {
-    if (!data) return null
-    return {
-      total: counts.all,
-      delivered: counts.delivered,
-      warning: counts.warning,
-      failed: counts.failed,
-      filtered_count: orders.length,
-    }
-  }, [data, counts.all, counts.delivered, counts.warning, counts.failed, orders.length])
-
-  const {
-    caption, loading: captionLoading, error: captionError,
-    stale: captionStale,
-    generate: generateCaption, refresh: refreshCaption,
-  } = useRagCaption('orders_list', { from, to, status: statusFilter }, captionStats, data?.cached_caption)
-
   // Group orders by date
   const grouped = useMemo(() => {
     const groups = {}
@@ -657,10 +635,10 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
   if (loading && !data) {
     return (
       <Card>
-        <div className="animate-pulse flex flex-col gap-3">
-          <div className="h-6 w-48 rounded" style={{ background: GRAY_100 }} />
-          <div className="flex gap-2">{[1, 2, 3].map(i => <div key={i} className="h-8 w-20 rounded-full" style={{ background: GRAY_100 }} />)}</div>
-          {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-lg" style={{ background: GRAY_50 }} />)}
+        <div className="flex flex-col gap-3">
+          <div className="skeleton h-6 w-48 rounded" />
+          <div className="flex gap-2">{[1, 2, 3].map(i => <div key={i} className="skeleton h-8 w-20 rounded-full" />)}</div>
+          {[1, 2, 3].map(i => <div key={i} className="skeleton h-16 rounded-lg" />)}
         </div>
       </Card>
     )
@@ -676,35 +654,35 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
         </div>
       </div>
 
-      {/* Filter chips */}
+      {/* Filter chips — status and item filters combine via AND.
+          Clicking an active status chip clears that group; clicking an active
+          item chip clears that group. "All" resets both. */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <button
           onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
-          className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
-          style={chipStyle(statusFilter === 'all' && itemFilter === 'all')}
+          className={`btn btn-sm rounded-full ${statusFilter === 'all' && itemFilter === 'all' ? 'btn-neutral' : 'btn-outline'}`}
         >
-          All <span style={{ color: statusFilter === 'all' && itemFilter === 'all' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.all}</span>
+          All <span className="opacity-60">{counts.all}</span>
         </button>
         <button
-          onClick={() => { setStatusFilter('delivered'); setItemFilter('all') }}
-          className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
-          style={chipStyle(statusFilter === 'delivered')}
+          onClick={() => setStatusFilter(statusFilter === 'delivered' ? 'all' : 'delivered')}
+          className={`btn btn-sm rounded-full ${statusFilter === 'delivered' ? 'btn-neutral' : 'btn-outline'}`}
         >
-          ✓ Delivered <span style={{ color: statusFilter === 'delivered' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.delivered}</span>
+          ✓ Delivered <span className="opacity-60">{counts.delivered}</span>
         </button>
         <button
-          onClick={() => { setStatusFilter('warning'); setItemFilter('all') }}
-          className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
-          style={{ ...chipStyle(statusFilter === 'warning'), opacity: counts.warning === 0 ? 0.6 : 1 }}
+          onClick={() => setStatusFilter(statusFilter === 'warning' ? 'all' : 'warning')}
+          className={`btn btn-sm rounded-full ${statusFilter === 'warning' ? 'btn-neutral' : 'btn-outline'}`}
+          style={{ opacity: counts.warning === 0 ? 0.6 : 1 }}
         >
-          ⚠ Warnings <span style={{ color: statusFilter === 'warning' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.warning}</span>
+          ⚠ Warnings <span className="opacity-60">{counts.warning}</span>
         </button>
         <button
-          onClick={() => { setStatusFilter('failed'); setItemFilter('all') }}
-          className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
-          style={{ ...chipStyle(statusFilter === 'failed'), opacity: counts.failed === 0 ? 0.6 : 1 }}
+          onClick={() => setStatusFilter(statusFilter === 'failed' ? 'all' : 'failed')}
+          className={`btn btn-sm rounded-full ${statusFilter === 'failed' ? 'btn-neutral' : 'btn-outline'}`}
+          style={{ opacity: counts.failed === 0 ? 0.6 : 1 }}
         >
-          ✕ Failed <span style={{ color: statusFilter === 'failed' ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{counts.failed}</span>
+          ✕ Failed <span className="opacity-60">{counts.failed}</span>
         </button>
 
         {itemChips.length > 0 && (
@@ -713,27 +691,28 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
             {itemChips.map(([name, count]) => (
               <button
                 key={name}
-                onClick={() => { setItemFilter(itemFilter === name ? 'all' : name); setStatusFilter('all') }}
-                className="px-3 py-1.5 rounded-full text-[12px] font-medium border border-solid cursor-pointer"
-                style={chipStyle(itemFilter === name)}
+                onClick={() => setItemFilter(itemFilter === name ? 'all' : name)}
+                className={`btn btn-sm rounded-full ${itemFilter === name ? 'btn-neutral' : 'btn-outline'}`}
               >
-                {name} <span style={{ color: itemFilter === name ? 'rgba(255,255,255,0.6)' : GRAY_400 }}>{count}</span>
+                {name} <span className="opacity-60">{count}</span>
               </button>
             ))}
           </>
         )}
+
+        {/* Active-filter summary + clear button — helps when status+item are
+            both active so the user can see what's combined and reset fast. */}
+        {(statusFilter !== 'all' || itemFilter !== 'all') && (
+          <button
+            onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
+            className="btn btn-xs btn-ghost rounded-full ml-auto tooltip tooltip-left"
+            data-tip="Clear all filters"
+          >
+            Clear filters ×
+          </button>
+        )}
       </div>
 
-      {/* AI caption */}
-      <AiCaption
-        caption={caption}
-        loading={captionLoading}
-        error={captionError}
-        stale={captionStale}
-        onCitationClick={onCitationClick}
-        onGenerate={generateCaption}
-        onRefresh={refreshCaption}
-      />
 
       {/* Orders grouped by date */}
       <div className="mt-4 flex flex-col gap-4">
@@ -751,7 +730,7 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
             {(statusFilter !== 'all' || itemFilter !== 'all') && (
               <button
                 onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
-                className="mt-2 text-[12px] font-medium cursor-pointer border-0 bg-transparent"
+                className="btn btn-ghost btn-sm mt-2"
                 style={{ color: 'var(--teal, #0d9488)' }}
               >
                 Clear filters
@@ -777,33 +756,31 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
                   </span>
                 </div>
 
-                {/* Order rows */}
-                <div className="flex flex-col gap-1.5">
+                {/* Order rows — daisyUI list (list / list-row / list-col-grow) */}
+                <ul className="list">
                   {visibleOrders.map(order => {
                     const isOpen = expandedId === order.id
                     return (
-                      <div key={order.id} id={`order-${order.id}`}>
-                        <div
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-solid cursor-pointer transition-all"
-                          style={{
-                            background: isOpen ? 'white' : GRAY_50,
-                            borderColor: isOpen ? TEAL_200 : GRAY_100,
-                            boxShadow: isOpen ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
-                          }}
-                          onClick={() => setExpandedId(isOpen ? null : order.id)}
-                        >
-                          <StatusIcon status={order.status} />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-[13px] font-semibold" style={{ color: GRAY_900 }}>
-                              {order.item}
-                            </div>
-                            <div className="text-[11px]" style={{ color: GRAY_400 }}>
-                              Order #{order.order_number || order.id}
-                            </div>
-                            <div className="text-[11px] mt-0.5" style={{ color: GRAY_500 }}>
-                              Took {order.robot_seconds}s · {order.status === 'success' || order.status === 'ok' ? 'handed over' : 'ended'} at {formatTime(order.completed_at || order.started_at)}
-                            </div>
+                      <li
+                        key={order.id}
+                        id={`order-${order.id}`}
+                        className="list-row cursor-pointer transition-colors hover:bg-[#f9fafb]"
+                        style={isOpen ? { background: 'white', boxShadow: `inset 0 0 0 1px ${TEAL_200}` } : undefined}
+                        onClick={() => setExpandedId(isOpen ? null : order.id)}
+                      >
+                        <StatusIcon status={order.status} />
+                        <div className="list-col-grow min-w-0">
+                          <div className="text-[13px] font-semibold" style={{ color: GRAY_900 }}>
+                            {order.item}
                           </div>
+                          <div className="text-[11px]" style={{ color: GRAY_400 }}>
+                            Order #{order.order_number || order.id}
+                          </div>
+                          <div className="text-[11px] mt-0.5" style={{ color: GRAY_500 }}>
+                            Took {order.robot_seconds}s · {order.status === 'success' || order.status === 'ok' ? 'handed over' : 'ended'} at {formatTime(order.completed_at || order.started_at)}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
                           <StatusPill status={order.status} failure={order.failure} />
                           {hasImages(order) && (
                             <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded" style={{ background: 'rgba(244,63,94,0.08)' }}>
@@ -816,22 +793,26 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
                           )}
                           <svg
                             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2"
-                            style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease', shrinkFlexGrow: 0 }}
+                            style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease' }}
                           >
                             <polyline points="9 18 15 12 9 6" />
                           </svg>
                         </div>
-                        {isOpen && <ExpandedDetail order={order} onAskRobi={onAskRobi} />}
-                      </div>
+                        {isOpen && (
+                          <div className="list-col-wrap" onClick={e => e.stopPropagation()}>
+                            <ExpandedDetail order={order} onAskRobi={onAskRobi} />
+                          </div>
+                        )}
+                      </li>
                     )
                   })}
-                </div>
+                </ul>
 
                 {/* Pagination */}
                 {!isExpanded && remaining > 0 && (
                   <button
                     onClick={() => setExpandedGroups(prev => ({ ...prev, [date]: true }))}
-                    className="mt-2 text-[12px] font-medium cursor-pointer border-0 bg-transparent w-full text-center py-1.5"
+                    className="btn btn-ghost btn-sm w-full mt-2"
                     style={{ color: 'var(--teal, #0d9488)' }}
                   >
                     Show {remaining} more from {formatDateLabel(date).split(' · ')[0].toLowerCase()} →

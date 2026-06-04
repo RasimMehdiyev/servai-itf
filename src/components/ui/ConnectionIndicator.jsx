@@ -6,6 +6,7 @@ const STATUS = {
   connecting:   { label: 'Connecting…',         color: 'var(--warning, #ca8a04)',  dotCls: 'animate-blink' },
   disconnected: { label: 'Disconnected',        color: 'var(--danger, #f43f5e)',   dotCls: '' },
   waiting:      { label: 'Waiting for robot…',  color: 'var(--warning, #ca8a04)',  dotCls: 'animate-blink' },
+  static:       { label: 'Demo replay',         color: 'var(--warning, #ca8a04)',  dotCls: 'animate-pulse-ring' },
   mock:         { label: 'Mock',                color: 'var(--live-dot, #10b981)', dotCls: '' },
 }
 
@@ -16,6 +17,8 @@ export default function ConnectionIndicator() {
   // surface that as "Waiting for robot…" instead of a plain "Live".
   let key = mode === 'mock' ? 'mock' : connectionStatus
   if (key === 'connected' && sourceMode === 'waiting') key = 'waiting'
+  // Serving replayed log data because no live robot is connected.
+  if (key === 'connected' && sourceMode === 'static') key = 'static'
 
   const { label, color, dotCls } = STATUS[key] || STATUS.disconnected
 
