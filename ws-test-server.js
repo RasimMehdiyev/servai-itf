@@ -28,10 +28,10 @@ const REPLAY_SPEED = parseFloat(process.env.REPLAY_SPEED || '1.0')
 const ROBOT_WS = process.env.ROBOT_WS || 'ws://olifant.local:7878'
 const LIVE_RECONNECT_ATTEMPTS = parseInt(process.env.LIVE_RETRIES || '5', 10)
 const ROBOT_PROBE_INTERVAL = 30_000  // check for robot every 30s while in static mode
-// Serve a replay of grocery_logs.txt when no live robot is reachable, so the
-// dashboard always has something to show for testing. Set STATIC_REPLAY=0 to
-// disable and sit in plain "waiting for robot" mode instead.
-const ENABLE_STATIC_REPLAY = process.env.STATIC_REPLAY !== '0'
+// main-live is the real-connection-only branch: never replay grocery_logs.txt.
+// The dashboard always tries to reach the real robot at ROBOT_WS and shows a
+// "waiting for robot" state until it connects.
+const ENABLE_STATIC_REPLAY = false
 const LOG_FILE = path.join(__dirname, 'grocery_logs.txt')
 const ORDERS_DIR = path.join(__dirname, 'data')
 const ORDERS_FILE = path.join(ORDERS_DIR, 'orders.json')
@@ -1004,6 +1004,7 @@ function connectToRobot() {
     liveAttempts = 0
     stopStaticReplay()
     stopRobotProbe()
+    if (robotReconnectTimer) { clearTimeout(robotReconnectTimer); robotReconnectTimer = null }
     sourceMode = 'live'
     console.log(`  Connected to robot at ${ROBOT_WS}`)
     broadcastSourceMode()
@@ -1027,6 +1028,7 @@ function connectToRobot() {
 }
 
 let robotProbeTimer = null
+let robotReconnectTimer = null
 let staticReplayActive = false
 
 // ── Static replay (fallback when no live robot) ─────────────────────────────
@@ -1067,16 +1069,16 @@ function stopRobotProbe() {
 
 function handleRobotDisconnect() {
   robotWs = null
-  // No live robot. Fall back to static replay (if enabled) so the dashboard
-  // still has data, and keep probing for the robot in the background.
-  if (ENABLE_STATIC_REPLAY) {
-    startStaticReplay()
-  } else if (sourceMode !== 'waiting') {
+  // Real-connection-only: no static replay. Sit in 'waiting' and keep trying to
+  // reach the robot at ROBOT_WS (olifant) with capped backoff until it's back.
+  if (sourceMode !== 'waiting') {
     sourceMode = 'waiting'
     broadcastSourceMode()
-    console.log(`  Waiting for robot at ${ROBOT_WS} (static replay disabled)…`)
   }
-  startRobotProbe()
+  const backoff = Math.min(1000 * Math.pow(2, Math.min(liveAttempts, 5)), 15000)
+  console.log(`  No robot at ${ROBOT_WS} — retrying in ${(backoff / 1000).toFixed(1)}s…`)
+  if (robotReconnectTimer) clearTimeout(robotReconnectTimer)
+  robotReconnectTimer = setTimeout(() => { robotReconnectTimer = null; connectToRobot() }, backoff)
 }
 
 // ── Global replay loop (static mode) ────────────────────────────────────────
@@ -1507,11 +1509,7 @@ const wss = new WebSocketServer({ server })
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  WebSocket: ws://0.0.0.0:${PORT}`)
   console.log(`  HTTP API:  http://0.0.0.0:${PORT}/api/recent-orders`)
-  console.log(`  Robot:     ${ROBOT_WS} (static replay fallback: ${ENABLE_STATIC_REPLAY ? 'on' : 'off'})\n`)
-  // Start serving static replay immediately so the dashboard has data on first
-  // load, then try the real robot in the background. If the robot connects,
-  // robotWs.on('open') stops the replay and switches to live.
-  if (ENABLE_STATIC_REPLAY) startStaticReplay()
+  console.log(`  Robot:     ${ROBOT_WS} (real connection only — no static replay)\n`)
   connectToRobot()
 })
 

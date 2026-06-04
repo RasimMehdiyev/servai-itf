@@ -1,7 +1,7 @@
 {
-  "text": "This summary covers the period from 2026-05-29 to 2026-06-04, encompassing 73 orders processed by ROBI. Of these, 12 were delivered, 12 delivered with warnings, and 49 resulted in a failed status. The average fetch time was 54 seconds, with a median of 58 seconds, and ROBI primarily handled pens (25), t-shirts (24), water bottles (12), and balls (12) during this time.\n\nNotably, ROBI experienced a high number of failures this week, with [[reachability]]_failed occurring 25 times, [[no-valid-depth]] 12 times, and [[handover]]_failed 12 times, alongside 12 [[search-exhausted]] events. A total of 50 retries were recorded across all orders, with 25 orders specifically requiring a [[retry]]. Furthermore, ROBI issued 252 collision warnings, indicating a significant level of interaction with the environment.",
+  "text": "This summary covers the period from 2026-05-29 to 2026-06-04, encompassing the last seven days of ROBI\u2019s operation. During this time, ROBI processed a total of 100 orders, with 17 successfully delivered, 17 delivered with warnings, and 66 orders marked as failed. The average fetch time was 54 seconds, with 47 seconds dedicated to the robot\u2019s work, and a median fetch time of 64 seconds. \n\nNotably, ROBI experienced a high volume of failures this week, specifically with [[reachability]]_failed (34 instances), [[no-valid-depth]] (17 instances), and [[handover]]_failed (16 instances), alongside 16 [[search-exhausted]] events. A total of 68 retries were recorded across all orders, with 34 orders requiring a [[retry]]. Furthermore, ROBI issued 340 collision warnings during this period.",
   "citations": [],
   "surface": "weekly",
   "scope": {},
-  "generated_at": "2026-06-04T11:35:07.131412+00:00"
+  "generated_at": "2026-06-04T12:05:59.008234+00:00"
 }

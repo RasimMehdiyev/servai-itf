@@ -40086,5 +40086,1288 @@
     ],
     "timestamp": "14:02",
     "rating": 1
+  },
+  {
+    "id": 259,
+    "order_number": "259",
+    "status": "failed",
+    "failure": {
+      "reason": "reachability_failed",
+      "detail": "failed at reachability: plan_grasp failed at grasp (goalset_size=5)",
+      "at_phase": "grasping"
+    },
+    "item": "pen",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:05:11.468Z",
+    "completed_at": "2026-06-04T12:06:09.391Z",
+    "total_seconds": 58,
+    "robot_seconds": 51,
+    "human_wait_seconds": 7,
+    "retries": 2,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 12.3,
+    "collision_warnings": 12,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 12
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "anchor_distance_cm": 67.5,
+          "anchor_score": 0.82
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 12.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "refine_score": 0.812,
+          "refine_area_px": 3162,
+          "depth_m": 0.477
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 2.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.793,
+          "refine_area_px": 1379,
+          "depth_m": 0.467
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.773,
+          "refine_area_px": 3318,
+          "depth_m": 0.479
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 4,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:05",
+    "rating": 1
+  },
+  {
+    "id": 260,
+    "order_number": "260",
+    "status": "warning",
+    "failure": {
+      "reason": "reachability_failed",
+      "detail": "failed at reachability: plan_grasp failed at grasp (goalset_size=5)",
+      "at_phase": "grasping"
+    },
+    "item": "pen",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:06:14.643Z",
+    "completed_at": "2026-06-04T12:07:38.716Z",
+    "total_seconds": 84,
+    "robot_seconds": 80,
+    "human_wait_seconds": 4,
+    "retries": 2,
+    "waypoints_searched": [
+      "top-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 22,
+    "collision_warnings": 8,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 4,
+        "meta": {
+          "trajectory_duration": 0.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "anchor_distance_cm": 67.4,
+          "anchor_score": 0.85
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "refine_score": 0.625,
+          "refine_area_px": 5059,
+          "depth_m": 0.466
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.785,
+          "refine_area_px": 3254,
+          "depth_m": 0.484
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.621,
+          "refine_area_px": 5141,
+          "depth_m": 0.462
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 20,
+        "meta": {
+          "trajectory_duration": 4
+        },
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 13,
+        "meta": {
+          "trajectory_duration": 11.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "trajectory_duration": 8
+        },
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:06",
+    "rating": 3
+  },
+  {
+    "id": 261,
+    "order_number": "261",
+    "status": "success",
+    "failure": null,
+    "item": "water bottle",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:07:38.732Z",
+    "completed_at": "2026-06-04T12:08:43.162Z",
+    "total_seconds": 64,
+    "robot_seconds": 61,
+    "human_wait_seconds": 3,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 62.8,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 10,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 4,
+        "meta": {
+          "anchor_distance_cm": 77.2,
+          "anchor_score": 0.95
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 6
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 4,
+        "meta": {
+          "refine_score": 0.828,
+          "refine_area_px": 60789,
+          "depth_m": 0.428
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 16,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 16,
+        "meta": {
+          "trajectory_duration": 8
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "trajectory_duration": 8
+        },
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:07",
+    "rating": 5
+  },
+  {
+    "id": 262,
+    "order_number": "262",
+    "status": "failed",
+    "failure": {
+      "reason": "no_valid_depth",
+      "detail": "no valid depth in 5px window around (774, 377)",
+      "at_phase": "analyzing"
+    },
+    "item": "ball",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:08:43.239Z",
+    "completed_at": "2026-06-04T12:09:11.015Z",
+    "total_seconds": 28,
+    "robot_seconds": 22,
+    "human_wait_seconds": 6,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve",
+      "top-corner"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": null,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 14,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "anchor_distance_cm": 59,
+          "anchor_score": 0.7
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 16
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "refine_score": 0.84,
+          "refine_area_px": 19786
+        },
+        "status": "failed",
+        "failure_detail": "Depth measurement failed"
+      }
+    ],
+    "timestamp": "14:08",
+    "rating": 1
+  },
+  {
+    "id": 263,
+    "order_number": "263",
+    "status": "failed",
+    "failure": {
+      "reason": "handover_failed",
+      "detail": "handover motion failed",
+      "at_phase": "bringing_over"
+    },
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:09:11.045Z",
+    "completed_at": "2026-06-04T12:10:14.798Z",
+    "total_seconds": 64,
+    "robot_seconds": 57,
+    "human_wait_seconds": 7,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve",
+      "top-corner"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 105.2,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 17,
+        "meta": {
+          "trajectory_duration": 10
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {
+          "anchor_distance_cm": 74.2,
+          "anchor_score": 0.74
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 8.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 2,
+        "meta": {
+          "refine_score": 0.898,
+          "refine_area_px": 6379,
+          "depth_m": 0.569
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 22,
+        "meta": {
+          "trajectory_duration": 4
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 10,
+        "meta": {
+          "trajectory_duration": 6.67
+        },
+        "status": "failed",
+        "failure_detail": "Handover path blocked"
+      }
+    ],
+    "timestamp": "14:09",
+    "rating": 1
+  },
+  {
+    "id": 264,
+    "order_number": "264",
+    "status": "failed",
+    "failure": {
+      "reason": "search_exhausted",
+      "detail": "search exhausted (2 waypoints tried); 't-shirt' not found",
+      "at_phase": null
+    },
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:10:26.035Z",
+    "completed_at": "2026-06-04T12:10:50.307Z",
+    "total_seconds": 24,
+    "robot_seconds": 7,
+    "human_wait_seconds": 17,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": null,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 7,
+        "meta": {
+          "trajectory_duration": 12.67
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      }
+    ],
+    "timestamp": "14:10",
+    "rating": 1
+  },
+  {
+    "id": 265,
+    "order_number": "265",
+    "status": "failed",
+    "failure": {
+      "reason": "reachability_failed",
+      "detail": "failed at reachability: plan_grasp failed at grasp (goalset_size=5)",
+      "at_phase": "grasping"
+    },
+    "item": "pen",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-04T12:11:55.971Z",
+    "completed_at": "2026-06-04T12:12:53.613Z",
+    "total_seconds": 58,
+    "robot_seconds": 51,
+    "human_wait_seconds": 7,
+    "retries": 2,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 12.3,
+    "collision_warnings": 12,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 12
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 1,
+        "meta": {
+          "anchor_distance_cm": 67.5,
+          "anchor_score": 0.82
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 12.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "refine_score": 0.812,
+          "refine_area_px": 3162,
+          "depth_m": 0.477
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 2.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.793,
+          "refine_area_px": 1379,
+          "depth_m": 0.467
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 3.33
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 5,
+        "meta": {
+          "refine_score": 0.773,
+          "refine_area_px": 3318,
+          "depth_m": 0.479
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "failed",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_20260514_150421_d415",
+            "camera": "d415",
+            "description": "failure capture from wrist camera",
+            "log_caption": "",
+            "captured_at": null
+          },
+          {
+            "imageId": "fail_20260514_150421_zed",
+            "camera": "zed",
+            "description": "failure capture from external camera",
+            "log_caption": "",
+            "captured_at": null
+          }
+        ]
+      },
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 4,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:11",
+    "rating": 1
   }
 ]
