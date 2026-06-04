@@ -227,12 +227,15 @@ export default function WorkflowTimeline({
                 {/* ── Content ── */}
                 <div className="flex-1 min-w-0 pb-5">
                   {step.state === 'loading' ? (
-                    /* daisyUI loading ring (primary) for the next expected step */
-                    <div className="flex items-center gap-2.5 py-1">
-                      <span className="loading loading-ring loading-md" style={{ color: 'var(--primary)' }} />
-                      <span className="text-[clamp(13px,1.5vw,14px)]" style={{ color: 'var(--text-tertiary)' }}>
-                        Waiting for the next step…
-                      </span>
+                    /* Skeleton placeholder for the next expected step */
+                    <div className="animate-pulse">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="h-5 w-2/5 rounded bg-[var(--border)]" />
+                        <span className={`inline-block text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${badge.cls}`}>
+                          {badge.text}
+                        </span>
+                      </div>
+                      <div className="h-4 w-3/5 rounded bg-[var(--border)]" />
                     </div>
                   ) : (
                     <>
@@ -295,7 +298,7 @@ export default function WorkflowTimeline({
         {/* Sentinel — triggers loading more when scrolled into view */}
         {hasMore && (
           <li ref={sentinelRef} className="flex items-center justify-center py-3" aria-hidden>
-            <span className="loading loading-ring loading-sm" style={{ color: 'var(--text-tertiary)' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--border)] animate-pulse" />
           </li>
         )}
       </ul>
