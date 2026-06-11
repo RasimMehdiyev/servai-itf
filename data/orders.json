@@ -62034,5 +62034,160 @@
     ],
     "timestamp": "10:52",
     "rating": 1
+  },
+  {
+    "id": 395,
+    "order_number": "395",
+    "status": "failed",
+    "failure": {
+      "reason": "handover_failed",
+      "detail": "handover motion failed",
+      "at_phase": "bringing_over"
+    },
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-11T08:52:41.517Z",
+    "completed_at": "2026-06-11T08:53:45.225Z",
+    "total_seconds": 64,
+    "robot_seconds": 57,
+    "human_wait_seconds": 7,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve",
+      "top-corner"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 105.2,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 17,
+        "meta": {
+          "trajectory_duration": 10
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {
+          "anchor_distance_cm": 74.2,
+          "anchor_score": 0.74
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 6,
+        "meta": {
+          "trajectory_duration": 8.67
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 2,
+        "meta": {
+          "refine_score": 0.898,
+          "refine_area_px": 6379,
+          "depth_m": 0.569
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 22,
+        "meta": {
+          "trajectory_duration": 4
+        },
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 10,
+        "meta": {
+          "trajectory_duration": 6.67
+        },
+        "status": "failed",
+        "failure_detail": "Handover path blocked"
+      }
+    ],
+    "timestamp": "10:52",
+    "rating": 1
+  },
+  {
+    "id": 396,
+    "order_number": "396",
+    "status": "failed",
+    "failure": {
+      "reason": "search_exhausted",
+      "detail": "search exhausted (2 waypoints tried); 't-shirt' not found",
+      "at_phase": null
+    },
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "started_at": "2026-06-11T08:53:56.462Z",
+    "completed_at": "2026-06-11T08:54:20.710Z",
+    "total_seconds": 24,
+    "robot_seconds": 7,
+    "human_wait_seconds": 17,
+    "retries": 0,
+    "waypoints_searched": [
+      "top-shelve",
+      "bottom-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": null,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 7,
+        "meta": {
+          "trajectory_duration": 12.67
+        },
+        "status": "warning",
+        "failure_detail": "No detections at waypoint"
+      }
+    ],
+    "timestamp": "10:53",
+    "rating": 1
   }
 ]
