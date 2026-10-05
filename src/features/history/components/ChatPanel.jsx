@@ -142,8 +142,7 @@ export default function ChatPanel({ open, onClose, onCitationClick, prefill }) {
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="px-4 py-2.5 rounded-lg text-[13px] font-semibold border-0 cursor-pointer hover:opacity-90 disabled:opacity-50"
-            style={{ background: 'var(--teal, #14b8a6)', color: 'white' }}
+            className="btn btn-sm btn-accent"
           >
             Send
           </button>

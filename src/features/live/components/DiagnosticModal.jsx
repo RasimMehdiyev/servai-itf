@@ -2,16 +2,19 @@ import React, { useState } from 'react'
 
 // ── Action button variant → Tailwind classes ───────────────────────────────
 
+// One button spec, shared with the rest of the app: real daisyUI variants,
+// mapped from the servai theme (tailwind.config.js) instead of hand-rolled
+// Tailwind arbitrary values.
 const VARIANT_CLS = {
-  primary: 'bg-[var(--primary)] text-white border-solid border-[var(--primary)] hover:shadow-[0_2px_8px_rgba(43,127,255,.3)]',
-  outline: 'bg-[var(--surface)] text-[var(--text-primary)] border-solid border-[var(--border)] hover:bg-[var(--bg)]',
-  danger:  'bg-[var(--danger-bg)] text-[var(--danger)] border-solid border-[var(--danger)] hover:shadow-[0_2px_8px_rgba(240,87,100,.2)]',
-  confirm: 'bg-[var(--success-bg)] text-[var(--success)] border-solid border-[var(--success)] hover:shadow-[0_2px_8px_rgba(16,185,129,.2)]',
-  deny:    'bg-[var(--surface)] text-[var(--text-secondary)] border-solid border-[var(--border)] hover:bg-[var(--bg)]',
+  primary: 'btn-primary',
+  outline: 'btn-outline',
+  danger:  'btn-outline btn-error',
+  confirm: 'btn-outline btn-success',
+  deny:    'btn-outline',
 }
 
 const actionBtn = (variant = 'outline') =>
-  `inline-flex items-center gap-1.5 px-4 py-2.5 rounded-[6px] font-semibold text-[clamp(16px,2.0vw,17px)] min-h-[44px] border cursor-pointer transition-shadow ${VARIANT_CLS[variant] ?? VARIANT_CLS.outline}`
+  `btn gap-1.5 min-h-[44px] ${VARIANT_CLS[variant] ?? VARIANT_CLS.outline}`
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 

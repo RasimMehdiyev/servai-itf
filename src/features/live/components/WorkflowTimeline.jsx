@@ -267,7 +267,7 @@ export default function WorkflowTimeline({
                       {step.alert && (
                         <div className="mt-2.5">
                           <button
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-[clamp(14px,1.6vw,15px)] font-medium bg-[var(--danger)] text-white border-0 cursor-pointer transition-shadow hover:shadow-[0_2px_8px_rgba(240,87,100,.35)]"
+                            className="btn btn-sm btn-error gap-1.5"
                             onClick={() => onOpenDiagnostic?.()}
                           >
                             <AlertCircleIcon />

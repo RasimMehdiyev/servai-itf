@@ -689,39 +689,6 @@ body {
     border-left: 3px solid var(--warning);
 }
 
-/* ---- Quick actions bar ---- */
-.quick-actions{display:flex;flex-wrap:wrap;gap:8px}
-
-.quick-action-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:10px 16px;border-radius:var(--radius-sm);
-  font-size:clamp(16px,2.0vw,17px);font-weight:600;
-  cursor:pointer;min-height:44px;
-  transition:background .15s,color .15s,box-shadow .15s;
-  border:1.5px solid transparent;
-}
-.quick-action-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-
-.quick-action-btn--primary{
-  background:var(--primary);color:#fff;border-color:var(--primary);
-}
-.quick-action-btn--primary:hover{box-shadow:0 2px 8px rgba(11,102,255,.3)}
-
-.quick-action-btn--outline{
-  background:var(--surface);color:var(--text-primary);border-color:var(--border);
-}
-.quick-action-btn--outline:hover{background:var(--bg)}
-
-.quick-action-btn--danger{
-  background:var(--danger-bg);color:var(--danger);border-color:var(--danger);
-}
-.quick-action-btn--danger:hover{box-shadow:0 2px 8px rgba(196,38,26,.2)}
-
-.quick-action-btn--confirm{
-  background:var(--success-bg);color:var(--success);border-color:var(--success);
-}
-.quick-action-btn--confirm:hover{box-shadow:0 2px 8px rgba(11,122,62,.2)}
-
 /* ── Calendar ────────────────────────────── */
 
 .cal-nav{
@@ -787,11 +754,6 @@ body {
 .cal-legend__dot--good{background:var(--success)}
 .cal-legend__dot--bad{background:var(--danger)}
 .cal-legend__dot--today{background:var(--primary)}
-
-.quick-action-btn--deny{
-  background:var(--surface);color:var(--text-secondary);border-color:var(--border);
-}
-.quick-action-btn--deny:hover{background:var(--bg)}
 
 /* ---- Validation prompt ---- */
 .validation-prompt{

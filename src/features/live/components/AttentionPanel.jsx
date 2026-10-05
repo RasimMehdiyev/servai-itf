@@ -144,7 +144,7 @@ function StatusBanner({ cardState, itemName, explanationText, onIntervene, showA
         </div>
         {showActions ? (
           <div className="flex flex-col gap-2">
-            <button onClick={() => onIntervene?.(ctx.primary.id)} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--primary)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+            <button onClick={() => onIntervene?.(ctx.primary.id)} className="btn btn-primary w-full">
               {ctx.primary.label}
             </button>
             <div className="flex gap-2">
@@ -152,11 +152,7 @@ function StatusBanner({ cardState, itemName, explanationText, onIntervene, showA
                 <button
                   key={b.id}
                   onClick={() => onIntervene?.(b.id)}
-                  className={`flex-1 px-3 py-2 rounded-lg text-[13px] font-medium border border-solid cursor-pointer ${
-                    b.danger
-                      ? 'bg-[var(--danger-bg)] text-[var(--danger)] border-[var(--danger)] hover:opacity-90'
-                      : 'bg-[var(--surface)] text-[var(--primary)] border-[var(--primary)] hover:bg-[var(--bg)]'
-                  }`}
+                  className={`btn btn-sm btn-outline flex-1 ${b.danger ? 'btn-error' : 'btn-primary'}`}
                 >
                   {b.label}
                 </button>
@@ -186,14 +182,14 @@ function StatusBanner({ cardState, itemName, explanationText, onIntervene, showA
           </span>
         </div>
         <div className="flex flex-col gap-2">
-          <button onClick={() => onIntervene?.('on_my_way')} className="w-full px-4 py-2.5 rounded-lg font-semibold text-[15px] bg-[var(--primary)] text-white border-0 cursor-pointer hover:opacity-90 transition-opacity">
+          <button onClick={() => onIntervene?.('on_my_way')} className="btn btn-primary w-full">
             I'm on my way
           </button>
           <div className="flex gap-2">
-            <button onClick={() => onIntervene?.('delayed')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--surface)] text-[var(--primary)] border border-solid border-[var(--primary)] cursor-pointer hover:bg-[var(--bg)]">
+            <button onClick={() => onIntervene?.('delayed')} className="btn btn-sm btn-outline btn-primary flex-1">
               Tell customer it's delayed
             </button>
-            <button onClick={() => onIntervene?.('cancel')} className="flex-1 px-3 py-2 rounded-lg text-[13px] font-medium bg-[var(--danger-bg)] text-[var(--danger)] border border-solid border-[var(--danger)] cursor-pointer hover:opacity-90">
+            <button onClick={() => onIntervene?.('cancel')} className="btn btn-sm btn-outline btn-error flex-1">
               Cancel this order
             </button>
           </div>

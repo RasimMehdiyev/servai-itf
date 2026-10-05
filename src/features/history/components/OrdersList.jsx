@@ -20,7 +20,7 @@ const GRAY_200 = '#e5e7eb'
 const GRAY_400 = '#9ca3af'
 const GRAY_500 = '#6b7280'
 const GRAY_700 = '#374151'
-const GRAY_900 = '#111827'
+const GRAY_900 = 'var(--text-primary)' // was '#111827' — a near-duplicate of --text-primary (#0f172a); aligned so History headings match Live
 const TEAL_200 = '#99f6e4'
 
 import { getApiBase, getRagBase } from '../../../lib/urls'
