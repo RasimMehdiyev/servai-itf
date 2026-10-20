@@ -9,6 +9,12 @@
       "autoPort": true
     },
     {
+      "name": "relay-replay",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/dev-replay.cjs"],
+      "port": 8765
+    },
+    {
       "name": "presentation",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "C:\\Workdir\\Develop\\first_progress_presentation"],

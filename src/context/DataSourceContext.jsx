@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useRef, useState, useCallback } from 'react'
 import useRobotSocket from '../hooks/useRobotSocket'
-import { applyMessageToScenario } from '../services/messageMapper'
+import { liveReducer, liveInitialState } from '../services/liveState'
 import { getWsUrl, getApiBase } from '../lib/urls'
 
 const isLiveMode = import.meta.env.VITE_USE_WEBSOCKET === 'true'
@@ -10,61 +10,12 @@ const DataSourceContext = createContext(null)
 
 const IDLE_TIMEOUT = 15_000
 
-function liveReducer(state, action) {
-  switch (action.type) {
-    case 'ws_message': {
-      const next = { ...applyMessageToScenario(state, action.message), _idle: false }
-      if (action.message._catchUp && next.progress) {
-        next.progress = { ...next.progress, animDuration: 0 }
-      }
-      return next
-    }
-    case 'idle':
-      if (state._idle) return state
-      return {
-        ...state,
-        _idle: true,
-        _cardState: 'red',
-        attentionLevel: 'needs_attention',
-        explanationText: 'No updates received for a while. The robot may be stuck or disconnected.',
-        _cycleFailures: [...(state._cycleFailures || []), {
-          level: 'red',
-          message: 'Connection timeout — no updates received',
-          ts: new Date().toISOString(),
-        }],
-      }
-    case 'reset':
-      return action.data
-    default:
-      return state
-  }
-}
-
-const liveInitialState = {
-  storeId: 'ROBI',
-  liveStatus: 'live',
-  orderId: '',
-  attentionTitle: 'Waiting for orders…',
-  attentionLevel: 'ok',
-  explanationTitle: 'STATUS',
-  explanationText: 'The robot is connected and ready. It will start when an order comes in.',
-  explanationBullets: [],
-  validation: null,
-  resolutionActions: [],
-  robotParams: null,
-  activeWorkflowTitle: 'What I am doing right now',
-  earlierStepsCount: 0,
-  steps: [],
-  _cardState: 'green',
-  _cycleStartedAt: null,
-  progress: { fraction: 0, milestone: 0, animDuration: 0 },
-}
-
 export function DataSourceProvider({ children }) {
   const { status, tick, drain, send } = useRobotSocket(isLiveMode ? wsUrl : null)
   const [liveData, dispatch] = useReducer(liveReducer, liveInitialState)
   const [recentOrders, setRecentOrders] = useState({ total: 0, failedCount: 0, recent: [] })
   const [sourceMode, setSourceMode] = useState('unknown')
+  const [history, setHistory] = useState([])
   const idleTimer = useRef(null)
 
   const resetIdleTimer = useCallback(() => {
@@ -79,6 +30,14 @@ export function DataSourceProvider({ children }) {
     fetch(`${base}/api/recent-orders`)
       .then(r => r.json())
       .then(setRecentOrders)
+      .catch(() => {})
+  }, [])
+
+  const fetchHistory = useCallback(() => {
+    const base = getApiBase()
+    fetch(`${base}/api/orders/slim`)
+      .then(r => r.json())
+      .then(list => { if (Array.isArray(list)) setHistory(list) })
       .catch(() => {})
   }, [])
 
@@ -99,14 +58,14 @@ export function DataSourceProvider({ children }) {
     resetIdleTimer()
 
     if (needsOrderRefresh) {
-      setTimeout(fetchRecentOrders, 500)
+      setTimeout(() => { fetchRecentOrders(); fetchHistory() }, 500)
     }
-  }, [tick, isLiveMode, drain, resetIdleTimer, fetchRecentOrders])
+  }, [tick, isLiveMode, drain, resetIdleTimer, fetchRecentOrders, fetchHistory])
 
   // Initial fetch
   useEffect(() => {
-    if (isLiveMode) fetchRecentOrders()
-  }, [fetchRecentOrders])
+    if (isLiveMode) { fetchRecentOrders(); fetchHistory() }
+  }, [fetchRecentOrders, fetchHistory])
 
   useEffect(() => {
     return () => clearTimeout(idleTimer.current)
@@ -122,6 +81,7 @@ export function DataSourceProvider({ children }) {
     sourceMode,
     liveData: isLiveMode ? liveData : null,
     recentOrders,
+    history,
     sendMessage,
   }
 

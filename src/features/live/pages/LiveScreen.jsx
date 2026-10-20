@@ -3,6 +3,7 @@ import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
 import AttentionPanel from '../components/AttentionPanel'
 import RobotStatusCard from '../components/RobotStatusCard'
+import CameraCard from '../components/CameraCard'
 import WorkflowTimeline from '../components/WorkflowTimeline'
 import TechnicalDetails from '../components/TechnicalDetails'
 import LoadingState from '../../../components/ui/LoadingState'
@@ -51,7 +52,7 @@ export default function LiveScreen() {
         {error && <ErrorState />}
         {data && (
           <>
-            {/* Two-column: Now Serving + Right Now */}
+            {/* Two-column: Now serving + what the camera sees */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'clamp(12px,2vw,20px)', alignItems: 'stretch' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <AttentionPanel
@@ -64,15 +65,19 @@ export default function LiveScreen() {
                 />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <RobotStatusCard
-                  params={data.robotParams?.params}
-                  suggestion={data.robotParams?.suggestion}
-                  style={{ flex: 1 }}
-                />
+                <CameraCard style={{ flex: 1 }} />
               </div>
             </div>
 
-            {/* Pipeline — untouched */}
+            {/* Today so far — one strip */}
+            <div className="mt-lg">
+              <RobotStatusCard
+                params={data.robotParams?.params}
+                suggestion={data.robotParams?.suggestion}
+              />
+            </div>
+
+            {/* Pipeline */}
             <div className="mt-lg">
               <WorkflowTimeline
                 title={data.activeWorkflowTitle}
@@ -86,15 +91,13 @@ export default function LiveScreen() {
               />
             </div>
 
-            {/* Technical details — collapsed accordion */}
-            {data.robotParams && (
-              <div className="mt-lg">
-                <TechnicalDetails
-                  params={data.robotParams.params}
-                  suggestion={data.robotParams.suggestion}
-                />
-              </div>
-            )}
+            {/* Technical details — opens by itself when something needs a technician */}
+            <div className="mt-lg">
+              <TechnicalDetails
+                params={data.robotParams?.params}
+                suggestion={data.robotParams?.suggestion}
+              />
+            </div>
           </>
         )}
       </ScreenContainer>

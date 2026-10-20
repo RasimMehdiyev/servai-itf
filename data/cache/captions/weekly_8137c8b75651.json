@@ -1,7 +1,7 @@
 {
-  "text": "This summary covers the period from 2026-05-29 to 2026-06-04, encompassing the last seven days of ROBI\u2019s operation. During this time, ROBI processed a total of 100 orders, with 17 successfully delivered, 17 delivered with warnings, and 66 orders marked as failed. The average fetch time was 54 seconds, with 47 seconds dedicated to the robot\u2019s work, and a median fetch time of 64 seconds. \n\nNotably, ROBI experienced a high volume of failures this week, specifically with [[reachability]]_failed (34 instances), [[no-valid-depth]] (17 instances), and [[handover]]_failed (16 instances), alongside 16 [[search-exhausted]] events. A total of 68 retries were recorded across all orders, with 34 orders requiring a [[retry]]. Furthermore, ROBI issued 340 collision warnings during this period.",
+  "text": "This summary covers the period from 2026-10-14 to 2026-10-20, encompassing the last seven days of ROBI\u2019s operation. During this time, a total of zero orders were processed, with zero orders delivered and zero orders failing. The average and median fetch time was zero seconds, indicating no robot work occurred during this period.\n\nThere were no failures, retries, or collision warnings recorded across all orders. This suggests a stable and uneventful operation for ROBI, with no need for [[intervention]] or adjustments.",
   "citations": [],
   "surface": "weekly",
   "scope": {},
-  "generated_at": "2026-06-04T12:05:59.008234+00:00"
+  "generated_at": "2026-10-20T09:33:51.476179+00:00"
 }

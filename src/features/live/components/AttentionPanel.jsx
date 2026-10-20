@@ -1,12 +1,15 @@
 import React from 'react'
 import Card from '../../../components/ui/Card'
 import { useDataSource } from '../../../context/DataSourceContext'
+import useNow from '../../../hooks/useNow'
+import { deriveNowServing } from '../../../lib/liveView'
+import { clock } from '../../../lib/logTranslate'
 
 const PILL = {
-  green:   { text: 'On track',          cls: 'bg-[var(--success-bg)] text-[var(--success)]' },
-  orange:  { text: "Can't find it",     cls: 'bg-[var(--warning-bg)] text-[var(--warning)]' },
-  red:     { text: 'Needs help',        cls: 'bg-[var(--danger-bg)] text-[var(--danger)]' },
-  waiting: { text: 'Robot offline',     cls: 'bg-[var(--warning-bg)] text-[var(--warning)]' },
+  green:   { text: 'On track',          cls: 'bg-[var(--success-bg)] text-[var(--success-text)]' },
+  orange:  { text: 'Working through it', cls: 'bg-[var(--warning-bg)] text-[var(--warning-text)]' },
+  red:     { text: 'Needs help',        cls: 'bg-[var(--danger-bg)] text-[var(--danger-text)]' },
+  waiting: { text: 'Robot offline',     cls: 'bg-[var(--warning-bg)] text-[var(--warning-text)]' },
 }
 
 export function formatDuration(ms) {
@@ -30,53 +33,105 @@ export function formatSeconds(sec) {
   return `${s}s`
 }
 
-// Progress bar — daisyUI `progress` component inside a label/value header row
-// (the ReUI "c-progress-3" layout). The label carries the current milestone
-// name so no phase info is lost; the value shows live percentage. Colour comes
-// from daisyUI's `progress-primary` (mapped to --primary in the servai theme).
-// Note: the native <progress> updates discretely, so the old animDuration-synced
-// fill animation is no longer used — a light CSS transition softens the jumps.
-const STAGE_LABELS = ['Started', 'Picked up', 'Handover']
+// ── Step bar ─────────────────────────────────────────────────────────────────
+// One segment per pipeline step, so a step that is amber or red stays amber or
+// red — a single percentage bar can't say that.
 
-function ProgressBar({ fraction, milestone }) {
-  const pct = Math.round(Math.min(Math.max(fraction * 100, 0), 100))
-  const label = STAGE_LABELS[Math.min(Math.max(milestone, 0), STAGE_LABELS.length - 1)] || 'In progress'
+const SEG_COLOR = {
+  done: 'var(--success)',
+  active: 'var(--primary)',
+  activeWarn: 'var(--warning)',
+  fail: 'var(--danger)',
+  pending: 'var(--border)',
+}
 
+function StepBar({ seg, label }) {
+  if (!seg.length) return null
   return (
     <div className="mt-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[clamp(13px,1.5vw,14px)] font-medium text-[var(--text-secondary)]">
-          {label}
-        </span>
-        <span className="text-[clamp(13px,1.5vw,14px)] text-[var(--text-tertiary)] tabular-nums">
-          {pct}%
-        </span>
+      <div className="flex gap-[3px] h-2.5" role="img" aria-label={label || 'Progress through the pipeline steps'}>
+        {seg.map((s, i) => (
+          <span
+            key={i}
+            className="flex-1 rounded-[5px] transition-colors duration-300"
+            style={{ background: SEG_COLOR[s] || SEG_COLOR.pending }}
+          />
+        ))}
       </div>
-      <progress
-        className="progress progress-primary w-full h-3"
-        value={pct}
-        max="100"
-        aria-label={`${label} — ${pct}% complete`}
-      />
-      <style>{`
-        progress.progress::-webkit-progress-value { transition: inline-size 0.4s ease; }
-        progress.progress::-moz-progress-bar { transition: inline-size 0.4s ease; }
-      `}</style>
+      {label && (
+        <div className="mt-1.5 text-[clamp(12px,1.5vw,13px)] font-medium text-[var(--text-secondary)]">{label}</div>
+      )}
     </div>
   )
 }
 
-// ── Status banner (always visible below progress) ───────────────────────────
+// ── What happened, and why ───────────────────────────────────────────────────
+
+const TONE = {
+  green:   { bg: 'bg-[var(--success-bg)]', text: 'text-[var(--success-text)]', dot: 'bg-[var(--success)]' },
+  orange:  { bg: 'bg-[var(--warning-bg)]', text: 'text-[var(--warning-text)]', dot: 'bg-[var(--warning)]' },
+  red:     { bg: 'bg-[var(--danger-bg)]',  text: 'text-[var(--danger-text)]',  dot: 'bg-[var(--danger)]'  },
+}
+
+function Headline({ cardState, text, evidence }) {
+  const t = TONE[cardState] || TONE.green
+  return (
+    <div className={`mt-4 px-3 py-3 rounded-[10px] ${t.bg}`}>
+      <div className="flex items-start gap-2.5">
+        <span className={`w-2.5 h-2.5 rounded-full shrink-0 mt-[7px] ${t.dot} ${cardState === 'red' ? 'step-halo step-halo-red' : ''}`} />
+        <span className={`text-[clamp(14px,1.8vw,16px)] font-semibold leading-snug ${t.text}`}>{text}</span>
+      </div>
+      {evidence.length > 0 && (
+        <dl className="m-0 mt-2.5 ml-5 flex flex-col gap-1.5">
+          {evidence.map(e => (
+            <div key={e.label} className="grid grid-cols-[minmax(0,132px)_auto_minmax(0,1fr)] gap-x-2.5 items-baseline text-[clamp(12px,1.5vw,13px)]">
+              <dt className="text-[var(--text-secondary)]">{e.label}</dt>
+              <dd className="m-0 font-bold tabular-nums text-[var(--text-primary)]">{e.value}</dd>
+              <dd className="m-0 text-[var(--text-secondary)]">{e.note}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  )
+}
+
+function InfoRow({ icon, children, strong }) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-[3px]" aria-hidden>
+        {icon}
+      </svg>
+      <span className={strong ? 'font-medium text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}>{children}</span>
+    </div>
+  )
+}
+
+const ICON_NEXT = <path d="M5 12h14M13 6l6 6-6 6" />
+const ICON_INFO = <><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></>
+const ICON_TREND = <><path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-6" /></>
+
+function NextSteps({ next, ifWrong, context }) {
+  if (!next && !ifWrong && !context) return null
+  return (
+    <div className="mt-3 flex flex-col gap-1.5 text-[clamp(12px,1.5vw,13px)] leading-snug">
+      {next && <InfoRow icon={ICON_NEXT} strong>{next}</InfoRow>}
+      {ifWrong && <InfoRow icon={ICON_INFO}>{ifWrong}</InfoRow>}
+      {context && <InfoRow icon={ICON_TREND}>{context}</InfoRow>}
+    </div>
+  )
+}
+
+// ── Actions (unchanged behaviour) ────────────────────────────────────────────
 
 // Pick an action-button set that actually matches the problem the robot is
 // stuck on, instead of always offering "I'll restock the shelf".
-function orangeActionContext({ retryCount, waypointsSearched, explanationText }) {
+function orangeActionContext({ retryCount, explanationText }) {
   const t = (explanationText || '').toLowerCase()
 
   // Grasp-side trouble: multiple retries, "path blocked", reachability, collision
   if (retryCount >= 2 || /path blocked|reach|collision|grasp/.test(t)) {
     return {
-      title: 'Trouble picking the item up',
       primary: { id: 'reposition', label: 'I\'ll reposition the item' },
       secondaries: [
         { id: 'out_of_stock', label: 'Tell customer we\'re out' },
@@ -88,7 +143,6 @@ function orangeActionContext({ retryCount, waypointsSearched, explanationText })
   // Bridge / hardware fault while not yet auto-recovered
   if (/fault|hardware|bridge|recover/.test(t)) {
     return {
-      title: 'Hardware hiccup',
       primary: { id: 'on_my_way', label: 'I\'m on my way' },
       secondaries: [
         { id: 'cancel', label: 'Cancel this order', danger: true },
@@ -98,7 +152,6 @@ function orangeActionContext({ retryCount, waypointsSearched, explanationText })
 
   // Default: search failure (couldn't find the item on any shelf)
   return {
-    title: null,
     primary: { id: 'restock', label: 'I\'ll restock the shelf' },
     secondaries: [
       { id: 'out_of_stock', label: 'Tell customer we\'re out' },
@@ -107,154 +160,97 @@ function orangeActionContext({ retryCount, waypointsSearched, explanationText })
   }
 }
 
-function StatusBanner({ cardState, itemName, explanationText, onIntervene, showActions, retryCount, waypointsSearched }) {
+function Actions({ cardState, onIntervene, retryCount, explanationText, showActions }) {
+  if (cardState === 'red') {
+    return (
+      <div className="mt-4 flex flex-col gap-2">
+        <button onClick={() => onIntervene?.('on_my_way')} className="btn btn-primary w-full">
+          I'm on my way
+        </button>
+        <div className="flex gap-2">
+          <button onClick={() => onIntervene?.('delayed')} className="btn btn-sm btn-outline btn-primary flex-1">
+            Tell customer it's delayed
+          </button>
+          <button onClick={() => onIntervene?.('cancel')} className="btn btn-sm btn-outline btn-error flex-1">
+            Cancel this order
+          </button>
+        </div>
+      </div>
+    )
+  }
+  if (cardState === 'orange' && showActions) {
+    const ctx = orangeActionContext({ retryCount, explanationText })
+    return (
+      <div className="mt-4 flex flex-col gap-2">
+        <button onClick={() => onIntervene?.(ctx.primary.id)} className="btn btn-primary w-full">
+          {ctx.primary.label}
+        </button>
+        <div className="flex gap-2">
+          {ctx.secondaries.map(b => (
+            <button
+              key={b.id}
+              onClick={() => onIntervene?.(b.id)}
+              className={`btn btn-sm btn-outline flex-1 ${b.danger ? 'btn-error' : 'btn-primary'}`}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+  return null
+}
+
+function IdleBanner({ cardState, text }) {
   if (cardState === 'waiting') {
     return (
       <div className="mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--warning-bg)]">
         <span className="w-2.5 h-2.5 rounded-full shrink-0 animate-blink" style={{ background: 'var(--warning)' }} />
-        <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--warning)]">
-          {explanationText || 'Waiting for the robot to come online…'}
+        <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--warning-text)]">
+          {text || 'Waiting for the robot to come online…'}
         </span>
       </div>
     )
   }
-
-  if (cardState === 'green') {
-    return (
-      <div className="mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--success-bg)]">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" className="shrink-0"><path d="M20 6L9 17l-5-5"/></svg>
-        <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--success)]">
-          {explanationText || 'Everything is running fine'}
-        </span>
-      </div>
-    )
-  }
-
-  if (cardState === 'orange') {
-    const ctx = orangeActionContext({ retryCount, waypointsSearched, explanationText })
-    return (
-      <div className="mt-4">
-        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--warning-bg)] mb-3">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--warning)" className="shrink-0" aria-hidden>
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-          </svg>
-          <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--warning)]">
-            {explanationText || ctx.title || `Can't find the ${itemName || 'item'} on the shelf`}
-          </span>
-        </div>
-        {showActions ? (
-          <div className="flex flex-col gap-2">
-            <button onClick={() => onIntervene?.(ctx.primary.id)} className="btn btn-primary w-full">
-              {ctx.primary.label}
-            </button>
-            <div className="flex gap-2">
-              {ctx.secondaries.map(b => (
-                <button
-                  key={b.id}
-                  onClick={() => onIntervene?.(b.id)}
-                  className={`btn btn-sm btn-outline flex-1 ${b.danger ? 'btn-error' : 'btn-primary'}`}
-                >
-                  {b.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="text-[12px] text-[var(--text-tertiary)] italic px-1">
-            Robot is trying to recover on its own…
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  if (cardState === 'red') {
-    return (
-      <div className="mt-4">
-        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--danger-bg)] mb-3">
-          <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 animate-pulse-ring" style={{ color: 'var(--danger)' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--danger)" aria-hidden>
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 5h2v6h-2V7zm0 8h2v2h-2v-2z"/>
-            </svg>
-          </div>
-          <span className="text-[clamp(13px,1.5vw,15px)] font-medium text-[var(--danger)]">
-            {explanationText || 'I need help — please come over'}
-          </span>
-        </div>
-        <div className="flex flex-col gap-2">
-          <button onClick={() => onIntervene?.('on_my_way')} className="btn btn-primary w-full">
-            I'm on my way
-          </button>
-          <div className="flex gap-2">
-            <button onClick={() => onIntervene?.('delayed')} className="btn btn-sm btn-outline btn-primary flex-1">
-              Tell customer it's delayed
-            </button>
-            <button onClick={() => onIntervene?.('cancel')} className="btn btn-sm btn-outline btn-error flex-1">
-              Cancel this order
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  return null
+  const t = TONE[cardState] || TONE.green
+  return (
+    <div className={`mt-4 flex items-center gap-2.5 px-3 py-2.5 rounded-lg ${t.bg}`}>
+      <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${t.dot}`} />
+      <span className={`text-[clamp(13px,1.5vw,15px)] font-medium ${t.text}`}>{text || 'Everything is running fine'}</span>
+    </div>
+  )
 }
 
-// ── Cycle failures log ──────────────────────────────────────────────────────
+// ── Issues in this order, attributed to a step ───────────────────────────────
 
-// Convert an ISO/UTC timestamp into local HH:MM:SS so the operator sees the
-// time on their wall clock, not UTC.
-function shortTime(ts) {
-  if (!ts) return ''
-  const d = new Date(ts)
-  if (!isNaN(d.getTime())) {
-    const hh = String(d.getHours()).padStart(2, '0')
-    const mm = String(d.getMinutes()).padStart(2, '0')
-    const ss = String(d.getSeconds()).padStart(2, '0')
-    return `${hh}:${mm}:${ss}`
-  }
-  // Fallback: pluck HH:MM:SS substring if Date couldn't parse
-  const m = String(ts).match(/(\d{2}:\d{2}:\d{2})/)
-  return m ? m[1] : ''
-}
-
-function CycleFailures({ failures }) {
-  if (!failures || failures.length === 0) return null
-
-  // Newest at the top, matching the live pipeline's top-down "most recent first"
-  // direction. Render a fresh shallow copy so we don't mutate parent state.
-  const ordered = [...failures].reverse()
-
+function Issues({ issues }) {
+  if (!issues.length) return null
+  const shown = issues.slice(0, 4)
+  const more = issues.length - shown.length
   return (
     <div className="mt-4">
       <div className="h-px bg-[var(--border)] mb-3" />
-      <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Issues this cycle</div>
+      <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">Issues in this order</div>
       <div className="flex flex-col gap-1.5">
-        {ordered.map((f, i) => {
-          const time = shortTime(f.ts)
+        {shown.map((f, i) => {
+          const red = f.level === 'red'
           return (
-            <div key={`${f.ts || ''}-${i}`} className={`flex items-start gap-2 px-3 py-2 rounded-lg ${
-              f.level === 'red' ? 'bg-[var(--danger-bg)]' : 'bg-[var(--warning-bg)]'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-[6px] ${
-                f.level === 'red' ? 'bg-[var(--danger)]' : 'bg-[var(--warning)]'
-              }`} />
-              {time && (
-                <span className={`text-[11px] font-mono tabular-nums shrink-0 mt-[1px] ${
-                  f.level === 'red' ? 'text-[var(--danger)] opacity-70' : 'text-[var(--warning)] opacity-70'
-                }`}>
-                  {time}
+            <div key={`${f.ts || ''}-${i}`} className={`flex items-start gap-2 px-3 py-2 rounded-lg ${red ? 'bg-[var(--danger-bg)]' : 'bg-[var(--warning-bg)]'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-[7px] ${red ? 'bg-[var(--danger)]' : 'bg-[var(--warning)]'}`} />
+              {f.ts && (
+                <span className="text-[11px] font-mono tabular-nums shrink-0 mt-[2px] text-[var(--text-secondary)]">{clock(f.ts)}</span>
+              )}
+              {f.where && (
+                <span className="shrink-0 px-1.5 rounded-md text-[11px] font-semibold leading-[18px] bg-[var(--surface)] text-[var(--text-secondary)] border border-solid border-[var(--border)]">
+                  {f.where}
                 </span>
               )}
-              <span className={`text-[clamp(12px,1.4vw,13px)] ${
-                f.level === 'red' ? 'text-[var(--danger)]' : 'text-[var(--warning)]'
-              }`}>
-                {f.message}
-              </span>
+              <span className={`text-[clamp(12px,1.4vw,13px)] ${red ? 'text-[var(--danger-text)]' : 'text-[var(--warning-text)]'}`}>{f.text}</span>
             </div>
           )
         })}
+        {more > 0 && <div className="text-[12px] text-[var(--text-secondary)] pl-3">+ {more} earlier</div>}
       </div>
     </div>
   )
@@ -263,14 +259,14 @@ function CycleFailures({ failures }) {
 // ── Main component ──────────────────────────────────────────────────────────
 
 export default function AttentionPanel({ title, level, explanationText, style }) {
-  const { liveData, sendMessage, sourceMode, connectionStatus, mode } = useDataSource()
+  const { liveData, history, sendMessage, sourceMode, connectionStatus, mode } = useDataSource()
   const itemName = liveData?._itemName
   const cycleNum = liveData?._cycleNum
   const startedAt = liveData?._cycleStartedAt
-  const elapsed = startedAt ? Date.now() - startedAt : 0
-  const progress = liveData?.progress || { fraction: 0, milestone: 0, animDuration: 0 }
-  const isActive = !!itemName && !liveData?._cycleComplete
-  const failures = liveData?._cycleFailures || []
+  const isActive = !!itemName && !liveData?._cycleComplete && !liveData?._isAnomaly
+  const waitingForHelp = !!itemName && !!liveData?._cycleComplete && liveData?._cardState === 'red'
+  const now = useNow(isActive || waitingForHelp)
+  const elapsed = startedAt ? now - startedAt : 0
   const retryCount = liveData?._retryCount || 0
   const waypointsSearched = liveData?._waypointsSearched?.length || 0
 
@@ -282,7 +278,11 @@ export default function AttentionPanel({ title, level, explanationText, style })
   const cardState = robotOffline && !isActive
     ? 'waiting'
     : (liveData?._cardState || 'green')
-  const pill = PILL[cardState] || PILL.green
+
+  const view = liveData ? deriveNowServing(liveData, history, now) : null
+  const pill = cardState === 'orange' && view?.kind === 'search'
+    ? { ...PILL.orange, text: "Can't find it" }
+    : (PILL[cardState] || PILL.green)
 
   // Only show action buttons once the robot has clearly tried a couple of times
   // (≥2 grasp retries or ≥2 waypoints searched) or once it has hit a red failure.
@@ -293,28 +293,27 @@ export default function AttentionPanel({ title, level, explanationText, style })
     ? 'Lost connection to the dashboard server — trying to reconnect…'
     : 'Waiting for the robot to come online…'
 
-  const eta = progress.fraction > 0.05 && isActive
-    ? formatDuration(Math.max(0, (elapsed / progress.fraction) - elapsed))
-    : '--'
+  const showDetail = (isActive || waitingForHelp) && view
+  const onIntervene = (action) => sendMessage({ type: 'intervene', action })
 
   return (
     <Card style={style}>
       {/* Header row */}
       <div className="flex justify-between items-start gap-3 mb-1">
         <div>
-          <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Now serving</div>
+          <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Now serving</div>
           <h2 className="text-[clamp(22px,2.8vw,28px)] font-bold text-[var(--text-primary)] m-0 leading-tight">
-            {isActive
+            {itemName && (isActive || waitingForHelp)
               ? itemName.charAt(0).toUpperCase() + itemName.slice(1)
               : cardState === 'waiting' ? 'Robot offline' : 'Idle'}
           </h2>
           <div className="flex items-center gap-3 mt-1 text-[clamp(13px,1.5vw,14px)] text-[var(--text-secondary)]">
-            {isActive && cycleNum && <span>Order #{cycleNum}</span>}
-            {!isActive && cycleNum && cardState !== 'waiting' && (
+            {(isActive || waitingForHelp) && cycleNum && <span>Order #{cycleNum}</span>}
+            {!isActive && !waitingForHelp && cycleNum && cardState !== 'waiting' && (
               <span>Next: Order #{cycleNum + (liveData?._cycleComplete ? 1 : 0)}</span>
             )}
-            {isActive && <span>· started {formatDuration(elapsed)} ago</span>}
-            {!isActive && cardState === 'waiting' && <span>Waiting for live connection</span>}
+            {(isActive || waitingForHelp) && <span>· started {formatDuration(elapsed)} ago</span>}
+            {!isActive && !waitingForHelp && cardState === 'waiting' && <span>Waiting for live connection</span>}
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0">
@@ -326,37 +325,36 @@ export default function AttentionPanel({ title, level, explanationText, style })
             } ${isActive || cardState === 'waiting' ? 'animate-blink' : ''}`} />
             {pill.text}
           </span>
-          {isActive && (
+          {showDetail && (
             <div className="text-right">
-              <div className="text-[10px] text-[var(--text-tertiary)] uppercase font-semibold">ETA</div>
-              <div className="text-[clamp(16px,2vw,20px)] font-bold text-[var(--text-primary)] tabular-nums">{eta}</div>
+              <div className="text-[10px] text-[var(--text-secondary)] uppercase font-semibold">{view.eta.label}</div>
+              <div className="text-[clamp(16px,2vw,20px)] font-bold text-[var(--text-primary)] tabular-nums">{view.eta.value}</div>
+              {view.eta.note && <div className="text-[11px] text-[var(--text-secondary)]">{view.eta.note}</div>}
             </div>
           )}
         </div>
       </div>
 
-      {/* Progress bar */}
-      {isActive && (
-        <ProgressBar
-          fraction={progress.fraction}
-          animDuration={progress.animDuration}
-          milestone={progress.milestone}
-        />
+      {showDetail ? (
+        <>
+          <StepBar seg={view.seg} label={view.phaseLabel} />
+          <Headline cardState={cardState} text={view.headline || explanationText} evidence={view.evidence} />
+          <NextSteps next={view.next} ifWrong={view.ifWrong} context={view.context} />
+          <Actions
+            cardState={cardState}
+            onIntervene={onIntervene}
+            retryCount={retryCount}
+            explanationText={explanationText}
+            showActions={showActions}
+          />
+          <Issues issues={view.issues} />
+        </>
+      ) : (
+        <>
+          <IdleBanner cardState={cardState} text={cardState === 'waiting' ? waitingText : explanationText} />
+          {view && <Issues issues={view.issues} />}
+        </>
       )}
-
-      {/* Real-time status banner + action buttons */}
-      <StatusBanner
-        cardState={cardState}
-        itemName={itemName}
-        explanationText={cardState === 'waiting' ? waitingText : explanationText}
-        showActions={showActions}
-        retryCount={retryCount}
-        waypointsSearched={waypointsSearched}
-        onIntervene={(action) => sendMessage({ type: 'intervene', action })}
-      />
-
-      {/* Failures within this cycle */}
-      <CycleFailures failures={failures} />
     </Card>
   )
 }

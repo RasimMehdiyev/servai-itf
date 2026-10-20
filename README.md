@@ -93,7 +93,7 @@ src/
 ├── features/
 │   ├── live/           Live monitoring screen + components
 │   ├── history/        Performance analytics + AI insights
-│   │   ├── components/ ActivityChart, FailureRadar, OrdersList, WeeklySummaryCard, ChatPanel, …
+│   │   ├── components/ ActivityHeatmap, FailureRadar, OrdersList, WeeklySummaryCard, ChatPanel, …
 │   │   └── pages/      HistoryScreen (composes all with a shared date range)
 │   ├── day-details/    Day breakdown screen + components
 │   └── assistant/      Floating assistant stub
@@ -110,8 +110,8 @@ Top-to-bottom:
 
 1. **WeeklySummaryCard** — AI weekly summary rendered via SmartCaption (term tooltips, order citations).
 2. **ChatCard** — slim "Ask ROBI" card (daisyUI button) that opens the chat panel.
-3. **Range chips** — Today / Week / Month (daisyUI `btn`) controlling chart + orders list.
-4. **ActivityChart** — daisyUI `stats` tally tiles (delivered / with warnings / couldn't deliver / avg fetch time) above a **Recharts** stacked bar chart with a custom TODAY marker and tooltip.
+3. **Range chips** — Today / Week / Month / Custom (daisyUI `btn`; Custom adds two date fields, default last 14 days) controlling the heatmap + orders list.
+4. **ActivityHeatmap** — daisyUI `stats` tally tiles (delivered / with warnings / couldn't deliver / avg fetch time) above a heatmap of when orders happen: hours for one day, 2-hour blocks for up to a week, a calendar for longer ranges. Switch between **Orders** (volume, blue) and **Failure rate** (rose; cells under 3 orders are greyed out). Hover or tap a cell for its breakdown; the default selection is the busiest cell or day. Orders are bucketed in the browser's local time.
 5. **FailureRadar** — a **Recharts** radar of failure-reason frequency (rose = couldn't deliver, amber = with warnings). Each failure label is **clickable**; a right-side panel shows what that failure means in plain language plus daisyUI count badges. Defaults to the most frequent failure.
 6. **OrdersList** — daisyUI `list` of date-grouped orders with daisyUI `badge` status pills and filter chips; each row expands (`list-col-wrap`) into a step-by-step breakdown, failure camera feed, and "Ask ROBI".
 7. **ChatPanel** — slide-in panel with SSE-streamed chat and SmartCaption rendering.
@@ -175,10 +175,24 @@ Connects to the robot and relays its events to the dashboard indistinguishably f
 
 ## Live Screen (`src/features/live/`)
 
-- **AttentionPanel** — current order/item, a daisyUI `progress` bar, ETA, and intervention action buttons.
-- **RobotStatusCard** — a daisyUI `stats` "Today so far" overview (orders / avg time / needed help) + recently delivered.
-- **WorkflowTimeline** — 9-phase pipeline view with step state, description, timestamp, and debug messages; the next-expected step shows a loading skeleton.
-- **TechnicalDetails** — collapsible accordion for deeper robot-parameter inspection.
+The Live page explains what the robot is doing and why, not just its status.
+
+- **AttentionPanel (Now serving)** — item, order, status pill, and an ETA based on how long that item usually takes (`/api/orders/slim`). A step bar with one segment per pipeline step (an amber or red step stays amber or red), a headline with the numbers behind it (target match, grasp point, grasp tries…), what happens next / if it goes wrong / how orders of this item usually end, the intervention buttons, and "Issues in this order" tagged with the step that caused them.
+- **CameraCard** — frame, camera chips (D415 / ZED), detections toggle, log-line caption and legend. The robot does not stream video to the dashboard yet, so a translucent "Live camera unavailable" overlay covers the frame; the frame itself shows the last capture the robot sent, if any.
+- **RobotStatusCard** — "Today so far" as one strip: the day's orders / avg time / needed help (from `/api/recent-orders` → `today`), an outcome bar, and the two latest orders with their outcome.
+- **WorkflowTimeline** — the pipeline, oldest step first. Each step shows its time against the typical time, the numbers behind it, and a Why / grasp tries / raw log drawer.
+- **TechnicalDetails** — arm / gripper / planner / speed, and the robot log next to a plain-words version of each line. Opens by itself when something is amber or red.
+
+The facts behind these cards are collected per order by `messageMapper.js` (`_ev`, `_stageInfo`, `_log`) and turned into sentences by `src/lib/liveView.js`. `src/lib/logTranslate.js` turns raw controller text (contact_stop, IK branch flips…) into plain words and `src/lib/orderStats.js` computes the history numbers.
+
+### Testing the Live page against recorded logs
+
+```bash
+npm run test:replay            # replays grocery_logs.txt through the relay and the Live reducer, checks the result
+npm run replay                 # relay in replay mode for UI work (no robot needed), real orders untouched
+```
+
+The replay runs the real relay with `STATIC_REPLAY=1` into a throw-away data folder (`DATA_DIR`), so `data/orders.json` is never modified. The default stays real-connection-only.
 
 ## Data Flow
 
@@ -200,7 +214,7 @@ Employee action → DataSourceContext.sendMessage() → useRobotSocket.send()
 
 ```
 HistoryScreen (shared date range)
-    ├─ ActivityChart / FailureRadar → GET /api/orders/{daily,list}  (relay, 8765)
+    ├─ ActivityHeatmap / FailureRadar → GET /api/orders/{daily,times,list}  (relay, 8765)
     ├─ WeeklySummaryCard / order detail → POST /api/rag/caption     (RAG, 5175)
     ├─ Failure camera analysis          → POST /api/rag/vision       (RAG, 5175)
     └─ ChatPanel                        → POST /api/rag/chat (SSE)    (RAG, 5175)

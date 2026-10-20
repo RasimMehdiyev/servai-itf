@@ -2,75 +2,108 @@ import React from 'react'
 import Card from '../../../components/ui/Card'
 import { useDataSource } from '../../../context/DataSourceContext'
 import { formatDuration, formatSeconds } from './AttentionPanel'
+import { REASON_LABEL } from '../../../lib/orderStats'
 
-function RecentlyDelivered({ list }) {
-  if (!list || list.length === 0) return null
+const OUTCOME = {
+  success: { dot: 'var(--success)', label: () => 'Delivered' },
+  ok: { dot: 'var(--success)', label: () => 'Delivered' },
+  warning: { dot: 'var(--warning)', label: () => 'Delivered with warnings' },
+  failed: { dot: 'var(--danger)', label: (o) => REASON_LABEL[o.failure?.reason] || 'Couldn’t deliver' },
+}
 
+function Stat({ value, label }) {
   return (
-    <div className="mt-4">
-      <div className="h-px bg-[var(--border)] mb-3" />
-      <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Recently delivered</div>
-      <div className="flex flex-col gap-1.5">
-        {list.slice(0, 2).map((o, i) => {
-          const ago = formatDuration(Date.now() - new Date(o.completed_at).getTime())
-          const dotColor = o.status === 'failed' ? 'bg-[var(--danger)]' : o.status === 'warning' ? 'bg-[var(--warning)]' : 'bg-[var(--success)]'
-          return (
-            <div key={o.id || i} className="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--bg)]">
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${dotColor}`} />
-                <span className="font-medium text-[clamp(13px,1.5vw,14px)]">
-                  {o.item?.charAt(0).toUpperCase() + o.item?.slice(1)}
-                </span>
-                <span className="text-[12px] text-[var(--text-tertiary)]">#{o.id}</span>
-              </div>
-              <div className="flex items-center gap-3 text-[12px] text-[var(--text-tertiary)]">
-                <span>{ago} ago</span>
-                <span>{formatSeconds(o.total_seconds)}</span>
-              </div>
-            </div>
-          )
-        })}
-      </div>
+    <div className="flex items-baseline gap-1.5">
+      <span className="text-[clamp(18px,2.4vw,22px)] font-extrabold tabular-nums text-[var(--text-primary)]">{value}</span>
+      <span className="text-[12px] text-[var(--text-secondary)]">{label}</span>
     </div>
   )
 }
 
+function RecentOrder({ o }) {
+  const out = OUTCOME[o.status] || OUTCOME.failed
+  const ago = o.completed_at ? formatDuration(Date.now() - new Date(o.completed_at).getTime()) : ''
+  return (
+    <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-lg bg-[var(--bg)] text-[13px]">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: out.dot }} />
+        <span className="font-medium whitespace-nowrap">{o.item ? o.item.charAt(0).toUpperCase() + o.item.slice(1) : 'Order'}</span>
+        <span className="text-[12px] text-[var(--text-secondary)]">#{o.order_number || o.id}</span>
+        <span className="text-[12px] text-[var(--text-secondary)] truncate">{out.label(o)}</span>
+      </div>
+      <span className="text-[12px] text-[var(--text-secondary)] whitespace-nowrap tabular-nums">
+        {ago ? `${ago} ago · ` : ''}{formatSeconds(o.total_seconds)}
+      </span>
+    </div>
+  )
+}
+
+/** Today so far — one strip: the day's numbers, the outcome mix, the last two orders. */
+function TodayStrip({ style }) {
+  const { recentOrders } = useDataSource()
+  const t = recentOrders?.today
+  if (!t) {
+    return (
+      <Card style={style}>
+        <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Today so far</div>
+        <div className="text-[13px] text-[var(--text-secondary)] mt-1">Waiting for the first order…</div>
+      </Card>
+    )
+  }
+
+  const parts = [
+    { n: t.delivered, color: 'var(--success)' },
+    { n: t.warning, color: 'var(--warning)' },
+    { n: t.failed, color: 'var(--danger)' },
+  ].filter(p => p.n > 0)
+
+  return (
+    <Card style={style}>
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+        <div className="shrink-0">
+          <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Today so far</div>
+          <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 mt-1">
+            <Stat value={t.total} label={t.total === 1 ? 'order' : 'orders'} />
+            <Stat value={formatSeconds(t.avg_seconds)} label="avg time" />
+            <Stat value={t.failed} label="needed help" />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-[200px]">
+          <div
+            className="flex gap-0.5 h-2"
+            role="img"
+            aria-label={`Today: ${t.delivered} delivered, ${t.warning} with warnings, ${t.failed} couldn't deliver`}
+          >
+            {parts.length === 0
+              ? <span className="flex-1 rounded bg-[var(--border)]" />
+              : parts.map((p, i) => <span key={i} className="rounded" style={{ flexGrow: p.n, flexBasis: 0, background: p.color }} />)}
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[11px] text-[var(--text-secondary)]">
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--success)]" />Delivered {t.delivered}</span>
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--warning)]" />With warnings {t.warning}</span>
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--danger)]" />Couldn’t deliver {t.failed}</span>
+          </div>
+        </div>
+
+        {t.recent?.length > 0 && (
+          <div className="flex flex-col gap-1 w-full lg:w-[360px] shrink-0">
+            {t.recent.map(o => <RecentOrder key={o.id} o={o} />)}
+          </div>
+        )}
+      </div>
+    </Card>
+  )
+}
+
 export default function RobotStatusCard({ params, suggestion, style }) {
-  const { liveData, recentOrders, mode } = useDataSource()
-  const recentList = recentOrders?.recent || []
-  const { total: totalOrders = 0, failedCount: helpCount = 0 } = recentOrders || {}
-  const avgTime = recentList.length > 0
-    ? Math.round(recentList.reduce((s, o) => s + (o.total_seconds || 0), 0) / recentList.length)
-    : 0
+  const { mode } = useDataSource()
 
   if (mode === 'mock') {
     if (!params?.length) return null
     return <OldParamsCard params={params} suggestion={suggestion} style={style} />
   }
-
-  return (
-    <Card style={style}>
-      <div className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1">Session overview</div>
-      <h2 className="text-[clamp(18px,2.2vw,22px)] font-bold text-[var(--text-primary)] m-0 mb-4">Today so far</h2>
-
-      <div className="stats stats-horizontal w-full shadow-none border border-solid" style={{ borderColor: 'var(--border)' }}>
-        <div className="stat place-items-center px-2">
-          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{totalOrders}</div>
-          <div className="stat-title text-[11px]">orders</div>
-        </div>
-        <div className="stat place-items-center px-2">
-          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{formatSeconds(avgTime)}</div>
-          <div className="stat-title text-[11px]">avg time</div>
-        </div>
-        <div className="stat place-items-center px-2">
-          <div className="stat-value text-[clamp(18px,2.4vw,24px)] text-[var(--text-primary)] tabular-nums">{helpCount}</div>
-          <div className="stat-title text-[11px]">needed help</div>
-        </div>
-      </div>
-
-      <RecentlyDelivered list={recentList} />
-    </Card>
-  )
+  return <TodayStrip style={style} />
 }
 
 function OldParamsCard({ params, suggestion, style }) {

@@ -890,6 +890,17 @@ body {
   color: var(--danger);
 }
 
+/* step-halo — a ring that pulses around a dot that stays solid (current step, status dot).
+   Colour comes from --halo, so the blue/amber/red variants follow the state. */
+@keyframes step-halo {
+  0% { box-shadow: 0 0 0 0 var(--halo); }
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.step-halo { --halo: rgba(43, 127, 255, 0.4); animation: step-halo 1.6s ease-out infinite; }
+.step-halo-warn { --halo: rgba(202, 138, 4, 0.45); }
+.step-halo-red { --halo: rgba(244, 63, 94, 0.45); }
+
 /* Progress bar diagonal stripes */
 .stripes {
   background-image: linear-gradient(

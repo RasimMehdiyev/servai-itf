@@ -31,17 +31,20 @@ const ROBOT_PROBE_INTERVAL = 30_000  // check for robot every 30s while in stati
 // main-live is the real-connection-only branch: never replay grocery_logs.txt.
 // The dashboard always tries to reach the real robot at ROBOT_WS and shows a
 // "waiting for robot" state until it connects.
-const ENABLE_STATIC_REPLAY = false
-const LOG_FILE = path.join(__dirname, 'grocery_logs.txt')
-const ORDERS_DIR = path.join(__dirname, 'data')
+// Opt-in for tests only (STATIC_REPLAY=1): replay a log file into a throw-away
+// DATA_DIR so the Live page can be checked against recorded robot logs without
+// touching the real orders. The default stays real-connection-only.
+const ENABLE_STATIC_REPLAY = process.env.STATIC_REPLAY === '1'
+const LOG_FILE = process.env.REPLAY_LOG || path.join(__dirname, 'grocery_logs.txt')
+const ORDERS_DIR = process.env.DATA_DIR || path.join(__dirname, 'data')
 const ORDERS_FILE = path.join(ORDERS_DIR, 'orders.json')
 const STATE_FILE = path.join(ORDERS_DIR, 'replay-state.json')
 const LOOP_PAUSE = 5000
 const HEARTBEAT_INTERVAL = 4000
 const MAX_EVENT_DELAY = 5000
 
-const CAPTION_CACHE_DIR = path.join(__dirname, 'data', 'cache', 'captions')
-const VISION_CACHE_DIR = path.join(__dirname, 'data', 'cache', 'vision')
+const CAPTION_CACHE_DIR = path.join(ORDERS_DIR, 'cache', 'captions')
+const VISION_CACHE_DIR = path.join(ORDERS_DIR, 'cache', 'vision')
 
 /**
  * Read the most recent cached caption for a given surface prefix.
@@ -1323,8 +1326,27 @@ const server = http.createServer(async (req, res) => {
     const recent = orders.slice(-2).reverse()
     const failed = orders.filter(o => o.status === 'failed').length
     const weeklyCaption = readLatestCaption('weekly')
+    // "Today so far": numbers for one local calendar day (?date=YYYY-MM-DD for tests).
+    const p2 = (n) => String(n).padStart(2, '0')
+    const localDay = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}` }
+    const dayStr = query.date || localDay(new Date().toISOString())
+    const todays = orders.filter(o => o.started_at && localDay(o.started_at) === dayStr)
+    const secs = todays.map(o => o.total_seconds || 0).filter(x => x > 0)
+    const today = {
+      date: dayStr,
+      total: todays.length,
+      delivered: todays.filter(o => o.status === 'success' || o.status === 'ok').length,
+      warning: todays.filter(o => o.status === 'warning').length,
+      failed: todays.filter(o => o.status === 'failed').length,
+      avg_seconds: secs.length ? Math.round(secs.reduce((a, b) => a + b, 0) / secs.length) : 0,
+      recent: todays.slice(-2).reverse().map(o => ({
+        id: o.id, order_number: o.order_number, item: o.item, status: o.status,
+        failure: o.failure ? { reason: o.failure.reason } : null,
+        completed_at: o.completed_at, total_seconds: o.total_seconds || 0,
+      })),
+    }
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ total: orders.length, failedCount: failed, recent, cached_weekly_caption: weeklyCaption }))
+    res.end(JSON.stringify({ total: orders.length, failedCount: failed, recent, today, cached_weekly_caption: weeklyCaption }))
 
   } else if (pathname === '/api/orders/daily') {
     const orders = readOrders()
@@ -1371,6 +1393,32 @@ const server = http.createServer(async (req, res) => {
       days,
       totals: { delivered: totalDelivered, warning: totalWarning, failed: totalFailed, avg_fetch_seconds: avgFetch },
     }))
+
+  } else if (pathname === '/api/orders/slim') {
+    // Just the fields the Live page needs for typical times and outcomes (no images, no step meta).
+    const orders = readOrders().map(o => ({
+      id: o.id, item: o.item, status: o.status, started_at: o.started_at,
+      failure: o.failure ? { reason: o.failure.reason } : null,
+      retries: o.retries || 0, total_seconds: o.total_seconds || 0, grasp_width_mm: o.grasp_width_mm ?? null,
+      steps: (o.steps || []).map(s => ({ phase: s.phase, duration_seconds: s.duration_seconds || 0 })),
+    }))
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify(orders))
+
+  } else if (pathname === '/api/orders/times') {
+    // Minimal rows for the activity heatmap; the browser buckets them in local time.
+    const orders = readOrders()
+    const today = new Date().toISOString().slice(0, 10)
+    const from = query.from || (() => { const d = new Date(); d.setDate(d.getDate() - 6); return d.toISOString().slice(0, 10) })()
+    const to = query.to || today
+    // Pad a day each side: the date filter is on the UTC date, bucketing is local.
+    const lo = new Date(from + 'T00:00:00'); lo.setDate(lo.getDate() - 1)
+    const hi = new Date(to + 'T23:59:59'); hi.setDate(hi.getDate() + 1)
+    const rows = orders
+      .filter(o => o.started_at && new Date(o.started_at) >= lo && new Date(o.started_at) <= hi)
+      .map(o => ({ t: o.started_at, s: o.status === 'ok' ? 'success' : o.status, item: o.item }))
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ from, to, orders: rows }))
 
   } else if (pathname === '/api/orders/list') {
     const orders = readOrders()
@@ -1509,8 +1557,13 @@ const wss = new WebSocketServer({ server })
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  WebSocket: ws://0.0.0.0:${PORT}`)
   console.log(`  HTTP API:  http://0.0.0.0:${PORT}/api/recent-orders`)
-  console.log(`  Robot:     ${ROBOT_WS} (real connection only — no static replay)\n`)
-  connectToRobot()
+  if (ENABLE_STATIC_REPLAY) {
+    console.log(`  Robot:     none — STATIC_REPLAY=1, replaying ${path.basename(LOG_FILE)} into ${ORDERS_DIR}\n`)
+    startStaticReplay()
+  } else {
+    console.log(`  Robot:     ${ROBOT_WS} (real connection only — no static replay)\n`)
+    connectToRobot()
+  }
 })
 
 wss.on('connection', (ws) => {

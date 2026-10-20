@@ -10,7 +10,9 @@
  * This is the single file to update when the log format changes.
  */
 
-const PIPELINE = [
+import { friendlyWaypoint, translateEvent, translateFault, rawText } from '../lib/logTranslate'
+
+export const PIPELINE = [
   { key: 'scene_scan',    title: 'Scanning the scene',   components: ['SCENE_SCAN'] },
   { key: 'searching',     title: 'Searching for item',   components: ['SEARCH_DETECT'] },
   { key: 'anchor_select', title: 'Selecting target',     components: ['ANCHOR_SELECT'] },
@@ -21,19 +23,6 @@ const PIPELINE = [
   { key: 'release',       title: 'Handing over',         components: ['HANDOVER_RELEASE'] },
   { key: 'returning',     title: 'Returning',            components: ['HANDOVER_RETURN', 'RETURN_HOME'] },
 ]
-
-// ── Friendly waypoint labels ─────────────────────────────────────────────────
-const WAYPOINT_LABELS = {
-  'top-shelve': 'top shelf',
-  'bottom-shelve': 'bottom shelf',
-  'left-shelve': 'left shelf',
-  'top-corner': 'top corner',
-  'bottom-corner': 'bottom corner',
-  'clothes-rack': 'clothes rack',
-}
-function friendlyWaypoint(wp) {
-  return WAYPOINT_LABELS[wp] || wp
-}
 
 // ── Valid stock items ────────────────────────────────────────────────────────
 const VALID_STOCK = ['pen', 'ball', 't-shirt', 'water bottle', 'phone holder', 'towel', 'sock', 'coffee mug']
@@ -221,7 +210,7 @@ function appendFailure(data, failure) {
   return updated.slice(-MAX_CYCLE_FAILURES)
 }
 
-export function applyMessageToScenario(currentData, message) {
+function applyCore(currentData, message) {
   if (!message) return currentData
   const data = { ...currentData }
   const { ts: timestamp, type } = message
@@ -712,4 +701,179 @@ function extractDetailLine(msg) {
     return null
   }
   return null
+}
+
+// ── Evidence tracking ────────────────────────────────────────────────────────
+// The core mapper above keeps a one-line description per step. The Live page
+// also explains *why* (scores, tries, places checked, raw log lines), so these
+// facts are collected alongside, per cycle, from the same events.
+
+export function newEvidence() {
+  return {
+    places: [],          // { wp, found, matches }
+    clusters: null,      // detections that survived voting at the last place
+    candidates: 0,       // anchor candidates ranked
+    anchor: null,        // { score, dist } of the chosen target
+    viewpoint: null,     // { picked, of } close-up candidate
+    refine: [],          // { score, area }
+    depth: null,         // metres
+    width: null,         // mm
+    goalset: null,       // { ok, total }
+    tries: [],           // { n, viewpoint, result: running|blocked|ok, ts, endTs, refine, reason }
+    viewpoints: 1,
+    retriesUsed: 0,
+    retryMax: null,
+    collisions: 0,
+    handoverBlocked: false,
+    lastWp: null,        // waypoint of the latest SEARCH_DETECT (SUCCESS lines omit it)
+  }
+}
+
+export function stepTitleForComponent(component) {
+  const i = PIPELINE.findIndex(p => p.components.includes(component))
+  return i >= 0 ? PIPELINE[i].title : null
+}
+
+export function trackEvidence(prev, msg) {
+  const ev = { ...prev }
+  const { component, status } = msg
+  const detail = msg.detail || ''
+
+  if (msg.type === 'collision_warning') {
+    ev.collisions = (ev.collisions || 0) + 1
+    return ev
+  }
+  if (msg.type !== 'phase') return prev
+
+  if (component === 'SEARCH_DETECT') {
+    ev.places = [...ev.places]
+    const wp = msg.waypoint || ev.lastWp
+    if (msg.waypoint) ev.lastWp = msg.waypoint
+    if (wp) {
+      let i = ev.places.findIndex(p => p.wp === wp)
+      if (i < 0) { ev.places.push({ wp, found: null, matches: 0 }); i = ev.places.length - 1 }
+      const place = { ...ev.places[i] }
+      if (status === 'SUCCESS') {
+        const m = detail.match(/(\d+) survived/)
+        place.found = true
+        place.matches = m ? parseInt(m[1], 10) : 0
+        ev.clusters = place.matches
+      } else if (status === 'FAIL') {
+        place.found = false
+      }
+      ev.places[i] = place
+    }
+  } else if (component === 'ANCHOR_SELECT' && status === 'SUCCESS') {
+    const all = detail.match(/#\d+\(d=/g)
+    ev.candidates = all ? all.length : 0
+    const m = detail.match(/#1\(d=([\d.]+)cm,score=([\d.]+)\)/)
+    if (m) ev.anchor = { dist: parseFloat(m[1]), score: parseFloat(m[2]) }
+  } else if (component === 'CLOSEUP_MOVE' && status === 'SUCCESS') {
+    const m = detail.match(/picked candidate #(\d+)\/(\d+)/)
+    if (m) ev.viewpoint = { picked: parseInt(m[1], 10), of: parseInt(m[2], 10) }
+  } else if (component === 'CLOSEUP_REFINE' && status === 'SUCCESS') {
+    const s = detail.match(/score=([\d.]+)/)
+    const a = detail.match(/area=(\d+)px/)
+    if (s) ev.refine = [...ev.refine, { score: parseFloat(s[1]), area: a ? parseInt(a[1], 10) : null }]
+  } else if (component === 'CLOSEUP_LIFT' && status === 'SUCCESS') {
+    const m = detail.match(/depth_med=([\d.]+)/)
+    if (m) ev.depth = parseFloat(m[1])
+  } else if (component === 'SYNTHESISE' && status === 'SUCCESS') {
+    const w = detail.match(/width=([\d.]+) mm/)
+    const g = detail.match(/goalset=(\d+)\/(\d+)/)
+    if (w) ev.width = parseFloat(w[1])
+    if (g) ev.goalset = { ok: parseInt(g[1], 10), total: parseInt(g[2], 10) }
+  } else if (component === 'EXECUTE_GRASP') {
+    const tries = [...ev.tries]
+    if (status === 'BEGIN') {
+      const lastRefine = ev.refine.length ? ev.refine[ev.refine.length - 1].score : null
+      tries.push({ n: tries.length + 1, viewpoint: ev.viewpoints, result: 'running', ts: msg.ts, endTs: null, refine: lastRefine, reason: null })
+    } else if (tries.length && (status === 'FAIL' || status === 'SUCCESS')) {
+      const last = { ...tries[tries.length - 1] }
+      last.result = status === 'FAIL' ? 'blocked' : 'ok'
+      last.endTs = msg.ts
+      last.reason = status === 'FAIL' ? translateFault(detail) : null
+      tries[tries.length - 1] = last
+    }
+    ev.tries = tries
+  } else if (component === 'CLOSEUP_RETRY' && status === 'BEGIN') {
+    const m = detail.match(/retry (\d+)\/(\d+)/)
+    if (m) {
+      ev.retriesUsed = parseInt(m[1], 10)
+      ev.retryMax = parseInt(m[2], 10)
+      ev.viewpoints = ev.retriesUsed + 1
+    }
+  } else if (component === 'HANDOVER_MOVE' && status === 'FAIL') {
+    ev.handoverBlocked = true
+  }
+  return ev
+}
+
+// Time spent per step. A step can be visited several times (retries loop back
+// to "Moving closer"), so time is added up each time we leave it.
+function trackStage(info, cursor, msg) {
+  const stageIdx = PIPELINE.findIndex(p => p.components.includes(msg.component))
+  if (stageIdx < 0) return { info, cursor }
+  const key = PIPELINE[stageIdx].key
+  const tsMs = Date.parse(msg.ts)
+  const valid = Number.isFinite(tsMs)
+  const next = { ...info }
+  if (cursor && cursor.key !== key && valid && next[cursor.key]) {
+    next[cursor.key] = { ...next[cursor.key], spent: (next[cursor.key].spent || 0) + Math.max(0, tsMs - cursor.ts) }
+  }
+  const cur = next[key] || { key, firstTs: msg.ts, lastTs: msg.ts, raw: [], fails: 0, spent: 0 }
+  next[key] = {
+    ...cur,
+    lastTs: msg.ts || cur.lastTs,
+    raw: [...cur.raw, { ts: msg.ts, text: rawText(msg) }].slice(-10),
+    fails: cur.fails + (msg.status === 'FAIL' ? 1 : 0),
+  }
+  const nextCursor = !cursor || cursor.key !== key ? { key, ts: valid ? tsMs : (cursor?.ts ?? 0) } : cursor
+  return { info: next, cursor: nextCursor }
+}
+
+const MAX_LOG_ROWS = 40
+
+export function applyMessageToScenario(currentData, message) {
+  const next = applyCore(currentData, message)
+  if (!message) return next
+  const type = message.type
+
+  if (type === 'cycle_start') {
+    return { ...next, _stageInfo: {}, _ev: newEvidence(), _log: [], _stageCursor: null, _lastEvent: null, _cycleEndedAt: null }
+  }
+
+  // Ignore anything that arrives before the first real cycle (startup scans etc.)
+  if (!next._cycleNum) return next
+
+  let ev = next._ev || newEvidence()
+  let info = next._stageInfo || {}
+  let log = next._log || []
+  let changed = false
+
+  if (type === 'phase' || type === 'collision_warning') {
+    const ev2 = trackEvidence(ev, message)
+    if (ev2 !== ev) { ev = ev2; changed = true }
+  }
+  let cursor = next._stageCursor || null
+  if (type === 'phase') {
+    const t = trackStage(info, cursor, message)
+    info = t.info
+    cursor = t.cursor
+    changed = true
+  }
+  const tsMs = Date.parse(message.ts)
+  const lastEvent = Number.isFinite(tsMs) ? { ts: tsMs, seen: Date.now() } : next._lastEvent
+  let cycleEndedAt = next._cycleEndedAt
+  if (type === 'cycle_end') cycleEndedAt = Date.now()
+  const tr = translateEvent(message, { itemName: next._itemName })
+  if (tr && type !== 'collision_warning') {
+    const last = log[log.length - 1]
+    if (!last || last.plain !== tr.plain || last.ts !== message.ts) {
+      log = [...log, { ts: message.ts, raw: rawText(message), plain: tr.plain, tone: tr.tone }].slice(-MAX_LOG_ROWS)
+      changed = true
+    }
+  }
+  if (!changed && type !== 'cycle_end') return next
+  return { ...next, _ev: ev, _stageInfo: info, _log: log, _stageCursor: cursor, _lastEvent: lastEvent, _cycleEndedAt: cycleEndedAt }
 }

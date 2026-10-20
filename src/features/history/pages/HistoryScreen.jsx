@@ -3,42 +3,49 @@ import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
 import WeeklySummaryCard from '../components/WeeklySummaryCard'
 import ChatCard from '../components/ChatCard'
-import ActivityChart from '../components/ActivityChart'
+import ActivityHeatmap from '../components/ActivityHeatmap'
 import OrdersList from '../components/OrdersList'
 import FailureRadar from '../components/FailureRadar'
 import ChatPanel from '../components/ChatPanel'
 import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
 
+// Calendar days are local: the heatmap buckets orders by the operator's clock.
+function fmtDay(d) {
+  const p = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
 function getToday() {
-  return new Date().toISOString().slice(0, 10)
+  return fmtDay(new Date())
 }
 
-function getWeekAgo(endDate) {
+function daysBack(endDate, n) {
   const d = new Date(endDate + 'T12:00:00')
-  d.setDate(d.getDate() - 6)
-  return d.toISOString().slice(0, 10)
-}
-
-function getMonthAgo(endDate) {
-  const d = new Date(endDate + 'T12:00:00')
-  d.setDate(d.getDate() - 29)
-  return d.toISOString().slice(0, 10)
+  d.setDate(d.getDate() - n)
+  return fmtDay(d)
 }
 
 const RANGE_CHIPS = [
   { label: 'Today', getFrom: (today) => today },
-  { label: 'Week', getFrom: (today) => getWeekAgo(today) },
-  { label: 'Month', getFrom: (today) => getMonthAgo(today) },
+  { label: 'Week', getFrom: (today) => daysBack(today, 6) },
+  { label: 'Month', getFrom: (today) => daysBack(today, 29) },
+  { label: 'Custom', custom: true },
 ]
 
 export default function HistoryScreen() {
   const today = useMemo(getToday, [])
   const [rangeIdx, setRangeIdx] = useState(1) // default: Week
+  const [custom, setCustom] = useState(() => ({ from: daysBack(getToday(), 13), to: getToday() })) // default: last 14 days
   const [chatOpen, setChatOpen] = useState(false)
   const [chatPrefill, setChatPrefill] = useState(null)
 
-  const dateFrom = RANGE_CHIPS[rangeIdx].getFrom(today)
-  const dateTo = today
+  const chip = RANGE_CHIPS[rangeIdx]
+  const dateFrom = chip.custom ? custom.from : chip.getFrom(today)
+  const dateTo = chip.custom ? custom.to : today
+
+  // Keep a custom range valid: from <= to, never in the future
+  const setCustomFrom = (v) => v && setCustom(c => ({ from: v, to: v > c.to ? v : c.to }))
+  const setCustomTo = (v) => v && setCustom(c => ({ from: v < c.from ? v : c.from, to: v > today ? today : v }))
 
   const handleCitationClick = useCallback((orderId) => {
     const el = document.getElementById(`order-${orderId}`)
@@ -86,26 +93,35 @@ export default function HistoryScreen() {
           <ChatCard onOpenChat={handleOpenChat} />
         </div>
 
-        {/* Range chips */}
-        <div className="mt-lg flex items-center gap-2">
-          {RANGE_CHIPS.map((chip, i) => (
+        {/* Range chips — drive the activity heatmap and the orders list together */}
+        <div className="mt-lg flex items-center gap-2 flex-wrap">
+          {RANGE_CHIPS.map((c, i) => (
             <button
-              key={chip.label}
+              key={c.label}
               onClick={() => setRangeIdx(i)}
+              aria-pressed={i === rangeIdx}
               className={`btn btn-sm rounded-full ${i === rangeIdx ? 'btn-neutral' : 'btn-outline'}`}
             >
-              {chip.label}
+              {c.label}
             </button>
           ))}
+          {chip.custom && (
+            <div className="flex items-center gap-2 ml-1 text-[13px] text-[var(--text-secondary)]">
+              <label className="flex items-center gap-1.5">
+                From
+                <input type="date" className="input input-sm input-bordered" value={custom.from} max={today} onChange={e => setCustomFrom(e.target.value)} />
+              </label>
+              <label className="flex items-center gap-1.5">
+                To
+                <input type="date" className="input input-sm input-bordered" value={custom.to} max={today} onChange={e => setCustomTo(e.target.value)} />
+              </label>
+            </div>
+          )}
         </div>
 
-        {/* Activity chart */}
+        {/* Activity: tally + heatmap */}
         <div className="mt-lg">
-          <ActivityChart
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            onCitationClick={handleCitationClick}
-          />
+          <ActivityHeatmap dateFrom={dateFrom} dateTo={dateTo} />
         </div>
 
         {/* Failure radar + orders list — stacked in one block, chart first.
