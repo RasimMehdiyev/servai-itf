@@ -5,8 +5,6 @@
 
 import { getApiBase } from '../lib/urls'
 
-const API_BASE = getApiBase()
-
 export const FAILURE_DESCRIPTIONS = {
   'gripper_failed': 'The gripper was not stable enough to hold onto the item.',
   'item_not_found': 'The item could not be detected at the expected location.',
@@ -24,7 +22,7 @@ export const FAILURE_DESCRIPTIONS = {
 }
 
 export async function fetchOrders() {
-  const res = await fetch(`${API_BASE}/api/orders`)
+  const res = await fetch(`${getApiBase()}/api/orders`)
   if (!res.ok) return []
   return res.json()
 }

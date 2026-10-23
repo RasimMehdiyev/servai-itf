@@ -31,6 +31,7 @@ const TERMS = [
   { slug: 'search-sweep', name: 'Search sweep', desc: 'The robot visits multiple waypoints looking for the item — if not found at one, it moves to the next.' },
   { slug: 'zenoh', name: 'Zenoh', desc: 'The communication protocol used between the robot controller and the planning software.' },
   { slug: 'd415', name: 'Intel D415', desc: 'The depth camera mounted on the robot that provides RGB + depth images for detection and grasping.' },
+  { slug: 'ai-judge', name: 'AI Judge', desc: 'An independent camera and AI model that watches the robot from the side, like a third person, and says what it sees — for example whether the robot really is holding the item, or whether it is safe to shake a bottle. It only judges; it never moves the robot.' },
 
   // ── Failure reasons (mirror values stored in orders.json `failure.reason`)
   { slug: 'search-exhausted', name: 'search_exhausted', desc: 'The robot checked every search waypoint (top shelf, bottom shelf, corner, etc.) without finding the requested item. Usually means the shelf is empty or the item is hidden behind another product.' },
@@ -42,6 +43,8 @@ const TERMS = [
   { slug: 'e-stopped', name: 'e_stopped', desc: 'The emergency stop was triggered (physical button or software safety event). All motion was halted until manually reset.' },
   { slug: 'timeout', name: 'timeout', desc: 'A stage of the pipeline took longer than its allotted time and was aborted — typically a vision or planning step that didn\'t finish in time.' },
   { slug: 'operator-abort', name: 'operator_abort', desc: 'An operator interrupted the cycle while the robot was running (e.g. pressing Ctrl-C in the supervisor terminal). The cycle is recorded as failed.' },
+  { slug: 'arm-fault', name: 'arm_fault', desc: 'The arm\'s controller reported a fault and refused to move, so the gripper could not open. The robot\'s own recovery attempts failed; a person has to check the drives and the alarms on the teach pendant and restart the arm.' },
+  { slug: 'item-not-held', name: 'item_not_held', desc: 'The AI Judge did not see the item in the gripper before the handover, so the robot did not hand anything over.' },
   { slug: 'bridge-fault', name: 'bridge_fault', desc: 'The communication bridge between the planner and the FANUC controller reported a fault (e.g. motion_possible went FALSE, FRC_SystemFault from controller). Often auto-recovers; recorded if the cycle couldn\'t resume.' },
 
   // ── Pipeline phases (mirror failure.at_phase values in orders.json)

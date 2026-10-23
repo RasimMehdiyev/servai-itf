@@ -43,6 +43,12 @@
     --teal: #11bfb1;
     --teal-bg: #e8fcf8;
 
+    /* The AI Judge (independent camera + AI model) has its own colour, used by nothing else */
+    --judge: #7c3aed;
+    --judge-bg: #f5f3ff;
+    --judge-border: #c4b5fd;
+    --judge-text: #5b21b6;
+
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 14px;

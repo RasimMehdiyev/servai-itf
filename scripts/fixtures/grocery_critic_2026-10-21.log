@@ -1,0 +1,352 @@
+[orchestrator] 2026-10-21T15:10:36.924Z | SYSTEM | CALIBRATION:OBJECT_CATALOG | SUCCESS | 8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json
+[orchestrator] 2026-10-21T15:10:36.925Z | SYSTEM | CAMERA_D415:ZENOH_SESSION | SUCCESS | Zenoh session open
+[orchestrator] 2026-10-21T15:10:36.928Z | SYSTEM | CALIBRATION:PREFLIGHT | BEGIN | probing D415 / MagTouch publishers (fail-fast)
+[orchestrator] 2026-10-21T15:10:37.035Z | SYSTEM | CALIBRATION:PREFLIGHT | SUCCESS | all required publishers / readers are live
+[orchestrator] 2026-10-21T15:10:37.036Z | SYSTEM | CAMERA_D415:FIRST_FRAME | BEGIN | waiting up to 10 s for first D415 RGB+depth frame on Zenoh
+[orchestrator] 2026-10-21T15:10:37.089Z | SYSTEM | CAMERA_D415:FIRST_FRAME | SUCCESS | first D415 frame 1280x720
+[orchestrator] 2026-10-21T15:10:37.090Z | SYSTEM | SAM3:STARTUP | BEGIN | connecting to grocery-perception-server + waiting for warmup
+[orchestrator] 2026-10-21T15:10:37.092Z | SYSTEM | SAM3:STARTUP | SUCCESS | perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}
+[orchestrator] 2026-10-21T15:10:38.400Z | SYSTEM | PLANNER:STARTUP | BEGIN | building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s
+[orchestrator] 2026-10-21T15:10:46.004Z | SYSTEM | PLANNER:STARTUP | SUCCESS | CuroboAdapter ready (voxels=on, IK backend=curobo)
+[orchestrator] 2026-10-21T15:10:46.007Z | SYSTEM | BRIDGE:CONNECT | BEGIN | opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)
+[critic-service] 2026-10-21 17:10:46.111 | SUCCESS  | __main__:__init__:414 - CriticService initialised for demo: fti_grocery
+[critic-service] 2026-10-21 17:10:46.112 | DEBUG    | __main__:run:468 - CriticService listening for state events from demo.py on tcp://*:5557
+[critic-service] 2026-10-21 17:10:46.112 | DEBUG    | __main__:run:473 - CriticService listening for priority frames from demo.py on tcp://*:5558
+[critic-service] 2026-10-21 17:10:46.112 | DEBUG    | __main__:run:478 - CriticService ready to send alerts to demo.py on tcp://*:5556
+[critic-service] 2026-10-21 17:10:46.112 | DEBUG    | __main__:run:483 - CriticService health ping REP socket on tcp://*:5559
+[critic-service] 2026-10-21 17:10:46.112 | DEBUG    | __main__:run:492 - CriticService view PUB on tcp://*:5560
+[critic-service] 2026-10-21 17:10:46.112 | SUCCESS  | __main__:run:494 - CriticService running. Waiting for state events and frames...
+[critic-service] 2026-10-21 17:10:46.114 | INFO     | airo_camera_toolkit.cameras.multiprocess.multiprocess_rgb_camera:_read_resolution:184 - Reading resolution from wrist_d415_resolution
+[critic-service] 2026-10-21 17:10:46.114 | INFO     | airo_camera_toolkit.cameras.multiprocess.multiprocess_rgb_camera:_read_resolution:184 - Reading resolution from zed_mini_resolution
+[critic-service] 2026-10-21 17:10:46.135 | INFO     | airo_camera_toolkit.cameras.multiprocess.multiprocess_rgb_camera:_read_resolution:188 - Camera resolution: ResolutionIdl(width=1280, height=720)
+[critic-service] 2026-10-21 17:10:46.168 | INFO     | airo_camera_toolkit.cameras.multiprocess.multiprocess_rgb_camera:_read_resolution:188 - Camera resolution: ResolutionIdl(width=2208, height=1242)
+[critic-service] 2026-10-21 17:10:46.310 | SUCCESS  | __main__:_subscribe_camera:645 - Camera subscriber started: wrist → wrist_d415
+[critic-service] 2026-10-21 17:10:46.316 | SUCCESS  | __main__:_subscribe_camera:645 - Camera subscriber started: overhead → zed_mini
+[orchestrator] 2026-10-21T15:10:51.243Z | SYSTEM | BRIDGE:CONNECT | SUCCESS | airo_fanuc driver up; joints [-63.0, -66.1, -59.4, -72.1, -0.9, 166.7] deg
+[orchestrator] 2026-10-21T15:10:51.251Z | SYSTEM | CALIBRATION:D415_INTRINSICS_AND_EXTRINSICS | SUCCESS | intrinsics + calibration loaded (1280x720)
+[orchestrator] 2026-10-21T15:10:51.253Z | SYSTEM | CALIBRATION:SEARCH_WAYPOINTS | SUCCESS | {'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}
+[orchestrator] 2026-10-21T15:10:51.253Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | BEGIN | starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)
+[orchestrator] 2026-10-21T15:10:53.671Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | SUCCESS | ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0
+[orchestrator] 2026-10-21T15:10:53.671Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | BEGIN | starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper must be open + fingertip undisturbed)
+[orchestrator] 2026-10-21T15:10:55.123Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | SUCCESS | GripDetector calibrated; threshold=3.00 sigma
+[orchestrator] 2026-10-21T15:10:55.126Z | SYSTEM | CALIBRATION:GRASPGEN | SUCCESS | GraspGenX synthesis client open (server health is gated by the launcher)
+[orchestrator] 2026-10-21T15:10:55.147Z | SYSTEM | CALIBRATION:CRITIC | SUCCESS | VLM critic client up (single connection, both tasks)
+[orchestrator] 2026-10-21T15:10:56.164Z | SYSTEM | CALIBRATION:VISER | SUCCESS | viser on port 8080
+[orchestrator] 2026-10-21T15:10:56.165Z | SYSTEM | VOXELS:STARTUP | SUCCESS | voxel updater daemon started
+[orchestrator] 2026-10-21T15:10:56.977Z | SYSTEM | VOXELS:RESTORE | SUCCESS | voxel scene state restored from 87 s ago — startup scan skipped, demo continues with the previous scene
+[orchestrator] 2026-10-21T15:10:56.977Z | SYSTEM | CALIBRATION:BRINGUP | SUCCESS | initialisation complete
+[critic-service] 2026-10-21 17:10:56.978 | DEBUG    | __main__:_drain_state:914 - Received event: {'stop_recording': True}
+[critic-service] 2026-10-21 17:10:56.978 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:10:56.978 | SUCCESS  | __main__:_update_state:894 - Phase: None → idle
+[critic-service] 2026-10-21 17:10:56.978 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:10:56.989Z | SYSTEM | CALIBRATION:WHEEL_SETUP | SUCCESS | wheel object detector ready (8 pickable icons)
+[orchestrator] 2026-10-21T15:10:56.998Z | SYSTEM | CALIBRATION:IDLE_BEHAVIOR | SUCCESS | idle behaviour up (spin-trigger=D415 attentive-watch (YOLO approach + static confirm))
+[orchestrator] 2026-10-21T15:10:56.998Z | SYSTEM | CALIBRATION:SCAN_WAYPOINT | SKIP | voxel state restored from the previous process — startup scan skipped
+[orchestrator] 2026-10-21T15:10:56.999Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:10:56.999Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+[orchestrator] 2026-10-21T15:10:57.544Z | WORKFLOW | IDLE | BEGIN | tick #1: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -1.7, -3.3])
+[orchestrator] 2026-10-21T15:10:59.055Z | WORKFLOW | IDLE | BEGIN | tick #2: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.6, 0.0])
+[orchestrator] 2026-10-21T15:11:01.779Z | WORKFLOW | IDLE | BEGIN | tick #3: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.8, -1.8])
+[orchestrator] 2026-10-21T15:11:03.829Z | WORKFLOW | IDLE | BEGIN | tick #4: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.2, 0.0])
+[orchestrator] 2026-10-21T15:11:05.525Z | WORKFLOW | IDLE | BEGIN | tick #5: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.5, 1.1])
+[orchestrator] 2026-10-21T15:11:08.340Z | WORKFLOW | IDLE | BEGIN | tick #6: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.9, 0.0])
+[orchestrator] 2026-10-21T15:11:10.761Z | WORKFLOW | IDLE | BEGIN | tick #7: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.9, 0.5])
+[orchestrator] 2026-10-21T15:11:13.524Z | WORKFLOW | IDLE | BEGIN | tick #8: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.0, 0.0])
+[orchestrator] 2026-10-21T15:11:15.015Z | WORKFLOW | IDLE | BEGIN | tick #9: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.0, -5.3])
+[orchestrator] 2026-10-21T15:11:16.505Z | WORKFLOW | IDLE | BEGIN | tick #10: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.1, 4.2])
+[orchestrator] 2026-10-21T15:11:18.829Z | WORKFLOW | IDLE | BEGIN | tick #11: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.3, -4.5])
+[orchestrator] 2026-10-21T15:11:21.582Z | WORKFLOW | IDLE | SUCCESS | wheel-spin event consumed; payload keys=['cos_sim', 'motion_peak', 'timestamp_ns']
+[critic-service] 2026-10-21 17:11:21.584 | DEBUG    | __main__:_drain_state:914 - Received event: {'start_recording': 'traces/pickup_handover_testing'}
+[critic-service] 2026-10-21 17:11:21.585 | DEBUG    | __main__:_start_recording:1102 - [PosixPath('traces/pickup_handover_testing_2026-10-21_17-11-21')]
+[critic-service] 2026-10-21 17:11:21.585 | SUCCESS  | __main__:_start_recording:1132 - Recording started → Path: "traces/pickup_handover_testing_2026-10-21_17-11-21"
+[orchestrator] 2026-10-21T15:11:23.378Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+[orchestrator] 2026-10-21T15:11:24.174Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+[orchestrator] 2026-10-21T15:11:25.020Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'coffee mug' → grasp 'coffee mug'
+[orchestrator] 2026-10-21T15:11:25.726Z | WORKFLOW | CYCLE | BEGIN | cycle 1 starting
+[orchestrator] 2026-10-21T15:11:25.726Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:11:25.848Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='coffee mug'
+[orchestrator] 2026-10-21T15:11:25.849Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'white coffee cup with blue grip and lid'
+[orchestrator] 2026-10-21T15:11:25.849Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[critic-service] 2026-10-21 17:11:25.863 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:11:25.869 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:11:25.869 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'searching_object'}
+[critic-service] 2026-10-21 17:11:25.869 | SUCCESS  | __main__:_update_state:894 - Phase: idle → searching_object
+[critic-service] 2026-10-21 17:11:25.869 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:11:29.314Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+[orchestrator] 2026-10-21T15:11:29.616Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:11:30.394Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:11:30.440Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 30 raw detections → 5 cluster(s); 5 survived vote≥2 [votes=6,6,6,6,6]
+[orchestrator] 2026-10-21T15:11:30.448Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+[orchestrator] 2026-10-21T15:11:30.448Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 5 representative(s) at 'right-shelve'
+[orchestrator] 2026-10-21T15:11:30.465Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#2(d=72.8cm,score=0.93), #1(d=75.3cm,score=0.94) → anchor [0.929, 0.107, 1.645] m
+[orchestrator] 2026-10-21T15:11:30.466Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+[critic-service] 2026-10-21 17:11:30.466 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'inspecting_object'}
+[critic-service] 2026-10-21 17:11:30.466 | SUCCESS  | __main__:_update_state:894 - Phase: searching_object → inspecting_object
+[critic-service] 2026-10-21 17:11:30.466 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:11:30.467Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:11:30.510Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+[orchestrator] 2026-10-21T15:11:30.510Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost coffee cup with blue grip and lid. Single point.'
+[orchestrator] 2026-10-21T15:11:31.635Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.12 s; selected (505.6, 378.0)
+[orchestrator] 2026-10-21T15:11:31.636Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'coffee mug' (body_prompt='white coffee cup with blue grip and lid')
+[orchestrator] 2026-10-21T15:11:31.779Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.922 region=16867px body=16867px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (5 body / 0 region cand)
+[orchestrator] 2026-10-21T15:11:31.779Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+[orchestrator] 2026-10-21T15:11:31.945Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+[orchestrator] 2026-10-21T15:11:31.945Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+[orchestrator] 2026-10-21T15:11:31.969Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+[orchestrator] 2026-10-21T15:11:31.969Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+[orchestrator] 2026-10-21T15:11:31.970Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+[orchestrator] 2026-10-21T15:11:31.993Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | live target carve ACTIVE (24 cells; environment stays live)
+[orchestrator] 2026-10-21T15:11:33.682Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[critic-service] 2026-10-21 17:11:33.693 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'grasping_object'}
+[critic-service] 2026-10-21 17:11:33.694 | SUCCESS  | __main__:_update_state:894 - Phase: inspecting_object → grasping_object
+[critic-service] 2026-10-21 17:11:33.694 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:11:36.682Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+[orchestrator] 2026-10-21T15:11:40.022Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=2): gripper close complete
+[orchestrator] 2026-10-21T15:11:44.215Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('coffee mug') size=(0.06, 0.18, 0.06) offset=(0.0, 0.0, 0.0)
+[orchestrator] 2026-10-21T15:11:44.247Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=13)
+[orchestrator] 2026-10-21T15:11:44.247Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm) [per-object override]; chose primary (goalset_idx=13, width=85.0 mm)
+[orchestrator] 2026-10-21T15:11:46.883Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+[orchestrator] 2026-10-21T15:11:46.883Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' for critic verify
+[orchestrator] 2026-10-21T15:11:55.723Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+[critic-service] 2026-10-21 17:11:55.723 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'critic-item-checking-phase', 'target_item': 'coffee mug'}
+[critic-service] 2026-10-21 17:11:55.723 | SUCCESS  | __main__:_update_state:894 - Phase: grasping_object → critic-item-checking-phase
+[critic-service] 2026-10-21 17:11:55.723 | DEBUG    | __main__:_update_state:899 -  > Active check: `not_holding_target_item` for phase `critic-item-checking-phase` with ROI config: {'mode': 'crop', 'y0': 0.0, 'y1': 1.0, 'x0': 0.1, 'x1': 0.75}
+[critic-service] 2026-10-21 17:11:55.723 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:11:56.022 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead0_15:11:55.774'] and latency=0.241s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:56.022 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.24s
+[critic-service] 2026-10-21 17:11:56.295 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead0_15:11:55.774', 'overhead1_15:11:56.090'] and latency=0.195s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:56.303 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.21s
+[critic-service] 2026-10-21 17:11:56.581 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead0_15:11:55.774', 'overhead1_15:11:56.090', 'overhead2_15:11:56.388'] and latency=0.178s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:56.581 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.19s
+[critic-service] 2026-10-21 17:11:56.932 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead1_15:11:56.090', 'overhead2_15:11:56.388', 'overhead3_15:11:56.656'] and latency=0.258s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:56.932 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.27s
+[critic-service] 2026-10-21 17:11:57.271 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead2_15:11:56.388', 'overhead3_15:11:56.656', 'overhead4_15:11:57.006'] and latency=0.250s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:57.271 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.26s
+[critic-service] 2026-10-21 17:11:57.617 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead3_15:11:56.656', 'overhead4_15:11:57.006', 'overhead5_15:11:57.350'] and latency=0.251s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:57.618 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.26s
+[critic-service] 2026-10-21 17:11:57.968 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead4_15:11:57.006', 'overhead5_15:11:57.350', 'overhead6_15:11:57.691'] and latency=0.261s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:57.968 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.27s
+[critic-service] 2026-10-21 17:11:58.230 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:11:58.230 | SUCCESS  | __main__:_update_state:894 - Phase: critic-item-checking-phase → idle
+[critic-service] 2026-10-21 17:11:58.230 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:11:58.230Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'coffee mug' (no alert in 2.5s) → handover
+[orchestrator] 2026-10-21T15:11:58.230Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[critic-service] 2026-10-21 17:11:58.231 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'transporting_object'}
+[critic-service] 2026-10-21 17:11:58.231 | SUCCESS  | __main__:_update_state:894 - Phase: idle → transporting_object
+[critic-service] 2026-10-21 17:11:58.231 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:11:58.231Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+[critic-service] 2026-10-21 17:11:58.316 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead5_15:11:57.350', 'overhead6_15:11:57.691', 'overhead7_15:11:58.039'] and latency=0.260s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a coffee mug? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:11:58.316 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.27s
+[orchestrator] 2026-10-21T15:12:02.740Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+[orchestrator] 2026-10-21T15:12:02.740Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+[orchestrator] 2026-10-21T15:12:02.741Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+[orchestrator] 2026-10-21T15:12:03.963Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+[orchestrator] 2026-10-21T15:12:03.963Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.3, -85.2, 16.1, 173.4] deg
+[critic-service] 2026-10-21 17:12:03.980 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'presenting_object'}
+[critic-service] 2026-10-21 17:12:03.980 | SUCCESS  | __main__:_update_state:894 - Phase: transporting_object → presenting_object
+[critic-service] 2026-10-21 17:12:03.980 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:06.840Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no person seen — retreating to the handover-fallback waypoint
+[orchestrator] 2026-10-21T15:12:06.840Z | SYSTEM | EXECUTOR:PRESENT | FALLBACK | no recipient found — retreating to 'handover-fallback' to await pickup
+[orchestrator] 2026-10-21T15:12:09.380Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → handover-fallback 'handover-fallback': trajectory complete
+[orchestrator] 2026-10-21T15:12:09.380Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+[critic-service] 2026-10-21 17:12:09.381 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'holding_for_handover'}
+[critic-service] 2026-10-21 17:12:09.381 | SUCCESS  | __main__:_update_state:894 - Phase: presenting_object → holding_for_handover
+[critic-service] 2026-10-21 17:12:09.381 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:12:19.462 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'releasing_object'}
+[critic-service] 2026-10-21 17:12:19.462 | SUCCESS  | __main__:_update_state:894 - Phase: holding_for_handover → releasing_object
+[critic-service] 2026-10-21 17:12:19.462 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:19.943Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+[orchestrator] 2026-10-21T15:12:20.944Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+[orchestrator] 2026-10-21T15:12:20.971Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+[critic-service] 2026-10-21 17:12:20.997 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'returning_home'}
+[critic-service] 2026-10-21 17:12:20.997 | SUCCESS  | __main__:_update_state:894 - Phase: releasing_object → returning_home
+[critic-service] 2026-10-21 17:12:20.998 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:23.997Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+[orchestrator] 2026-10-21T15:12:27.315Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+[orchestrator] 2026-10-21T15:12:27.328Z | WORKFLOW | CYCLE | SUCCESS | cycle 1 complete
+[orchestrator] 2026-10-21T15:12:27.329Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:12:27.329Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+[critic-service] 2026-10-21 17:12:27.333 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:12:27.333 | SUCCESS  | __main__:_update_state:894 - Phase: returning_home → idle
+[critic-service] 2026-10-21 17:12:27.333 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:12:27.334 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:12:27.334 | DEBUG    | __main__:_drain_state:914 - Received event: {'stop_recording': True}
+[critic-service] 2026-10-21 17:12:27.334 | SUCCESS  | __main__:_stop_recording:1143 - Recording stopped (saved → traces/pickup_handover_testing_2026-10-21_17-11-21)
+[orchestrator] 2026-10-21T15:12:33.913Z | WORKFLOW | IDLE | BEGIN | tick #12: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.7, -6.9])
+[orchestrator] 2026-10-21T15:12:35.619Z | WORKFLOW | IDLE | BEGIN | tick #13: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.1, -6.6])
+[orchestrator] 2026-10-21T15:12:36.148Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+[orchestrator] 2026-10-21T15:12:36.787Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+[orchestrator] 2026-10-21T15:12:39.553Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=71.0px peak=200.8px/s frames=20)
+[orchestrator] 2026-10-21T15:12:40.038Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+[critic-service] 2026-10-21 17:12:40.044 | DEBUG    | __main__:_drain_state:914 - Received event: {'start_recording': 'traces/pickup_handover_testing'}
+[critic-service] 2026-10-21 17:12:40.044 | DEBUG    | __main__:_start_recording:1102 - [PosixPath('traces/pickup_handover_testing_2026-10-21_17-11-21'), PosixPath('traces/pickup_handover_testing_2026-10-21_17-12-40')]
+[critic-service] 2026-10-21 17:12:40.044 | SUCCESS  | __main__:_start_recording:1132 - Recording started → Path: "traces/pickup_handover_testing_2026-10-21_17-12-40"
+[orchestrator] 2026-10-21T15:12:41.829Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+[orchestrator] 2026-10-21T15:12:42.623Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+[orchestrator] 2026-10-21T15:12:43.393Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'water bottle' → grasp 'water bottle'
+[orchestrator] 2026-10-21T15:12:43.395Z | WORKFLOW | CYCLE | BEGIN | cycle 2 starting
+[orchestrator] 2026-10-21T15:12:43.395Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[critic-service] 2026-10-21 17:12:43.528 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:12:43.528 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[orchestrator] 2026-10-21T15:12:43.528Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='water bottle'
+[critic-service] 2026-10-21 17:12:43.528 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'searching_object'}
+[critic-service] 2026-10-21 17:12:43.528 | SUCCESS  | __main__:_update_state:894 - Phase: idle → searching_object
+[critic-service] 2026-10-21 17:12:43.528 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:43.529Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'blue white cylindrical bottle'
+[orchestrator] 2026-10-21T15:12:43.529Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:12:46.981Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+[orchestrator] 2026-10-21T15:12:47.286Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:12:48.142Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:12:48.204Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 54 raw detections → 9 cluster(s); 9 survived vote≥2 [votes=6,6,6,6,6,6,6,6,6]
+[orchestrator] 2026-10-21T15:12:48.249Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+[orchestrator] 2026-10-21T15:12:48.249Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 9 representative(s) at 'right-shelve'
+[orchestrator] 2026-10-21T15:12:48.274Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#4(d=72.9cm,score=0.89), #6(d=73.0cm,score=0.82) → anchor [0.917, 0.106, 1.646] m
+[critic-service] 2026-10-21 17:12:48.275 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'inspecting_object'}
+[critic-service] 2026-10-21 17:12:48.275 | SUCCESS  | __main__:_update_state:894 - Phase: searching_object → inspecting_object
+[critic-service] 2026-10-21 17:12:48.275 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:48.275Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+[orchestrator] 2026-10-21T15:12:48.277Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:12:48.318Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+[orchestrator] 2026-10-21T15:12:48.318Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+[orchestrator] 2026-10-21T15:12:49.392Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.07 s; selected (869.1, 370.8)
+[orchestrator] 2026-10-21T15:12:49.392Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+[orchestrator] 2026-10-21T15:12:49.563Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.898 region=22822px body=22822px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (9 body / 0 region cand)
+[orchestrator] 2026-10-21T15:12:49.563Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+[orchestrator] 2026-10-21T15:12:49.661Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+[orchestrator] 2026-10-21T15:12:49.662Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+[orchestrator] 2026-10-21T15:12:49.672Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+[orchestrator] 2026-10-21T15:12:49.672Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+[orchestrator] 2026-10-21T15:12:49.672Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+[orchestrator] 2026-10-21T15:12:51.683Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[critic-service] 2026-10-21 17:12:51.684 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'grasping_object'}
+[critic-service] 2026-10-21 17:12:51.684 | SUCCESS  | __main__:_update_state:894 - Phase: inspecting_object → grasping_object
+[critic-service] 2026-10-21 17:12:51.684 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:12:54.639Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+[orchestrator] 2026-10-21T15:12:57.736Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+[orchestrator] 2026-10-21T15:13:01.870Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('water bottle') size=(0.06, 0.25, 0.06) offset=(0.0, -0.05, 0.0)
+[orchestrator] 2026-10-21T15:13:01.899Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=14)
+[orchestrator] 2026-10-21T15:13:01.899Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm); chose primary (goalset_idx=14, width=85.0 mm)
+[orchestrator] 2026-10-21T15:13:04.375Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+[orchestrator] 2026-10-21T15:13:04.375Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' for critic verify
+[orchestrator] 2026-10-21T15:13:13.214Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+[critic-service] 2026-10-21 17:13:13.214 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'critic-item-checking-phase', 'target_item': 'water bottle'}
+[critic-service] 2026-10-21 17:13:13.214 | SUCCESS  | __main__:_update_state:894 - Phase: grasping_object → critic-item-checking-phase
+[critic-service] 2026-10-21 17:13:13.214 | DEBUG    | __main__:_update_state:899 -  > Active check: `not_holding_target_item` for phase `critic-item-checking-phase` with ROI config: {'mode': 'crop', 'y0': 0.0, 'y1': 1.0, 'x0': 0.1, 'x1': 0.75}
+[critic-service] 2026-10-21 17:13:13.214 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:13:13.440 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead8_15:13:13.261'] and latency=0.169s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:13.440 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.17s
+[critic-service] 2026-10-21 17:13:13.859 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead8_15:13:13.261', 'overhead9_15:13:13.678'] and latency=0.169s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:13.859 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.18s
+[critic-service] 2026-10-21 17:13:14.156 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead8_15:13:13.261', 'overhead9_15:13:13.678', 'overhead10_15:13:13.945'] and latency=0.197s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:14.163 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.21s
+[critic-service] 2026-10-21 17:13:14.536 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead9_15:13:13.678', 'overhead10_15:13:13.945', 'overhead11_15:13:14.247'] and latency=0.269s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:14.536 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.29s
+[critic-service] 2026-10-21 17:13:14.882 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead10_15:13:13.945', 'overhead11_15:13:14.247', 'overhead12_15:13:14.603'] and latency=0.262s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `NO`
+[critic-service] 2026-10-21 17:13:14.882 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.28s
+[critic-service] 2026-10-21 17:13:14.882 | DEBUG    | __main__:_process_fast_checks:1017 - [DEBOUNCE] check `not_holding_target_item` increased from 0->1 / 3
+[critic-service] 2026-10-21 17:13:15.235 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead11_15:13:14.247', 'overhead12_15:13:14.603', 'overhead13_15:13:14.950'] and latency=0.269s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:15.235 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.28s
+[critic-service] 2026-10-21 17:13:15.235 | DEBUG    | __main__:_process_fast_checks:1026 - [DEBOUNCE] check `not_holding_target_item` decreased from 1->0 / 3
+[critic-service] 2026-10-21 17:13:15.582 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead12_15:13:14.603', 'overhead13_15:13:14.950', 'overhead14_15:13:15.302'] and latency=0.266s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:15.582 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.28s
+[orchestrator] 2026-10-21T15:13:15.722Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'water bottle' (no alert in 2.5s) → handover
+[orchestrator] 2026-10-21T15:13:15.723Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[orchestrator] 2026-10-21T15:13:15.723Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+[critic-service] 2026-10-21 17:13:15.732 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:13:15.733 | SUCCESS  | __main__:_update_state:894 - Phase: critic-item-checking-phase → idle
+[critic-service] 2026-10-21 17:13:15.733 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:13:15.733 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'transporting_object'}
+[critic-service] 2026-10-21 17:13:15.733 | SUCCESS  | __main__:_update_state:894 - Phase: idle → transporting_object
+[critic-service] 2026-10-21 17:13:15.733 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:13:15.934 | DEBUG    | __main__:_run_fast_check:599 - Fast check: `not_holding_target_item` with frames ['overhead13_15:13:14.950', 'overhead14_15:13:15.302', 'overhead15_15:13:15.650'] and latency=0.259s:
+[critic-service] [{'role': 'system', 'content': "You are a safety critic observing a grocery robot that picks items off a shelf. You will be shown a sequence of frames from the robot's workspace. Answer questions about the current state concisely and accurately. When asked YES or NO questions, think step by step about what you see in the image, considering the camera perspective and task context. Then answer with ONLY the word YES or NO — no explanation, no extra words.\nYou are looking through a fixed third-person camera looking at the robot''s workspace. The FANUC robot is positioned on the left side of the frame, with a shelf with items located behind it."}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}]}, {'role': 'assistant', 'content': 'Understood.'}, {'role': 'user', 'content': [{'type': 'image_url', 'image_url': {'url': 'data:image/jpeg;base64,<frame_bytes>'}}, {'type': 'text', 'text': 'Is the robot holding a water bottle? Note that the gripper fingers are NOT an item If the gripper is open / empty and no item is clutched between its fingers -> NO. If an item is held in the gripper -> YES. If unsure or unclear because the gripper is not visible / obstructed, answer YES. YES or NO.'}]}]
+[critic-service]  > `YES`
+[critic-service] 2026-10-21 17:13:15.934 | DEBUG    | __main__:_process_fast_checks:1004 - Processed 1 checks for window `overhead-crop:0.0_1.0_0.1_0.75` in 0.28s
+[orchestrator] 2026-10-21T15:13:20.231Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+[orchestrator] 2026-10-21T15:13:20.232Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+[orchestrator] 2026-10-21T15:13:20.232Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+[orchestrator] 2026-10-21T15:13:21.494Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+[orchestrator] 2026-10-21T15:13:21.495Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+[orchestrator] 2026-10-21T15:13:21.496Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+[critic-service] 2026-10-21 17:13:21.508 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'presenting_object'}
+[critic-service] 2026-10-21 17:13:21.508 | SUCCESS  | __main__:_update_state:894 - Phase: transporting_object → presenting_object
+[critic-service] 2026-10-21 17:13:21.508 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] 2026-10-21T15:13:23.024Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+[orchestrator] 2026-10-21T15:13:24.861Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-left (best cos=0.07, threshold 0.40)
+[orchestrator] 2026-10-21T15:13:24.861Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-left match didn't lock — resuming sweep
+[orchestrator] 2026-10-21T15:13:25.927Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan center: preempted on match
+[orchestrator] 2026-10-21T15:13:27.012Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-center via face (cos=0.51)
+[orchestrator] 2026-10-21T15:13:27.749Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.31, -1.22, 1.71]
+[orchestrator] 2026-10-21T15:13:34.617Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+[orchestrator] 2026-10-21T15:13:34.617Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+[orchestrator] 2026-10-21T15:13:34.617Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+[critic-service] 2026-10-21 17:13:34.618 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'holding_for_handover'}
+[critic-service] 2026-10-21 17:13:34.618 | SUCCESS  | __main__:_update_state:894 - Phase: presenting_object → holding_for_handover
+[critic-service] 2026-10-21 17:13:34.618 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] RMI: async push packet received: {'Communication': 'FRC_SystemFault', 'SequenceID': 2}
+[critic-service] 2026-10-21 17:13:45.638 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'releasing_object'}
+[critic-service] 2026-10-21 17:13:45.638 | SUCCESS  | __main__:_update_state:894 - Phase: holding_for_handover → releasing_object
+[critic-service] 2026-10-21 17:13:45.639 | DEBUG    | __main__:clear:142 - Clearing frames
+[orchestrator] gripper: wait_gripper_done timed out after 3.0s
+[orchestrator] 2026-10-21T15:13:48.631Z | SYSTEM | GRIPPER:OPEN | FAIL | open failed: no result
+[orchestrator] 2026-10-21T15:13:48.636Z | IMAGE | fail_1792595628631146029_d415 | failure capture from d415 | <jpeg 80 kB>
+[orchestrator] 2026-10-21T15:13:48.636Z | WORKFLOW | HANDOVER_RELEASE | FAIL | gripper open failed: no result
+[orchestrator] 2026-10-21T15:13:48.638Z | IMAGE | fail_1792595628636421349_d415 | failure capture from d415 | <jpeg 80 kB>
+[orchestrator] 2026-10-21T15:13:48.687Z | WORKFLOW | CYCLE | FAIL | handover failed: gripper_open:no result
+[orchestrator] 2026-10-21T15:13:48.693Z | IMAGE | fail_1792595628687311128_d415 | failure capture from d415 | <jpeg 80 kB>
+[critic-service] 2026-10-21 17:13:48.720 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:13:48.721 | SUCCESS  | __main__:_update_state:894 - Phase: releasing_object → idle
+[critic-service] 2026-10-21 17:13:48.721 | DEBUG    | __main__:clear:142 - Clearing frames
+[critic-service] 2026-10-21 17:13:48.721 | DEBUG    | __main__:_drain_state:914 - Received event: {'phase': 'idle'}
+[critic-service] 2026-10-21 17:13:48.722 | DEBUG    | __main__:_drain_state:914 - Received event: {'stop_recording': True}
+[critic-service] 2026-10-21 17:13:48.722 | SUCCESS  | __main__:_stop_recording:1143 - Recording stopped (saved → traces/pickup_handover_testing_2026-10-21_17-12-40)
+[orchestrator] 2026-10-21T15:13:48.722Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-21T15:13:48.722Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+[orchestrator] FanucDriverExecutor: FAULTED (hardware_unavailable) — driver refused motion: motion_not_possible — Motion not possible — check drives powered / active alarms on the TP.
+[orchestrator] 2026-10-21T15:13:53.743Z | SYSTEM | EXECUTOR:FAULT_RECOVER | FAIL | idle: controller fault (Fault(type=<FaultType.HARDWARE_UNAVAILABLE: 'hardware_unavailable'>, message='driver refused motion: motion_not_possible — Motion not possible — check drives powered / active alarms on the TP.', t_wall=1792595633.7428348)); halting gestures + recovering
+[orchestrator] 2026-10-21T15:13:53.746Z | IMAGE | fail_1792595633743382242_d415 | failure capture from d415 | <jpeg 77 kB>
+[orchestrator] airo_fanuc: recovery ladder failed to re-arm motion; escalating to cold reconnect (full re-bring-up + GRIPDISP re-fork)
+[orchestrator] RMI: transport error on attempt 1/2 (FRC_Continue): RMI: no response matching 'FRC_Continue' within 8.0s; async_drained=2
+[orchestrator] RMI: transport error on attempt 2/2 (FRC_Continue): RMI: no response matching 'FRC_Continue' within 8.0s; async_drained=2
+[orchestrator] airo_fanuc: best-effort FRC_Continue — RMI down: RMI: session down after 2 attempts (FRC_Continue): RMI: no response matching 'FRC_Continue' within 8.0s; async_drained=2
+[orchestrator] gripper: open timed out (R[1] not cleared)
+[orchestrator] airo_fanuc: recovery ladder did not re-arm motion_possible within 5.0s — tier failed (caller may escalate to cold reconnect)
+[orchestrator] airo_fanuc: bring-up attempt 1/3 failed: airo_fanuc: core did not publish HOLD after preroll — triage: RMI healthy (AUTO, servo_ready) but motion_possible never asserted — likely a wedged SM daemon / stale STREAM_MOTN (program_status=2); POWER-CYCLE the controller (docs/controller-notes.md §2.5). alarms=['No Error']
+[orchestrator] airo_fanuc: bring-up attempt 2/3 failed: airo_fanuc: core did not publish HOLD after preroll — triage: RMI healthy (AUTO, servo_ready) but motion_possible never asserted — likely a wedged SM daemon / stale STREAM_MOTN (program_status=0); POWER-CYCLE the controller (docs/controller-notes.md §2.5). alarms=['No Error']
+[orchestrator] airo_fanuc: bring-up attempt 3/3 failed: airo_fanuc: core did not publish HOLD after preroll — triage: RMI healthy (AUTO, servo_ready) but motion_possible never asserted — likely a wedged SM daemon / stale STREAM_MOTN (program_status=0); POWER-CYCLE the controller (docs/controller-notes.md §2.5). alarms=['No Error']
+[orchestrator] airo_fanuc: cold reconnect escalation failed: airo_fanuc: bring-up failed after 3 attempt(s): airo_fanuc: core did not publish HOLD after preroll — triage: RMI healthy (AUTO, servo_ready) but motion_possible never asserted — likely a wedged SM daemon / stale STREAM_MOTN (program_status=0); POWER-CYCLE the controller (docs/controller-notes.md §2.5). alarms=['No Error']
+[orchestrator] FanucDriverExecutor: recovery FAILED (driver.recover ok=False) — staying FAULTED (driver refused motion: motion_not_possible — Motion not possible — check drives powered / active alarms on the TP.); caller will back off and retry
+[orchestrator] airo_fanuc: best-effort FRC_Continue failed: FRC_Continue failed: ErrorID=2556941 (Invalid RMI Command.), response={'Command': 'FRC_Continue', 'ErrorID': 2556941}
+[orchestrator] airo_fanuc: recovery ladder did not re-arm motion_possible within 5.0s — tier failed (caller may escalate to cold reconnect)
+[orchestrator] airo_fanuc: recovery ladder failed to re-arm motion; escalating to cold reconnect (full re-bring-up + GRIPDISP re-fork)
+[orchestrator] airo_fanuc: bring-up attempt 1/3 failed: airo_fanuc: core did not publish HOLD after preroll — triage: RMI healthy (AUTO, servo_ready) but motion_possible never asserted — likely a wedged SM daemon / stale STREAM_MOTN (program_status=0); POWER-CYCLE the controller (docs/controller-notes.md §2.5). alarms=['No Error']

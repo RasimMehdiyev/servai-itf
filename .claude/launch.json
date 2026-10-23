@@ -4,20 +4,40 @@
     {
       "name": "servai",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 5173,
       "autoPort": true
     },
     {
       "name": "relay-replay",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["scripts/dev-replay.cjs"],
+      "runtimeArgs": [
+        "scripts/dev-replay.cjs",
+        "grocery"
+      ],
       "port": 8765
+    },
+    {
+      "name": "relay-replay-bar",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/dev-replay.cjs",
+        "bar"
+      ],
+      "port": 8766
     },
     {
       "name": "presentation",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "C:\\Workdir\\Develop\\first_progress_presentation"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "C:\\Workdir\\Develop\\first_progress_presentation"
+      ],
       "port": 5177
     }
   ]

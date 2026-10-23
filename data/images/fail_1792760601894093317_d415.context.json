@@ -1,0 +1,18 @@
+{
+  "imageId": "fail_1792760601894093317_d415",
+  "imageReceivedAt": "2026-10-23T13:03:21.805Z",
+  "windowFrom": "2026-10-23T13:02:51.805Z",
+  "windowTo": "2026-10-23T13:03:26.805Z",
+  "caption": "",
+  "events": [
+    {
+      "serverTs": "2026-10-23T13:03:21.800Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

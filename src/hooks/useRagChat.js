@@ -1,12 +1,16 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
-import { getRagBase } from '../lib/urls'
+import { getRagBase, ragHeaders } from '../lib/urls'
+import { useRobot } from '../robots/RobotContext'
 
 const RAG_BASE = getRagBase()
 
 export default function useRagChat() {
+  const { robotId } = useRobot()
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
+  // a conversation belongs to one robot's orders
+  useEffect(() => { setMessages([]) }, [robotId])
   const messagesRef = useRef(messages)
   messagesRef.current = messages
 
@@ -22,7 +26,7 @@ export default function useRagChat() {
     try {
       const res = await fetch(`${RAG_BASE}/api/rag/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: ragHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ messages: updated }),
       })
 

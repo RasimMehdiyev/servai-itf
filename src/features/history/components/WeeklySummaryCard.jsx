@@ -3,9 +3,11 @@ import Card from '../../../components/ui/Card'
 import AiCaption from './AiCaption'
 import useRagCaption from '../../../hooks/useRagCaption'
 import { useDataSource } from '../../../context/DataSourceContext'
+import { useRobot } from '../../../robots/RobotContext'
 
 export default function WeeklySummaryCard({ onCitationClick }) {
   const { recentOrders } = useDataSource()
+  const { profile } = useRobot()
   const cachedWeekly = recentOrders?.cached_weekly_caption || null
 
   const { caption, loading, error, stale, generate, refresh } = useRagCaption('weekly', {}, undefined, cachedWeekly)
@@ -22,7 +24,7 @@ export default function WeeklySummaryCard({ onCitationClick }) {
             }}
           />
           <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--teal, #0d9488)' }}>
-            ROBI's weekly report
+            {profile.weeklyTitle}
           </span>
         </div>
       </div>

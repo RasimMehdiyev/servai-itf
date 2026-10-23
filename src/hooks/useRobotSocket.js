@@ -103,6 +103,7 @@ export default function useRobotSocket(url) {
 
   useEffect(() => {
     unmountedRef.current = false
+    bufferRef.current = []   // new URL (another robot's relay): drop what the old socket buffered
     connect()
 
     // When the tab becomes visible again, kick a reconnect immediately if the

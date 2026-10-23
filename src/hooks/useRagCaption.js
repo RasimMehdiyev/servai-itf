@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
-import { getRagBase } from '../lib/urls'
+import { getRagBase, ragHeaders } from '../lib/urls'
+import { useRobot } from '../robots/RobotContext'
 
 const RAG_BASE = getRagBase()
 
@@ -13,6 +14,7 @@ const RAG_BASE = getRagBase()
  * @param {object|null}      [initialCaption] - cached caption from the data response
  */
 export default function useRagCaption(surface, scope, stats, initialCaption) {
+  const { robotId } = useRobot()
   const [caption, setCaption] = useState(initialCaption || null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -20,6 +22,9 @@ export default function useRagCaption(surface, scope, stats, initialCaption) {
 
   const scopeKey = JSON.stringify(scope || {})
   const statsKey = JSON.stringify(stats ?? 'none')
+
+  // Another robot has its own summaries: start from what its relay cached
+  useEffect(() => { setCaption(initialCaption || null); setError(null) }, [robotId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // When the parent passes a new initialCaption (data loaded), adopt it
   useEffect(() => {
@@ -43,7 +48,7 @@ export default function useRagCaption(surface, scope, stats, initialCaption) {
 
     fetch(`${RAG_BASE}/api/rag/caption`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: ragHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body),
       signal: controller.signal,
     })

@@ -1,0 +1,315 @@
+{
+  "imageId": "fail_1792759766404150137_d415",
+  "imageReceivedAt": "2026-10-23T12:49:26.319Z",
+  "windowFrom": "2026-10-23T12:48:56.319Z",
+  "windowTo": "2026-10-23T12:49:31.319Z",
+  "caption": "Failed while picking up",
+  "events": [
+    {
+      "serverTs": "2026-10-23T12:49:10.491Z",
+      "type": "wheel_spin",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": "wheel spin CONFIRMED on D415 (net_disp=99.3px peak=149.7px/s frames=44)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:11.080Z",
+      "type": "system_event",
+      "component": "CAMERA_D415",
+      "action": "SPINNER_ID",
+      "status": "SUCCESS",
+      "detail": "captured spinner face (5 embeddings, spinner-associated)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:12.853Z",
+      "type": "system_event",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": "observe-wheel: trajectory complete",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:13.598Z",
+      "type": "calibration",
+      "component": null,
+      "action": "WHEEL_SECTOR",
+      "status": "BEGIN",
+      "detail": "reading winning sector (Molmo VQA on SAM3 wedge crops)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:14.358Z",
+      "type": "calibration",
+      "component": null,
+      "action": "WHEEL_SECTOR",
+      "status": "SUCCESS",
+      "detail": "sector = 'water bottle' → grasp 'water bottle'",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:19.363Z",
+      "type": "cycle_start",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": "cycle 1 starting",
+      "cycleNum": 1
+    },
+    {
+      "serverTs": "2026-10-23T12:49:19.364Z",
+      "type": "system_event",
+      "component": "VOXELS",
+      "action": "D415_MUTE",
+      "status": "SUCCESS",
+      "detail": "D415 voxel contribution unmuted (1 source(s))",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:19.367Z",
+      "type": "object_selected",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:19.368Z",
+      "type": "phase",
+      "component": "SEARCH_DETECT",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "waypoint 'right-shelve' (#0) — looking for 'blue white cylindrical bottle'",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:19.368Z",
+      "type": "system_event",
+      "component": "VOXELS",
+      "action": "D415_MUTE",
+      "status": "SUCCESS",
+      "detail": "D415 voxel contribution unmuted (1 source(s))",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:22.971Z",
+      "type": "system_event",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": "search → 'right-shelve': trajectory complete",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:23.274Z",
+      "type": "system_event",
+      "component": "VOXELS",
+      "action": "D415_MUTE",
+      "status": "SUCCESS",
+      "detail": "D415 voxel contribution unmuted (1 source(s))",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.126Z",
+      "type": "system_event",
+      "component": "VOXELS",
+      "action": "D415_MUTE",
+      "status": "SUCCESS",
+      "detail": "D415 voxel contribution unmuted (1 source(s))",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.226Z",
+      "type": "phase",
+      "component": "SEARCH_DETECT",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "6 frames, 59 raw detections → 10 cluster(s); 10 survived vote≥2 [votes=6,6,6,6,6,6,6,6,6,5]",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.226Z",
+      "type": "system_event",
+      "component": "PLANNER",
+      "action": "MOTION_TUNING",
+      "status": "SUCCESS",
+      "detail": "LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.227Z",
+      "type": "phase",
+      "component": "ANCHOR_SELECT",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "mode='closest-2', 10 representative(s) at 'right-shelve'",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.265Z",
+      "type": "phase",
+      "component": "ANCHOR_SELECT",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "selected=#6(d=71.5cm,score=0.81), #4(d=74.9cm,score=0.86) → anchor [0.926, -0.151, 1.651] m",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.265Z",
+      "type": "phase",
+      "component": "CLOSEUP_MOVE",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "grasp view in place at the search waypoint (no close-up move)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.265Z",
+      "type": "system_event",
+      "component": "VOXELS",
+      "action": "D415_MUTE",
+      "status": "SUCCESS",
+      "detail": "D415 voxel contribution unmuted (1 source(s))",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.329Z",
+      "type": "phase",
+      "component": "CLOSEUP_MOVE",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "tcp=[0.352, -0.089, 1.732] m (image 1280×720)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:24.329Z",
+      "type": "phase",
+      "component": "CLOSEUP_MOLMO",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.436Z",
+      "type": "phase",
+      "component": "CLOSEUP_MOLMO",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "1 point(s) in 1.10 s; selected (953.6, 396.7)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.437Z",
+      "type": "phase",
+      "component": "CLOSEUP_REFINE",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.590Z",
+      "type": "phase",
+      "component": "CLOSEUP_REFINE",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "score=0.852 region=22937px body=22937px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (10 body / 0 region cand)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.591Z",
+      "type": "phase",
+      "component": "SYNTHESISE",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "front-approach targeting (declared symmetric primitive → aimed world-tcp poses)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.766Z",
+      "type": "phase",
+      "component": "SYNTHESISE",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.767Z",
+      "type": "phase",
+      "component": "VISUALISE",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "rerun overlay + (optional) reachability probe",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.787Z",
+      "type": "phase",
+      "component": "VISUALISE",
+      "action": null,
+      "status": "SUCCESS",
+      "detail": "rerun overlay logged; no reachability probe",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.788Z",
+      "type": "phase",
+      "component": "EXECUTE_GRASP",
+      "action": null,
+      "status": "BEGIN",
+      "detail": "goalset=20/20 accepted",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:25.788Z",
+      "type": "system_event",
+      "component": "PLANNER",
+      "action": "GRASP_PLAN",
+      "status": "BEGIN",
+      "detail": "plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:26.274Z",
+      "type": "system_event",
+      "component": "PLANNER",
+      "action": "GRASP_PLAN",
+      "status": "FAIL",
+      "detail": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:26.304Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:26.315Z",
+      "type": "phase",
+      "component": "EXECUTE_GRASP",
+      "action": null,
+      "status": "FAIL",
+      "detail": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:49:26.317Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

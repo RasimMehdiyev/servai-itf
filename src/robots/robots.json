@@ -1,0 +1,27 @@
+{
+  "default": "grocery",
+  "robots": {
+    "grocery": {
+      "id": "grocery",
+      "itemFilter": true,
+      "name": "ROBI",
+      "subtitle": "Grocery robot",
+      "ordersFile": "orders.json",
+      "stateFile": "replay-state.json",
+      "replayLog": "grocery_logs.txt",
+      "robotWs": "ws://localhost:7878",
+      "port": 8765
+    },
+    "bar": {
+      "id": "bar",
+      "itemFilter": false,
+      "name": "Barista",
+      "subtitle": "Bartender robot",
+      "ordersFile": "orders_bar.json",
+      "stateFile": "replay-state-bar.json",
+      "replayLog": "scripts/fixtures/bar_demo_2026-10-21.log",
+      "robotWs": "ws://armadillo.local:7878",
+      "port": 8766
+    }
+  }
+}

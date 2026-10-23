@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Card from '../../../components/ui/Card'
 import { getApiBase } from '../../../lib/urls'
 import { buildHeatmap, readout } from '../../../lib/heatmap'
+import { useRobot } from '../../../robots/RobotContext'
 
 const EMERALD_700 = '#047857'
 const ROSE_700 = '#be123c'
@@ -9,7 +10,6 @@ const AMBER_700 = '#854d0e'
 const GRAY_200 = '#e5e7eb'
 const GRAY_400 = '#9ca3af'
 
-const DATA_BASE = getApiBase()
 
 function todayStr() {
   const d = new Date()
@@ -75,14 +75,20 @@ export default function ActivityHeatmap({ dateFrom, dateTo }) {
   const [metric, setMetric] = useState('orders')
   const [sel, setSel] = useState(null)
   const [hov, setHov] = useState(null)
+  const { robotId, profile } = useRobot()
+  const labels = profile.labels
+
+  // another robot, another orders file: forget the previous one's numbers
+  useEffect(() => { setRows(null); setTotals(null) }, [robotId])
 
   // Order data comes from the relay server — independent of the AI server
   useEffect(() => {
     let live = true
     setLoading(true)
+    const base = getApiBase(robotId)
     Promise.all([
-      fetch(`${DATA_BASE}/api/orders/daily?from=${from}&to=${to}`).then(r => (r.ok ? r.json() : null)),
-      fetch(`${DATA_BASE}/api/orders/times?from=${from}&to=${to}`).then(r => (r.ok ? r.json() : null)),
+      fetch(`${base}/api/orders/daily?from=${from}&to=${to}`).then(r => (r.ok ? r.json() : null)),
+      fetch(`${base}/api/orders/times?from=${from}&to=${to}`).then(r => (r.ok ? r.json() : null)),
     ])
       .then(([daily, times]) => {
         if (!live) return
@@ -92,12 +98,12 @@ export default function ActivityHeatmap({ dateFrom, dateTo }) {
       .catch(() => {})
       .finally(() => { if (live) setLoading(false) })
     return () => { live = false }
-  }, [from, to])
+  }, [from, to, robotId])
 
   // A new range or metric starts from the default selection
   useEffect(() => { setSel(null); setHov(null) }, [from, to, metric])
 
-  const model = useMemo(() => (rows ? buildHeatmap({ rows, from, to, metric }) : null), [rows, from, to, metric])
+  const model = useMemo(() => (rows ? buildHeatmap({ rows, from, to, metric, labels }) : null), [rows, from, to, metric, labels])
 
   if (loading && !model) {
     return (
@@ -114,7 +120,7 @@ export default function ActivityHeatmap({ dateFrom, dateTo }) {
   const effMetric = model && model.showMetric ? metric : 'orders'
   const active = model && ((hov && model.info[hov]) ? hov : ((sel && model.info[sel]) ? sel : model.bestKey))
   const tag = hov && model?.info[hov] ? 'Hover' : sel && model?.info[sel] ? 'Selected' : model?.bestTag
-  const r = model && active ? readout(model, active, effMetric) : null
+  const r = model && active ? readout(model, active, effMetric, labels) : null
 
   return (
     <Card>
@@ -148,19 +154,19 @@ export default function ActivityHeatmap({ dateFrom, dateTo }) {
       {/* Tally stats (daisyUI) — colour coding kept on the values */}
       <div className="stats stats-horizontal w-full mb-5 shadow-none border border-solid" style={{ borderColor: GRAY_200 }}>
         <div className="stat">
-          <div className="stat-title">Delivered</div>
+          <div className="stat-title">{labels.delivered}</div>
           <div className="stat-value text-[clamp(22px,3vw,30px)]" style={{ color: EMERALD_700 }}>{t.delivered}</div>
         </div>
         <div className="stat" style={{ opacity: t.warning === 0 ? 0.5 : 1 }}>
-          <div className="stat-title">With warnings</div>
+          <div className="stat-title">{labels.warning}</div>
           <div className="stat-value text-[clamp(22px,3vw,30px)]" style={{ color: AMBER_700 }}>{t.warning}</div>
         </div>
         <div className="stat" style={{ opacity: t.failed === 0 ? 0.5 : 1 }}>
-          <div className="stat-title">Couldn't deliver</div>
+          <div className="stat-title">{labels.failed}</div>
           <div className="stat-value text-[clamp(22px,3vw,30px)]" style={{ color: ROSE_700 }}>{t.failed}</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Avg fetch time</div>
+          <div className="stat-title">{profile.avgTimeLabel}</div>
           <div className="stat-value text-[clamp(22px,3vw,30px)] text-[var(--text-primary)]">
             {t.avg_fetch_seconds}<span className="text-[14px] font-normal ml-1" style={{ color: GRAY_400 }}>s</span>
           </div>

@@ -4,6 +4,9 @@ import { useDataSource } from '../../../context/DataSourceContext'
 import useNow from '../../../hooks/useNow'
 import { deriveNowServing } from '../../../lib/liveView'
 import { clock } from '../../../lib/logTranslate'
+import { criticView } from '../../../lib/critic'
+import SmartJudgeBox from '../../../components/ui/SmartJudge'
+import { useRobot } from '../../../robots/RobotContext'
 
 const PILL = {
   green:   { text: 'On track',          cls: 'bg-[var(--success-bg)] text-[var(--success-text)]' },
@@ -39,6 +42,7 @@ export function formatSeconds(sec) {
 
 const SEG_COLOR = {
   done: 'var(--success)',
+  warn: 'var(--warning)',
   active: 'var(--primary)',
   activeWarn: 'var(--warning)',
   fail: 'var(--danger)',
@@ -160,7 +164,26 @@ function orangeActionContext({ retryCount, explanationText }) {
   }
 }
 
-function Actions({ cardState, onIntervene, retryCount, explanationText, showActions }) {
+function Actions({ cardState, onIntervene, retryCount, explanationText, showActions, custom, noun = 'order' }) {
+  // the robot's own set of buttons (the bar's "I've refilled the rack")
+  if (custom && (cardState === 'red' || cardState === 'orange')) {
+    return (
+      <div className="mt-4 flex flex-col gap-2">
+        <button onClick={() => onIntervene?.(custom.primary.id)} className="btn btn-primary w-full">
+          {custom.primary.label}
+        </button>
+        {custom.secondaries?.length > 0 && (
+          <div className="flex gap-2">
+            {custom.secondaries.map(b => (
+              <button key={b.id} onClick={() => onIntervene?.(b.id)} className={`btn btn-sm btn-outline flex-1 ${b.danger ? 'btn-error' : 'btn-primary'}`}>
+                {b.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
   if (cardState === 'red') {
     return (
       <div className="mt-4 flex flex-col gap-2">
@@ -172,7 +195,7 @@ function Actions({ cardState, onIntervene, retryCount, explanationText, showActi
             Tell customer it's delayed
           </button>
           <button onClick={() => onIntervene?.('cancel')} className="btn btn-sm btn-outline btn-error flex-1">
-            Cancel this order
+            Cancel this {noun}
           </button>
         </div>
       </div>
@@ -260,6 +283,7 @@ function Issues({ issues }) {
 
 export default function AttentionPanel({ title, level, explanationText, style }) {
   const { liveData, history, sendMessage, sourceMode, connectionStatus, mode } = useDataSource()
+  const { profile } = useRobot()
   const itemName = liveData?._itemName
   const cycleNum = liveData?._cycleNum
   const startedAt = liveData?._cycleStartedAt
@@ -280,9 +304,11 @@ export default function AttentionPanel({ title, level, explanationText, style })
     : (liveData?._cardState || 'green')
 
   const view = liveData ? deriveNowServing(liveData, history, now) : null
-  const pill = cardState === 'orange' && view?.kind === 'search'
+  const judge = criticView(liveData)
+  const basePill = cardState === 'orange' && view?.kind === 'search'
     ? { ...PILL.orange, text: "Can't find it" }
     : (PILL[cardState] || PILL.green)
+  const pill = view?.pillText ? { ...basePill, text: view.pillText } : basePill
 
   // Only show action buttons once the robot has clearly tried a couple of times
   // (≥2 grasp retries or ≥2 waypoints searched) or once it has hit a red failure.
@@ -304,7 +330,7 @@ export default function AttentionPanel({ title, level, explanationText, style })
           <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Now serving</div>
           <h2 className="text-[clamp(22px,2.8vw,28px)] font-bold text-[var(--text-primary)] m-0 leading-tight">
             {itemName && (isActive || waitingForHelp)
-              ? itemName.charAt(0).toUpperCase() + itemName.slice(1)
+              ? profile.heading(itemName)
               : cardState === 'waiting' ? 'Robot offline' : 'Idle'}
           </h2>
           <div className="flex items-center gap-3 mt-1 text-[clamp(13px,1.5vw,14px)] text-[var(--text-secondary)]">
@@ -339,13 +365,17 @@ export default function AttentionPanel({ title, level, explanationText, style })
         <>
           <StepBar seg={view.seg} label={view.phaseLabel} />
           <Headline cardState={cardState} text={view.headline || explanationText} evidence={view.evidence} />
-          <NextSteps next={view.next} ifWrong={view.ifWrong} context={view.context} />
+          {/* only what a person has to do; the rest of "what happens next" was clutter */}
+          <NextSteps next={cardState === 'red' ? view.next : ''} />
+          <SmartJudgeBox view={judge} />
           <Actions
             cardState={cardState}
             onIntervene={onIntervene}
             retryCount={retryCount}
             explanationText={explanationText}
             showActions={showActions}
+            custom={view.actions}
+            noun={profile.nouns.order}
           />
           <Issues issues={view.issues} />
         </>
@@ -353,6 +383,7 @@ export default function AttentionPanel({ title, level, explanationText, style })
         <>
           <IdleBanner cardState={cardState} text={cardState === 'waiting' ? waitingText : explanationText} />
           {view && <Issues issues={view.issues} />}
+          <SmartJudgeBox view={judge} />
         </>
       )}
     </Card>

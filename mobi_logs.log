@@ -1,0 +1,67 @@
+(critic-baristav2) armadillo@armadillo:~/demos/CriticBarista/airo-barista/scripts$ tail -f bar_demo.log | grep -E ' \| (SYSTEM|WORKFLOW) \| '
+2026-10-21T13:19:29.750Z | SYSTEM | BARISTA:STARTUP | BEGIN | initialising demo
+2026-10-21T13:19:43.646Z | SYSTEM | BARISTA:STARTUP | SUCCESS | demo setup complete
+2026-10-21T13:19:43.647Z | SYSTEM | BARISTA:STARTUP | BEGIN | bar demo loop initializing
+2026-10-21T13:19:49.788Z | SYSTEM | BARISTA:STARTUP | SUCCESS | demo loop ready
+2026-10-21T13:19:49.788Z | SYSTEM | BARISTA:STATE | SUCCESS | entering demo state AUTO_INITIALIZE_MOONDREAM
+2026-10-21T13:19:51.786Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'bottle_rack_self_detect_pos' complete
+2026-10-21T13:19:53.726Z | SYSTEM | BARISTA:RACK_SCAN | SUCCESS | 2 bottles, 0 capped
+2026-10-21T13:19:53.726Z | SYSTEM | BARISTA:STATE | SUCCESS | entering demo state POUR_DRINKZ
+2026-10-21T13:20:00.118Z | WORKFLOW | CYCLE | BEGIN | drink cycle 1
+2026-10-21T13:20:01.750Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:20:01.750Z | WORKFLOW | DECAP | BEGIN | bottles 0-0
+2026-10-21T13:20:02.616Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened
+2026-10-21T13:20:04.935Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_0', 'bottle_detect_rack_hole_0_0'] complete
+2026-10-21T13:20:05.576Z | SYSTEM | BARISTA:SHAKE | FAIL | VLM: not safe to shake (side 0, bottle 0)
+2026-10-21T13:20:06.110Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:20:06.677Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_0' complete
+2026-10-21T13:20:06.677Z | WORKFLOW | DECAP | SKIP | no capped bottles
+2026-10-21T13:20:08.238Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:20:13.409Z | SYSTEM | BARISTA:TRACK | SKIP | no customer interaction
+2026-10-21T13:20:14.168Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'face_tracking_detect_pos' complete
+2026-10-21T13:20:14.369Z | WORKFLOW | POUR | BEGIN | pouring drinks
+2026-10-21T13:20:16.446Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | closed (non-blocking)
+2026-10-21T13:20:17.432Z | SYSTEM | BARISTA:GLASS_DETECT | SUCCESS | 1 glass(es) ready
+2026-10-21T13:20:18.552Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:20:19.473Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:20:21.653Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_0', 'grab_rack_hole_0_0'] complete
+2026-10-21T13:20:22.276Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | closed
+2026-10-21T13:20:27.414Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_0', 'avoid_coll2_pos', 'pour_approach_pos'] complete
+2026-10-21T13:20:40.798Z | SYSTEM | BARISTA:GLASS | SUCCESS | glass 1/1 filled
+2026-10-21T13:20:45.995Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['pour_approach_pos', 'avoid_coll2_pos', 'above_rack_hole_0_0', 'grab_rack_hole_0_0'] complete
+2026-10-21T13:20:46.638Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:20:47.296Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_0' complete
+2026-10-21T13:20:47.297Z | SYSTEM | BARISTA:BOTTLE | FAIL | could not pick bottle: No bottles available, please refill!
+2026-10-21T13:20:47.392Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_0' complete
+2026-10-21T13:20:47.392Z | WORKFLOW | POUR | SUCCESS | poured 0.2 of drinks
+2026-10-21T13:20:47.393Z | WORKFLOW | CYCLE | SUCCESS | drink cycle 1
+2026-10-21T13:20:47.394Z | WORKFLOW | CYCLE | BEGIN | drink cycle 2
+2026-10-21T13:20:48.969Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:20:48.969Z | WORKFLOW | DECAP | BEGIN | bottles 1-1
+2026-10-21T13:20:49.290Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened
+2026-10-21T13:20:51.621Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_1', 'bottle_detect_rack_hole_0_1'] complete
+2026-10-21T13:20:52.276Z | SYSTEM | BARISTA:SHAKE | FAIL | VLM: not safe to shake (side 0, bottle 1)
+2026-10-21T13:20:52.767Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:20:53.382Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_1' complete
+2026-10-21T13:20:53.383Z | WORKFLOW | DECAP | SKIP | no capped bottles
+2026-10-21T13:20:54.950Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:21:00.150Z | SYSTEM | BARISTA:TRACK | SKIP | no customer interaction
+2026-10-21T13:21:00.916Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'face_tracking_detect_pos' complete
+2026-10-21T13:21:01.117Z | WORKFLOW | POUR | BEGIN | pouring drinks
+2026-10-21T13:21:02.264Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | closed (non-blocking)
+2026-10-21T13:21:03.217Z | SYSTEM | BARISTA:GLASS_DETECT | SUCCESS | 1 glass(es) ready
+2026-10-21T13:21:04.405Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:21:05.420Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'avoid_coll2_pos' complete
+2026-10-21T13:21:07.602Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_1', 'grab_rack_hole_0_1'] complete
+2026-10-21T13:21:08.228Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | closed
+2026-10-21T13:21:13.263Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['above_rack_hole_0_1', 'avoid_coll2_pos', 'pour_approach_pos'] complete
+2026-10-21T13:21:26.658Z | SYSTEM | BARISTA:GLASS | SUCCESS | glass 1/1 filled
+2026-10-21T13:21:31.796Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | seq ['pour_approach_pos', 'avoid_coll2_pos', 'above_rack_hole_0_1', 'grab_rack_hole_0_1'] complete
+2026-10-21T13:21:32.442Z | SYSTEM | BARISTA:GRIPPER | SUCCESS | opened (non-blocking)
+2026-10-21T13:21:33.053Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_1' complete
+2026-10-21T13:21:33.053Z | SYSTEM | BARISTA:BOTTLE | FAIL | could not pick bottle: No bottles available, please refill!
+2026-10-21T13:21:33.146Z | SYSTEM | BARISTA:ARM_MOVE | SUCCESS | to 'above_rack_hole_0_1' complete
+2026-10-21T13:21:33.146Z | WORKFLOW | POUR | SUCCESS | poured 0.2 of drinks
+2026-10-21T13:21:33.146Z | WORKFLOW | CYCLE | SUCCESS | drink cycle 2
+
+ 

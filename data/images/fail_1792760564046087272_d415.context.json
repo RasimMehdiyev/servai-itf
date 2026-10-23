@@ -1,0 +1,198 @@
+{
+  "imageId": "fail_1792760564046087272_d415",
+  "imageReceivedAt": "2026-10-23T13:02:43.951Z",
+  "windowFrom": "2026-10-23T13:02:13.951Z",
+  "windowTo": "2026-10-23T13:02:48.951Z",
+  "caption": "",
+  "events": [
+    {
+      "serverTs": "2026-10-23T13:02:20.896Z",
+      "type": "calibration",
+      "component": null,
+      "action": "OBJECT_CATALOG",
+      "status": "SUCCESS",
+      "detail": "8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.896Z",
+      "type": "system_event",
+      "component": "CAMERA_D415",
+      "action": "ZENOH_SESSION",
+      "status": "SUCCESS",
+      "detail": "Zenoh session open",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.896Z",
+      "type": "calibration",
+      "component": null,
+      "action": "PREFLIGHT",
+      "status": "BEGIN",
+      "detail": "probing D415 / MagTouch publishers (fail-fast)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "calibration",
+      "component": null,
+      "action": "PREFLIGHT",
+      "status": "SUCCESS",
+      "detail": "all required publishers / readers are live",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "system_event",
+      "component": "CAMERA_D415",
+      "action": "FIRST_FRAME",
+      "status": "BEGIN",
+      "detail": "waiting up to 10 s for first D415 RGB+depth frame on Zenoh",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "system_event",
+      "component": "CAMERA_D415",
+      "action": "FIRST_FRAME",
+      "status": "SUCCESS",
+      "detail": "first D415 frame 1280x720",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "calibration",
+      "component": null,
+      "action": "SAM3_STARTUP",
+      "status": "BEGIN",
+      "detail": "connecting to grocery-perception-server + waiting for warmup",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "calibration",
+      "component": null,
+      "action": "SAM3_STARTUP",
+      "status": "SUCCESS",
+      "detail": "perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.897Z",
+      "type": "calibration",
+      "component": null,
+      "action": "PLANNER_STARTUP",
+      "status": "BEGIN",
+      "detail": "building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.898Z",
+      "type": "calibration",
+      "component": null,
+      "action": "PLANNER_STARTUP",
+      "status": "SUCCESS",
+      "detail": "CuroboAdapter ready (voxels=on, IK backend=curobo)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:20.898Z",
+      "type": "system_event",
+      "component": "BRIDGE",
+      "action": "CONNECT",
+      "status": "BEGIN",
+      "detail": "opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:35.673Z",
+      "type": "system_event",
+      "component": "BRIDGE",
+      "action": "CONNECT",
+      "status": "SUCCESS",
+      "detail": "airo_fanuc driver up; joints [-86.9, -64.9, -29.5, -63.1, -38.2, 142.3] deg",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:35.683Z",
+      "type": "calibration",
+      "component": null,
+      "action": "D415_INTRINSICS_AND_EXTRINSICS",
+      "status": "SUCCESS",
+      "detail": "intrinsics + calibration loaded (1280x720)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:35.687Z",
+      "type": "calibration",
+      "component": null,
+      "action": "SEARCH_WAYPOINTS",
+      "status": "SUCCESS",
+      "detail": "{'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:35.687Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_PRELUDE",
+      "status": "BEGIN",
+      "detail": "opening + confirming the gripper before MagTouch calibration",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:36.523Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_PRELUDE",
+      "status": "SUCCESS",
+      "detail": "gripper confirmed fully open (attempt 1) — calibrating MagTouch baselines",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:36.524Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_RELEASE",
+      "status": "BEGIN",
+      "detail": "starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:38.909Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_RELEASE",
+      "status": "SUCCESS",
+      "detail": "ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:38.910Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_GRASP_DETECT",
+      "status": "BEGIN",
+      "detail": "starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper confirmed open by the prelude — keep fingertip undisturbed)",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:43.915Z",
+      "type": "calibration",
+      "component": null,
+      "action": "TACTILE_GRASP_DETECT",
+      "status": "FAIL",
+      "detail": "GripDetector calibration timed out (BLE reader not publishing?) — grasp stage will skip tactile verification",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:02:43.946Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

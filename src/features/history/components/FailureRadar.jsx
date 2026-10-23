@@ -4,6 +4,7 @@ import {
 } from 'recharts'
 import Card from '../../../components/ui/Card'
 import { getApiBase } from '../../../lib/urls'
+import { useRobot } from '../../../robots/RobotContext'
 
 // Same palette + failure-reason labels as OrdersList, so the page stays
 // colour-consistent: rose = couldn't deliver, amber = delivered with warnings.
@@ -15,7 +16,6 @@ const GRAY_500 = '#6b7280'
 const GRAY_700 = '#374151'
 const GRAY_900 = 'var(--text-primary)' // was '#111827' — a near-duplicate of --text-primary (#0f172a); aligned so History headings match Live
 
-const DATA_BASE = getApiBase()
 
 const REASON_SHORT = {
   search_exhausted: 'Not found',
@@ -77,6 +77,7 @@ function AngleTick({ x, y, payload, textAnchor, chartData, selectedKey, onSelect
 }
 
 export default function FailureRadar({ dateFrom, dateTo }) {
+  const { robotId, profile } = useRobot()
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedKey, setSelectedKey] = useState(null)
@@ -88,12 +89,12 @@ export default function FailureRadar({ dateFrom, dateTo }) {
   // whatever the orders-list chips happen to be filtering to.
   useEffect(() => {
     setLoading(true)
-    fetch(`${DATA_BASE}/api/orders/list?from=${from}&to=${to}`)
+    fetch(`${getApiBase(robotId)}/api/orders/list?from=${from}&to=${to}`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setData(d) })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [from, to])
+  }, [from, to, robotId])
 
   const { chartData, totalFailures } = useMemo(() => {
     const orders = data?.orders || []
@@ -107,14 +108,14 @@ export default function FailureRadar({ dateFrom, dateTo }) {
     const rows = Object.entries(tally)
       .map(([reason, c]) => ({
         key: reason,
-        reason: REASON_SHORT[reason] || reason.replace(/_/g, ' '),
+        reason: profile.reasons[reason] || REASON_SHORT[reason] || reason.replace(/_/g, ' '),
         failed: c.failed,
         warning: c.warning,
         total: c.failed + c.warning,
       }))
       .sort((a, b) => b.total - a.total)
     return { chartData: rows, totalFailures: rows.reduce((s, r) => s + r.total, 0) }
-  }, [data])
+  }, [data, profile])
 
   // Default to the most frequent failure so the panel is never empty, and keep
   // the selection valid as the date range changes.
@@ -146,7 +147,7 @@ export default function FailureRadar({ dateFrom, dateTo }) {
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="1.5" className="mb-2">
             <circle cx="12" cy="12" r="10" /><path d="M8 12l3 3 5-6" />
           </svg>
-          <div className="text-[13px]" style={{ color: GRAY_500 }}>No issues in this range — every order went smoothly.</div>
+          <div className="text-[13px]" style={{ color: GRAY_500 }}>No issues in this range — every {profile.nouns.order} went smoothly.</div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'stretch' }}>
@@ -160,8 +161,8 @@ export default function FailureRadar({ dateFrom, dateTo }) {
                   tick={<AngleTick chartData={chartData} selectedKey={selectedKey} onSelect={setSelectedKey} />}
                 />
                 <PolarRadiusAxis angle={90} tick={{ fontSize: 10, fill: GRAY_400 }} allowDecimals={false} />
-                <Radar name="Couldn't deliver" dataKey="failed" stroke={ROSE_500} fill={ROSE_500} fillOpacity={0.35} />
-                <Radar name="With warnings" dataKey="warning" stroke={AMBER_500} fill={AMBER_500} fillOpacity={0.25} />
+                <Radar name={profile.labels.failed} dataKey="failed" stroke={ROSE_500} fill={ROSE_500} fillOpacity={0.35} />
+                <Radar name={profile.labels.warning} dataKey="warning" stroke={AMBER_500} fill={AMBER_500} fillOpacity={0.25} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
               </RadarChart>
             </ResponsiveContainer>
@@ -175,10 +176,10 @@ export default function FailureRadar({ dateFrom, dateTo }) {
                   <div className="text-[15px] font-semibold mb-1.5" style={{ color: GRAY_900 }}>{selected.reason}</div>
                   <div className="flex flex-wrap gap-2">
                     {selected.failed > 0 && (
-                      <span className="badge badge-sm badge-error badge-outline">{selected.failed} couldn't deliver</span>
+                      <span className="badge badge-sm badge-error badge-outline">{selected.failed} {profile.labels.failed.toLowerCase()}</span>
                     )}
                     {selected.warning > 0 && (
-                      <span className="badge badge-sm badge-warning badge-outline">{selected.warning} with warnings</span>
+                      <span className="badge badge-sm badge-warning badge-outline">{selected.warning} {profile.labels.warning.toLowerCase()}</span>
                     )}
                   </div>
                 </div>
@@ -187,7 +188,7 @@ export default function FailureRadar({ dateFrom, dateTo }) {
                     <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
                   </svg>
                   <span className="text-[13px] leading-relaxed" style={{ color: GRAY_700 }}>
-                    {FAILURE_EXPLANATIONS[selected.key] || FAILURE_EXPLANATIONS.unknown}
+                    {profile.explanations[selected.key] || FAILURE_EXPLANATIONS[selected.key] || profile.explanations.unknown}
                   </span>
                 </div>
               </>

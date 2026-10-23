@@ -2,13 +2,16 @@ import React from 'react'
 import Card from '../../../components/ui/Card'
 import { useDataSource } from '../../../context/DataSourceContext'
 import { formatDuration, formatSeconds } from './AttentionPanel'
-import { REASON_LABEL } from '../../../lib/orderStats'
+import { useRobot } from '../../../robots/RobotContext'
 
-const OUTCOME = {
-  success: { dot: 'var(--success)', label: () => 'Delivered' },
-  ok: { dot: 'var(--success)', label: () => 'Delivered' },
-  warning: { dot: 'var(--warning)', label: () => 'Delivered with warnings' },
-  failed: { dot: 'var(--danger)', label: (o) => REASON_LABEL[o.failure?.reason] || 'Couldn’t deliver' },
+// dot colour per status; the wording comes from the robot's profile
+const DOT = { success: 'var(--success)', ok: 'var(--success)', warning: 'var(--warning)', failed: 'var(--danger)' }
+
+function outcomeText(profile, o) {
+  const reason = profile.reasons[o.failure?.reason]
+  if (o.status === 'success' || o.status === 'ok') return profile.labels.delivered
+  if (o.status === 'warning') return profile.id === 'bar' ? (reason || profile.labels.warningOutcome) : profile.labels.warningOutcome
+  return reason || profile.labels.failed
 }
 
 function Stat({ value, label }) {
@@ -21,15 +24,16 @@ function Stat({ value, label }) {
 }
 
 function RecentOrder({ o }) {
-  const out = OUTCOME[o.status] || OUTCOME.failed
+  const { profile } = useRobot()
+  const dot = DOT[o.status] || DOT.failed
   const ago = o.completed_at ? formatDuration(Date.now() - new Date(o.completed_at).getTime()) : ''
   return (
     <div className="flex items-center justify-between gap-3 px-3 py-1.5 rounded-lg bg-[var(--bg)] text-[13px]">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: out.dot }} />
+        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: dot }} />
         <span className="font-medium whitespace-nowrap">{o.item ? o.item.charAt(0).toUpperCase() + o.item.slice(1) : 'Order'}</span>
         <span className="text-[12px] text-[var(--text-secondary)]">#{o.order_number || o.id}</span>
-        <span className="text-[12px] text-[var(--text-secondary)] truncate">{out.label(o)}</span>
+        <span className="text-[12px] text-[var(--text-secondary)] truncate">{outcomeText(profile, o)}</span>
       </div>
       <span className="text-[12px] text-[var(--text-secondary)] whitespace-nowrap tabular-nums">
         {ago ? `${ago} ago · ` : ''}{formatSeconds(o.total_seconds)}
@@ -41,6 +45,7 @@ function RecentOrder({ o }) {
 /** Today so far — one strip: the day's numbers, the outcome mix, the last two orders. */
 function TodayStrip({ style }) {
   const { recentOrders } = useDataSource()
+  const { profile } = useRobot()
   const t = recentOrders?.today
   if (!t) {
     return (
@@ -63,9 +68,9 @@ function TodayStrip({ style }) {
         <div className="shrink-0">
           <div className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Today so far</div>
           <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 mt-1">
-            <Stat value={t.total} label={t.total === 1 ? 'order' : 'orders'} />
+            <Stat value={t.total} label={t.total === 1 ? profile.nouns.order : profile.nouns.orders} />
             <Stat value={formatSeconds(t.avg_seconds)} label="avg time" />
-            <Stat value={t.failed} label="needed help" />
+            <Stat value={profile.needHelp(t)} label="needed help" />
           </div>
         </div>
 
@@ -80,9 +85,9 @@ function TodayStrip({ style }) {
               : parts.map((p, i) => <span key={i} className="rounded" style={{ flexGrow: p.n, flexBasis: 0, background: p.color }} />)}
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[11px] text-[var(--text-secondary)]">
-            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--success)]" />Delivered {t.delivered}</span>
-            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--warning)]" />With warnings {t.warning}</span>
-            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--danger)]" />Couldn’t deliver {t.failed}</span>
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--success)]" />{profile.labels.delivered} {t.delivered}</span>
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--warning)]" />{profile.labels.warning} {t.warning}</span>
+            <span><span className="inline-block w-2 h-2 rounded-full mr-1 bg-[var(--danger)]" />{profile.labels.failed} {t.failed}</span>
           </div>
         </div>
 

@@ -3,7 +3,9 @@ import TopBar from '../../../components/layout/TopBar'
 import ScreenContainer from '../../../components/layout/ScreenContainer'
 import AttentionPanel from '../components/AttentionPanel'
 import RobotStatusCard from '../components/RobotStatusCard'
-import CameraCard from '../components/CameraCard'
+import FailurePicturesCard from '../components/FailurePicturesCard'
+import CounterfactualCard from '../components/CounterfactualCard'
+import RobotSwitcher from '../../../components/layout/RobotSwitcher'
 import WorkflowTimeline from '../components/WorkflowTimeline'
 import TechnicalDetails from '../components/TechnicalDetails'
 import LoadingState from '../../../components/ui/LoadingState'
@@ -22,7 +24,7 @@ export default function LiveScreen() {
   const topLeft = (
     <>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text-secondary)" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span className="topbar-title">{data?.storeId || 'ROBI'}</span>
+      <RobotSwitcher />
       {mode === 'mock' && (
         <select
           aria-label="Select scenario"
@@ -52,8 +54,8 @@ export default function LiveScreen() {
         {error && <ErrorState />}
         {data && (
           <>
-            {/* Two-column: Now serving + what the camera sees */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'clamp(12px,2vw,20px)', alignItems: 'stretch' }}>
+            {/* Two-column: Now serving + the pictures from a failure */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'clamp(12px,2vw,20px)', alignItems: 'start' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <AttentionPanel
                   title={data.attentionTitle}
@@ -64,8 +66,9 @@ export default function LiveScreen() {
                   style={{ flex: 1 }}
                 />
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <CameraCard style={{ flex: 1 }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px,2vw,20px)' }}>
+                <FailurePicturesCard />
+                <CounterfactualCard />
               </div>
             </div>
 

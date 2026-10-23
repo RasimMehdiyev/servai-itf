@@ -1,32 +1,36 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import Card from '../../../components/ui/Card'
+import StepList from '../../../components/ui/StepList'
+import { useDataSource } from '../../../context/DataSourceContext'
+import { deriveOrderSteps, orderHeadline } from '../../../lib/orderSteps'
+import { contextSentence } from '../../../lib/orderStats'
+import { orderCriticView } from '../../../lib/critic'
+import { orderCounterfactual } from '../../../lib/counterfactual'
+import { CardHeader, Tiles, ShelfMap, MapLegend } from '../../../components/ui/CounterfactualView'
+import SmartJudgeBox from '../../../components/ui/SmartJudge'
+import { barContextSentence } from '../../../robots/bar/view'
+import { useRobot } from '../../../robots/RobotContext'
 
-const EMERALD_50 = '#ecfdf5'
-const EMERALD_100 = '#d1fae5'
 const EMERALD_500 = '#10b981'
-const EMERALD_700 = '#047857'
-const ROSE_50 = '#fff1f2'
-const ROSE_100 = '#ffe4e6'
-const ROSE_500 = '#f43f5e'
-const ROSE_700 = '#be123c'
-const AMBER_50 = '#fefce8'
-const AMBER_100 = '#fef9c3'
 const AMBER_500 = '#ca8a04'
-const AMBER_700 = '#854d0e'
-const GRAY_50 = '#f9fafb'
-const GRAY_100 = '#f3f4f6'
+const ROSE_500 = '#f43f5e'
 const GRAY_200 = '#e5e7eb'
 const GRAY_400 = '#9ca3af'
 const GRAY_500 = '#6b7280'
-const GRAY_700 = '#374151'
 const GRAY_900 = 'var(--text-primary)' // was '#111827' — a near-duplicate of --text-primary (#0f172a); aligned so History headings match Live
 const TEAL_200 = '#99f6e4'
 
 import { getApiBase, getRagBase } from '../../../lib/urls'
 
-const DATA_BASE = getApiBase()
+// the relay of the robot that is selected right now
+const dataBase = () => getApiBase()
 const PAGE_SIZE = 5
+
+// Item | Order | Time | Took | Photos | Status | chevron (no Photos column for a robot without cameras)
+const colsFor = (showPhotos) => (showPhotos
+  ? 'minmax(0, 1.7fr) 64px 72px 56px 56px 132px 16px'
+  : 'minmax(0, 1.7fr) 64px 72px 56px 132px 16px')
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10)
@@ -50,44 +54,6 @@ function formatDateLabel(dateStr) {
   return `${weekday} · ${label}`
 }
 
-function StatusIcon({ status }) {
-  if (status === 'success' || status === 'ok') {
-    return (
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: EMERALD_50, borderColor: EMERALD_100 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={EMERALD_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      </div>
-    )
-  }
-  if (status === 'warning') {
-    return (
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: AMBER_50, borderColor: AMBER_100 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-      </div>
-    )
-  }
-  if (status === 'failed') {
-    return (
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: ROSE_50, borderColor: ROSE_100 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </div>
-    )
-  }
-  return (
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-solid" style={{ background: GRAY_50, borderColor: GRAY_200 }}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-    </div>
-  )
-}
-
 const REASON_SHORT = {
   search_exhausted: 'Not found',
   reachability_failed: 'Path blocked',
@@ -101,43 +67,15 @@ const REASON_SHORT = {
   bridge_fault: 'Hardware fault',
 }
 
-// Resolve a friendly step name from either order.failure.at_phase or by
-// inspecting the order's per-step status. Returns null if the order had no
-// notable step (i.e. successful or completely missing failure info).
-const PHASE_FRIENDLY = {
-  scene_scan: 'Scene scan',
-  searching: 'Searching for item',
-  anchor_select: 'Selecting target',
-  closeup_move: 'Moving closer',
-  analyzing: 'Analyzing the grasp',
-  grasping: 'Picking up',
-  bringing_over: 'Bringing it over',
-  handing_over: 'Handing over',
-  returning: 'Returning',
-}
+const STATUS_DOT = { success: EMERALD_500, ok: EMERALD_500, warning: AMBER_500, failed: ROSE_500 }
 
-function notableStepName(order) {
-  // Prefer the explicit at_phase if present
-  const atPhase = order?.failure?.at_phase
-  if (atPhase) {
-    return PHASE_FRIENDLY[atPhase] || atPhase.replace(/_/g, ' ')
-  }
-  // Otherwise look at the first warning/failed step
-  for (const p of (order?.phases || [])) {
-    if (p.status === 'warning' || p.status === 'failed') {
-      return p.friendly_name || (p.phase ? p.phase.replace(/_/g, ' ') : null)
-    }
-  }
-  return null
-}
-
-function StatusPill({ status, failure }) {
+function StatusPill({ status, failure, profile }) {
   // daisyUI badges — outline variants keep the soft look; colours map to the
   // servai theme (success=emerald, warning=amber, error=rose).
   if (status === 'success' || status === 'ok') {
-    return <span className="badge badge-sm badge-success badge-outline">Delivered</span>
+    return <span className="badge badge-sm badge-success badge-outline">{profile.labels.delivered}</span>
   }
-  const reasonLabel = failure?.reason ? REASON_SHORT[failure.reason] : null
+  const reasonLabel = failure?.reason ? (profile.reasons[failure.reason] || REASON_SHORT[failure.reason]) : null
   if (status === 'warning') {
     return <span className="badge badge-sm badge-warning badge-outline">{reasonLabel || 'Warning'}</span>
   }
@@ -147,49 +85,12 @@ function StatusPill({ status, failure }) {
   return <span className="badge badge-sm badge-ghost">Unknown</span>
 }
 
-function formatMeta(phase) {
-  const meta = phase.meta || {}
-  if (!meta || Object.keys(meta).length === 0 || (Object.keys(meta).length === 1 && meta.raw_event_count != null)) return null
-  const parts = []
-  if (meta.candidates != null) parts.push(`${meta.candidates} candidates`)
-  if (meta.chosen_score != null) parts.push(`score ${meta.chosen_score}`)
-  if (meta.chosen_distance_cm != null) parts.push(`${meta.chosen_distance_cm}cm away`)
-  if (meta.molmo_points != null) parts.push(`${meta.molmo_points} grasp points`)
-  if (meta.grasp_width_mm != null) parts.push(`${meta.grasp_width_mm}mm grip`)
-  if (meta.depth_offset_mm != null) parts.push(`${meta.depth_offset_mm}mm depth offset`)
-  if (meta.gripper_opening != null) parts.push(`gripper ${meta.gripper_opening}`)
-  if (meta.success === true) parts.push('grip OK')
-  if (meta.success === false) parts.push('grip failed')
-  if (meta.target_waypoint) parts.push(`→ ${meta.target_waypoint}`)
-  return parts.length > 0 ? parts.join(', ') : null
-}
-
-function StepIcon({ status }) {
-  if (status === 'failed') {
-    return (
-      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: ROSE_50, border: `1px solid ${ROSE_100}` }}>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </div>
-    )
-  }
-  if (status === 'warning') {
-    return (
-      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: AMBER_50, border: `1px solid ${AMBER_100}` }}>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={AMBER_500} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-      </div>
-    )
-  }
+function CameraIcon({ size = 14 }) {
   return (
-    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: EMERALD_50, border: `1px solid ${EMERALD_100}` }}>
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={EMERALD_500} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
   )
 }
 
@@ -375,7 +276,7 @@ function VisionCaption({ imageIds, failureContext }) {
 function ImageOverlay({ images, order, onClose }) {
   const groups = useMemo(() => groupImagesByEvent(images), [images])
   const [eventIdx, setEventIdx] = useState(0)
-  const imageBase = `${DATA_BASE}/api/images`
+  const imageBase = `${dataBase()}/api/images`
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') onClose()
@@ -494,14 +395,70 @@ function ImageOverlay({ images, order, onClose }) {
   )
 }
 
-function ExpandedDetail({ order, onAskRobi }) {
-  const phases = order.phases || []
+function ExpandedDetail({ order, history, onAskRobi }) {
   const allImages = useMemo(() => collectOrderImages(order), [order])
   const [showOverlay, setShowOverlay] = useState(false)
-  const imageBase = `${DATA_BASE}/api/images`
+  const [overrides, setOverrides] = useState({})
+  const { robotId, profile } = useRobot()
+  const imageBase = `${dataBase()}/api/images`
+
+  // Same rows as the Live pipeline: time against typical, the numbers, Why, grasp tries, raw log
+  // the list endpoint says which robot an order belongs to; fall back to the selected one
+  const robotOrder = useMemo(() => (order.robot ? order : { ...order, robot: robotId }), [order, robotId])
+  const rows = useMemo(() => deriveOrderSteps(robotOrder, history), [robotOrder, history])
+  const headline = orderHeadline(robotOrder)
+  const judgeView = useMemo(() => orderCriticView(robotOrder), [robotOrder])
+  const cf = useMemo(() => orderCounterfactual(robotOrder, history), [robotOrder, history])
+  const context = useMemo(
+    () => (profile.id === 'bar' ? barContextSentence(history) : contextSentence(history, order.item, order.retries || 0)),
+    [history, order.item, order.retries, profile.id],
+  )
+  const isOpen = (r) => (overrides[r.key] === undefined ? !!r.openDefault : overrides[r.key])
+  const toggle = (r) => setOverrides(o => ({ ...o, [r.key]: !(o[r.key] === undefined ? !!r.openDefault : o[r.key]) }))
+  const bad = order.status === 'failed'
 
   return (
     <div className="px-4 py-4 border-t border-solid" style={{ borderColor: TEAL_200, background: 'white' }}>
+      {/* What happened, in a sentence, and how this kind of order usually goes */}
+      {(headline || context) && (
+        <div className="mb-4 flex flex-col gap-1.5 text-[13px] leading-snug">
+          {headline && (
+            <div className={`px-3 py-2.5 rounded-[10px] font-semibold ${bad ? 'bg-[var(--danger-bg)] text-[var(--danger-text)]' : 'bg-[var(--warning-bg)] text-[var(--warning-text)]'}`}>
+              {headline}
+            </div>
+          )}
+          {context && (
+            <div className="flex items-start gap-2 px-1 text-[var(--text-secondary)]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-[2px]" aria-hidden>
+                <path d="M3 3v18h18" /><path d="M7 14l4-4 4 4 5-6" />
+              </svg>
+              <span>{context}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* What could have changed this, and where the item was */}
+      {cf && (
+        <div className="mb-4 grid gap-3.5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+          <section aria-label="What could have changed this" className="rounded-xl border border-solid border-[var(--border)] p-4 bg-[#fcfcfd]" style={{ gridColumn: 'span 2' }}>
+            <CardHeader card={{ title: 'What could have changed this?' }} />
+            <p className="m-0 mt-2.5 text-[15px] leading-[1.45] font-medium">{cf.sentence}</p>
+            {cf.tiles && <Tiles tiles={cf.tiles} />}
+            <p className="m-0 mt-2.5 text-[12px] leading-[1.4] text-[var(--text-secondary)]">{cf.caption}</p>
+          </section>
+          <section aria-label="Where it was" className="rounded-xl border border-solid border-[var(--border)] p-4 bg-[#fcfcfd]">
+            <h3 className="m-0 text-[15px] font-bold">Where it was</h3>
+            <div className="mt-2"><ShelfMap map={cf.map} /></div>
+            <div className="mt-2 text-[14px] font-semibold">{cf.where.charAt(0).toUpperCase() + cf.where.slice(1)}</div>
+            <div className="mt-2"><MapLegend /></div>
+          </section>
+        </div>
+      )}
+
+      {/* What the AI Judge (independent camera + AI model) said about this order */}
+      <SmartJudgeBox view={judgeView} compact />
+
       {/* Failure camera feed thumbnail — click to open overlay */}
       {allImages.length > 0 && (
         <div
@@ -520,12 +477,9 @@ function ExpandedDetail({ order, onAskRobi }) {
             ))}
           </div>
           <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.25)' }}>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: 'rgba(0,0,0,0.6)' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
-                <circle cx="12" cy="13" r="4" />
-              </svg>
-              <span className="text-[12px] font-semibold" style={{ color: 'white' }}>View camera feed ({allImages.length})</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ background: 'rgba(0,0,0,0.6)', color: 'white' }}>
+              <CameraIcon />
+              <span className="text-[12px] font-semibold">View camera feed ({allImages.length})</span>
             </div>
           </div>
         </div>
@@ -534,78 +488,157 @@ function ExpandedDetail({ order, onAskRobi }) {
         <ImageOverlay images={allImages} order={order} onClose={() => setShowOverlay(false)} />
       )}
 
-      <div className="text-[13px] font-semibold mb-3" style={{ color: GRAY_900 }}>Step-by-step</div>
-      <div className="flex flex-col gap-2.5">
-        {phases.map((phase, i) => {
-          const metaText = formatMeta(phase)
-          const failPhase = order.failure?.at_phase
-          const stepStatus = phase.status || (failPhase === phase.phase ? (order.status === 'warning' ? 'warning' : 'failed') : 'ok')
-          const nameColor = stepStatus === 'failed' ? ROSE_700 : stepStatus === 'warning' ? AMBER_700 : GRAY_900
-          return (
-            <div key={i} className="flex items-start gap-3">
-              <StepIcon status={stepStatus} />
-              <div className="flex-1 min-w-0">
-                <div className="text-[13px]" style={{ color: nameColor }}>
-                  {phase.friendly_name || phase.phase}
-                </div>
-                {phase.failure_detail && (
-                  <div className="text-[11px] mt-0.5" style={{ color: stepStatus === 'failed' ? ROSE_500 : AMBER_500 }}>{phase.failure_detail}</div>
-                )}
-                {metaText && (
-                  <div className="text-[11px] mt-0.5" style={{ color: GRAY_400 }}>{metaText}</div>
-                )}
-              </div>
-              <div className="text-[12px] font-mono shrink-0" style={{ color: GRAY_500 }}>
-                {phase.duration_seconds}s
-              </div>
-            </div>
-          )
-        })}
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-[13px] font-semibold" style={{ color: GRAY_900 }}>Step-by-step</div>
+        <span className="text-[12px]" style={{ color: GRAY_500 }}>Tap a step to see why</span>
       </div>
+      <StepList rows={rows} isOpen={isOpen} onToggle={toggle} />
 
       <div className="flex items-center gap-3 mt-4 pt-3 border-t border-solid" style={{ borderColor: GRAY_200 }}>
         <button onClick={() => onAskRobi?.(order)} className="btn btn-sm btn-accent">
-          {order.status === 'failed' ? 'Why did you fail?' : 'Why so long? Ask ROBI'}
+          {order.status === 'failed'
+            ? (profile.id === 'bar' ? 'Why did this fail?' : 'Why did you fail?')
+            : (profile.id === 'bar' ? 'Why this drink? Ask the Barista' : 'Why so long? Ask ROBI')}
         </button>
-        <span className="text-[12px] cursor-pointer hover:underline" style={{ color: GRAY_400 }}>
-          View full log →
-        </span>
       </div>
     </div>
   )
 }
 
+// ── Item filter: a multi-select dropdown (replaces one chip per item) ───────────
+
+function ItemDropdown({ options, selected, onChange }) {
+  const [open, setOpen] = useState(false)
+  const [pos, setPos] = useState({ top: 0, left: 0 })
+  const btnRef = useRef(null)
+  const menuRef = useRef(null)
+
+  // The card clips its children, so the menu is drawn in a portal, positioned under the button.
+  const place = useCallback(() => {
+    const r = btnRef.current?.getBoundingClientRect()
+    if (!r) return
+    const width = 260
+    setPos({ top: r.bottom + 6, left: Math.max(8, Math.min(r.left, window.innerWidth - width - 8)) })
+  }, [])
+
+  useEffect(() => {
+    if (!open) return undefined
+    place()
+    const onDown = (e) => {
+      if (menuRef.current?.contains(e.target) || btnRef.current?.contains(e.target)) return
+      setOpen(false)
+    }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    window.addEventListener('resize', place)
+    document.addEventListener('scroll', place, true)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', place)
+      document.removeEventListener('scroll', place, true)
+    }
+  }, [open, place])
+
+  // keep a selected item listed even when the status filter leaves it with no orders
+  const names = useMemo(() => {
+    const base = options.map(([n]) => n)
+    for (const s of selected) if (!base.includes(s)) base.push(s)
+    return base
+  }, [options, selected])
+  const countOf = (n) => (options.find(([k]) => k === n) || [n, 0])[1]
+
+  const label = selected.length === 0 ? 'Item' : selected.length === 1 ? selected[0] : `${selected.length} items`
+  const toggle = (n) => onChange(selected.includes(n) ? selected.filter(x => x !== n) : [...selected, n])
+
+  return (
+    <div>
+      <button
+        ref={btnRef}
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen(v => !v)}
+        className={`btn btn-sm rounded-full gap-1.5 ${selected.length ? 'btn-neutral' : 'btn-outline'}`}
+      >
+        {label}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+             style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease' }} aria-hidden>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && ReactDOM.createPortal(
+        <div
+          ref={menuRef}
+          role="group"
+          aria-label="Filter by item"
+          className="fixed w-[260px] rounded-xl overflow-hidden bg-white border border-solid"
+          style={{ top: pos.top, left: pos.left, zIndex: 9000, borderColor: GRAY_200, boxShadow: '0 8px 24px rgba(15, 23, 42, 0.16)' }}
+        >
+          <div className="px-4 pt-3 pb-2 text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: GRAY_500 }}>Filter by item</div>
+          <div className="flex flex-col pb-1 max-h-[280px] overflow-auto">
+            {names.map(n => (
+              <label key={n} className="flex items-center gap-2.5 px-4 py-[7px] cursor-pointer hover:bg-[#f9fafb]">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(n)}
+                  onChange={() => toggle(n)}
+                  className="checkbox checkbox-sm checkbox-accent"
+                />
+                <span className="flex-1 min-w-0 text-[14px]" style={{ color: GRAY_900 }}>{n}</span>
+                <span className="text-[12px] shrink-0" style={{ color: GRAY_500 }}>{countOf(n)}</span>
+              </label>
+            ))}
+          </div>
+          <div className="flex items-center justify-between px-4 py-2.5 border-t border-solid" style={{ borderColor: GRAY_200 }}>
+            <button type="button" onClick={() => onChange([])} className="btn btn-xs btn-ghost" style={{ color: GRAY_500 }}>Clear</button>
+            <button type="button" onClick={() => setOpen(false)} className="btn btn-xs btn-neutral">Done</button>
+          </div>
+        </div>,
+        document.body
+      )}
+    </div>
+  )
+}
+
 export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRobi }) {
+  const { history } = useDataSource()
+  const { robotId, profile } = useRobot()
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('all')
-  const [itemFilter, setItemFilter] = useState('all')
+  const [items, setItems] = useState([])
   const [expandedId, setExpandedId] = useState(null)
   const [expandedGroups, setExpandedGroups] = useState({})
 
   const from = dateFrom || todayStr()
   const to = dateTo || todayStr()
+  const itemParam = items.length ? items.join(',') : 'all'
 
   useEffect(() => {
     setLoading(true)
-    const params = new URLSearchParams({ from, to, status: statusFilter, item: itemFilter })
-    fetch(`${DATA_BASE}/api/orders/list?${params}`)
+    const params = new URLSearchParams({ from, to, status: statusFilter, item: itemParam })
+    fetch(`${dataBase()}/api/orders/list?${params}`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setData(d) })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [from, to, statusFilter, itemFilter])
+  }, [from, to, statusFilter, itemParam, robotId])
 
   // Reset filters when date range changes
   useEffect(() => {
     setStatusFilter('all')
-    setItemFilter('all')
+    setItems([])
     setExpandedId(null)
     setExpandedGroups({})
-  }, [from, to])
+  }, [from, to, robotId])
 
   const counts = data?.counts || { all: 0, delivered: 0, warning: 0, failed: 0, by_item: {} }
   const orders = data?.orders || []
+  const hasFilters = statusFilter !== 'all' || items.length > 0
+  const clearAll = () => { setStatusFilter('all'); setItems([]) }
 
   // Group orders by date
   const grouped = useMemo(() => {
@@ -618,19 +651,13 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
     return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]))
   }, [orders])
 
-  const itemChips = useMemo(() => {
-    return Object.entries(counts.by_item || {}).sort((a, b) => b[1] - a[1])
-  }, [counts.by_item])
+  const itemOptions = useMemo(() => Object.entries(counts.by_item || {}).sort((a, b) => b[1] - a[1]), [counts.by_item])
 
-  function chipStyle(active) {
-    return active
-      ? { background: GRAY_900, color: 'white', borderColor: GRAY_900 }
-      : { background: 'white', color: GRAY_700, borderColor: GRAY_200 }
-  }
-
+  const showPhotos = !profile.noImages || orders.some(o => imageCount(o) > 0)
+  const COLS = colsFor(showPhotos)
   const totalInRange = counts.all
   const rangeDays = Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000) + 1)
-  const rangeLabel = rangeDays <= 1 ? 'today' : rangeDays <= 7 ? `the last ${rangeDays} days` : `the last ${rangeDays} days`
+  const rangeLabel = rangeDays <= 1 ? 'today' : `the last ${rangeDays} days`
 
   if (loading && !data) {
     return (
@@ -644,67 +671,53 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
     )
   }
 
+  const chip = (key, text, count, dim) => (
+    <button
+      key={key}
+      onClick={() => setStatusFilter(statusFilter === key ? 'all' : key)}
+      aria-pressed={statusFilter === key}
+      className={`btn btn-sm rounded-full ${statusFilter === key ? 'btn-neutral' : 'btn-outline'}`}
+      style={dim ? { opacity: 0.6 } : undefined}
+    >
+      {text} <span className="opacity-60">{count}</span>
+    </button>
+  )
+
   return (
     <Card>
       {/* Header */}
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div>
-          <h2 className="text-[clamp(16px,2.2vw,19px)] font-semibold" style={{ color: GRAY_900, margin: 0 }}>Orders</h2>
+          <h2 className="text-[clamp(16px,2.2vw,19px)] font-semibold" style={{ color: GRAY_900, margin: 0 }}>{profile.nouns.Orders}</h2>
           <div className="text-[12px]" style={{ color: GRAY_500 }}>{totalInRange} in {rangeLabel}</div>
         </div>
       </div>
 
-      {/* Filter chips — status and item filters combine via AND.
-          Clicking an active status chip clears that group; clicking an active
-          item chip clears that group. "All" resets both. */}
+      {/* Filters — status chips plus a multi-select item dropdown, combined with AND.
+          Clicking an active status chip clears it; "All" resets everything. */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <button
-          onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
-          className={`btn btn-sm rounded-full ${statusFilter === 'all' && itemFilter === 'all' ? 'btn-neutral' : 'btn-outline'}`}
+          onClick={clearAll}
+          aria-pressed={!hasFilters}
+          className={`btn btn-sm rounded-full ${!hasFilters ? 'btn-neutral' : 'btn-outline'}`}
         >
           All <span className="opacity-60">{counts.all}</span>
         </button>
-        <button
-          onClick={() => setStatusFilter(statusFilter === 'delivered' ? 'all' : 'delivered')}
-          className={`btn btn-sm rounded-full ${statusFilter === 'delivered' ? 'btn-neutral' : 'btn-outline'}`}
-        >
-          ✓ Delivered <span className="opacity-60">{counts.delivered}</span>
-        </button>
-        <button
-          onClick={() => setStatusFilter(statusFilter === 'warning' ? 'all' : 'warning')}
-          className={`btn btn-sm rounded-full ${statusFilter === 'warning' ? 'btn-neutral' : 'btn-outline'}`}
-          style={{ opacity: counts.warning === 0 ? 0.6 : 1 }}
-        >
-          ⚠ Warnings <span className="opacity-60">{counts.warning}</span>
-        </button>
-        <button
-          onClick={() => setStatusFilter(statusFilter === 'failed' ? 'all' : 'failed')}
-          className={`btn btn-sm rounded-full ${statusFilter === 'failed' ? 'btn-neutral' : 'btn-outline'}`}
-          style={{ opacity: counts.failed === 0 ? 0.6 : 1 }}
-        >
-          ✕ Failed <span className="opacity-60">{counts.failed}</span>
-        </button>
+        {chip('delivered', profile.labels.chipDelivered, counts.delivered, false)}
+        {chip('warning', profile.labels.chipWarning, counts.warning, counts.warning === 0)}
+        {chip('failed', profile.labels.chipFailed, counts.failed, counts.failed === 0)}
 
-        {itemChips.length > 0 && (
+        {/* Filtering by item only makes sense when there is more than one item (the bar only has bottles) */}
+        {profile.hasItemFilter && (itemOptions.length > 0 || items.length > 0) && (
           <>
             <div style={{ width: 1, height: 16, background: GRAY_200, margin: '0 4px' }} />
-            {itemChips.map(([name, count]) => (
-              <button
-                key={name}
-                onClick={() => setItemFilter(itemFilter === name ? 'all' : name)}
-                className={`btn btn-sm rounded-full ${itemFilter === name ? 'btn-neutral' : 'btn-outline'}`}
-              >
-                {name} <span className="opacity-60">{count}</span>
-              </button>
-            ))}
+            <ItemDropdown options={itemOptions} selected={items} onChange={setItems} />
           </>
         )}
 
-        {/* Active-filter summary + clear button — helps when status+item are
-            both active so the user can see what's combined and reset fast. */}
-        {(statusFilter !== 'all' || itemFilter !== 'all') && (
+        {hasFilters && (
           <button
-            onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
+            onClick={clearAll}
             className="btn btn-xs btn-ghost rounded-full ml-auto tooltip tooltip-left"
             data-tip="Clear all filters"
           >
@@ -713,8 +726,7 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
         )}
       </div>
 
-
-      {/* Orders grouped by date */}
+      {/* Orders grouped by date, as a table: Item | Order | Time | Took | Photos | Status */}
       <div className="mt-4 flex flex-col gap-4">
         {orders.length === 0 ? (
           <div className="text-center py-8">
@@ -723,16 +735,12 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
               <path d="M8 7h8M8 11h5" />
             </svg>
             <div className="text-[13px]" style={{ color: GRAY_500 }}>
-              {statusFilter !== 'all' || itemFilter !== 'all'
+              {hasFilters
                 ? 'No orders match these filters.'
                 : from === to ? 'No orders in this range.' : "ROBI hasn't completed any orders yet. Once it does, they'll show up here."}
             </div>
-            {(statusFilter !== 'all' || itemFilter !== 'all') && (
-              <button
-                onClick={() => { setStatusFilter('all'); setItemFilter('all') }}
-                className="btn btn-ghost btn-sm mt-2"
-                style={{ color: 'var(--teal, #0d9488)' }}
-              >
+            {hasFilters && (
+              <button onClick={clearAll} className="btn btn-ghost btn-sm mt-2" style={{ color: 'var(--teal, #0d9488)' }}>
                 Clear filters
               </button>
             )}
@@ -746,67 +754,80 @@ export default function OrdersList({ dateFrom, dateTo, onCitationClick, onAskRob
             return (
               <div key={date}>
                 {/* Date divider */}
-                <div className="flex items-center gap-3 mb-2.5">
+                <div className="flex items-center gap-3 mb-2">
                   <span className="text-[11px] font-bold uppercase tracking-[0.14em] shrink-0" style={{ color: GRAY_500 }}>
                     {formatDateLabel(date)}
                   </span>
                   <div className="flex-1 border-t border-solid" style={{ borderColor: GRAY_200 }} />
                   <span className="text-[11px] font-bold uppercase tracking-[0.14em] shrink-0" style={{ color: GRAY_500 }}>
-                    {dateOrders.length} order{dateOrders.length !== 1 ? 's' : ''}
+                    {dateOrders.length} {dateOrders.length !== 1 ? profile.nouns.orders : profile.nouns.order}
                   </span>
                 </div>
 
-                {/* Order rows — daisyUI list (list / list-row / list-col-grow) */}
-                <ul className="list">
+                {/* Column headings */}
+                <div
+                  className="grid items-center gap-3 px-2 pb-2 border-b border-solid text-[11px] font-bold uppercase tracking-[0.06em]"
+                  style={{ gridTemplateColumns: COLS, borderColor: GRAY_200, color: GRAY_500 }}
+                >
+                  <span>{profile.itemLabel}</span>
+                  <span>Order</span>
+                  <span>Time</span>
+                  <span>Took</span>
+                  {showPhotos && <span title="Photos taken" className="flex items-center"><CameraIcon /><span className="sr-only">Photos</span></span>}
+                  <span>Status</span>
+                  <span />
+                </div>
+
+                <div className="flex flex-col">
                   {visibleOrders.map(order => {
                     const isOpen = expandedId === order.id
+                    const photos = imageCount(order)
                     return (
-                      <li
+                      <div
                         key={order.id}
                         id={`order-${order.id}`}
-                        className="list-row cursor-pointer transition-colors hover:bg-[#f9fafb]"
+                        className="rounded-lg"
                         style={isOpen ? { background: 'white', boxShadow: `inset 0 0 0 1px ${TEAL_200}` } : undefined}
-                        onClick={() => setExpandedId(isOpen ? null : order.id)}
                       >
-                        <StatusIcon status={order.status} />
-                        <div className="list-col-grow min-w-0">
-                          <div className="text-[13px] font-semibold" style={{ color: GRAY_900 }}>
-                            {order.item}
-                          </div>
-                          <div className="text-[11px]" style={{ color: GRAY_400 }}>
-                            Order #{order.order_number || order.id}
-                          </div>
-                          <div className="text-[11px] mt-0.5" style={{ color: GRAY_500 }}>
-                            Took {order.robot_seconds}s · {order.status === 'success' || order.status === 'ok' ? 'handed over' : 'ended'} at {formatTime(order.completed_at || order.started_at)}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <StatusPill status={order.status} failure={order.failure} />
-                          {hasImages(order) && (
-                            <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded" style={{ background: 'rgba(244,63,94,0.08)' }}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={ROSE_500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
-                                <circle cx="12" cy="13" r="4" />
-                              </svg>
-                              <span className="text-[10px] font-semibold" style={{ color: ROSE_500 }}>{imageCount(order)}</span>
-                            </span>
-                          )}
+                        <button
+                          type="button"
+                          aria-expanded={isOpen}
+                          onClick={() => setExpandedId(isOpen ? null : order.id)}
+                          className="grid items-center gap-3 w-full text-left border-0 bg-transparent px-2 py-[9px] rounded-lg cursor-pointer hover:bg-[#f5f6f8]"
+                          style={{ gridTemplateColumns: COLS }}
+                        >
+                          <span className="flex items-center gap-2 min-w-0 text-[13px] font-semibold" style={{ color: GRAY_900 }}>
+                            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: STATUS_DOT[order.status] || GRAY_400 }} />
+                            <span className="truncate">{profile.itemText(order)}</span>
+                          </span>
+                          <span className="text-[12px] font-mono" style={{ color: GRAY_500 }}>#{order.order_number || order.id}</span>
+                          <span className="text-[12px] font-mono whitespace-nowrap" style={{ color: GRAY_500 }}>{formatTime(order.completed_at || order.started_at)}</span>
+                          <span className="text-[12px] font-mono" style={{ color: GRAY_500 }}>{order.robot_seconds}s</span>
+                          {showPhotos && <span className="flex items-center">
+                            {photos > 0 && (
+                              <span
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded"
+                                style={{ background: 'rgba(244,63,94,0.08)', color: ROSE_500 }}
+                                title={`${photos} photo${photos === 1 ? '' : 's'} taken`}
+                              >
+                                <CameraIcon />
+                                <span className="text-[11px] font-semibold">{photos}</span>
+                              </span>
+                            )}
+                          </span>}
+                          <span><StatusPill status={order.status} failure={order.failure} profile={profile} /></span>
                           <svg
                             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GRAY_400} strokeWidth="2"
-                            style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease' }}
+                            style={{ transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s ease' }} aria-hidden
                           >
                             <polyline points="9 18 15 12 9 6" />
                           </svg>
-                        </div>
-                        {isOpen && (
-                          <div className="list-col-wrap" onClick={e => e.stopPropagation()}>
-                            <ExpandedDetail order={order} onAskRobi={onAskRobi} />
-                          </div>
-                        )}
-                      </li>
+                        </button>
+                        {isOpen && <ExpandedDetail order={order} history={history} onAskRobi={onAskRobi} />}
+                      </div>
                     )
                   })}
-                </ul>
+                </div>
 
                 {/* Pagination */}
                 {!isExpanded && remaining > 0 && (

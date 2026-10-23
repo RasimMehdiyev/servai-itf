@@ -111,7 +111,9 @@ function aria(title, d, w, f) {
  * @param {{ rows: {t:string,s:string}[], from:string, to:string, metric?: 'orders'|'rate' }} args
  *   rows: orders with start time `t` (ISO) and status `s`; from/to: local YYYY-MM-DD, inclusive
  */
-export function buildHeatmap({ rows, from, to, metric = 'orders' }) {
+export const DEFAULT_LABELS = { delivered: 'Delivered', warning: 'With warnings', failed: 'Couldn’t deliver' }
+
+export function buildHeatmap({ rows, from, to, metric = 'orders', labels = DEFAULT_LABELS }) {
   const nDays = Math.max(1, daysBetween(from, to))
   const inRange = []
   for (const r of rows || []) {
@@ -140,9 +142,9 @@ export function buildHeatmap({ rows, from, to, metric = 'orders' }) {
     for (const r of inRange) counts[r.hour - start][r.o]++
     hours.forEach((h, i) => set(`h:${h}`, `${p2(h)}:00–${p2(h + 1)}:00`, counts[i][0], counts[i][1], counts[i][2]))
     const defs = [
-      ['Delivered', '#10b981', 0, RAMPS.green],
-      ['With warnings', '#ca8a04', 1, RAMPS.amber],
-      ['Couldn’t deliver', '#f43f5e', 2, RAMPS.rose4],
+      [labels.delivered, '#10b981', 0, RAMPS.green],
+      [labels.warning, '#ca8a04', 1, RAMPS.amber],
+      [labels.failed, '#f43f5e', 2, RAMPS.rose4],
     ]
     const outRows = defs.map(([label, dot, idx, ramp]) => {
       let tot = 0
@@ -260,7 +262,7 @@ export function buildHeatmap({ rows, from, to, metric = 'orders' }) {
 }
 
 /** Readout for one cell (hover/selected/best). */
-export function readout(model, key, metric) {
+export function readout(model, key, metric, labels = DEFAULT_LABELS) {
   const a = model.info[key] || { title: '', d: 0, w: 0, f: 0, n: 0 }
   const n = a.n
   let big, sub, note = ''
@@ -282,9 +284,9 @@ export function readout(model, key, metric) {
     note,
     bar: bar.length ? bar : [{ n: 1, bg: '#e5e7eb' }],
     rows: [
-      { label: 'Delivered', color: '#10b981', count: a.d },
-      { label: 'With warnings', color: '#ca8a04', count: a.w },
-      { label: 'Couldn’t deliver', color: '#f43f5e', count: a.f },
+      { label: labels.delivered, color: '#10b981', count: a.d },
+      { label: labels.warning, color: '#ca8a04', count: a.w },
+      { label: labels.failed, color: '#f43f5e', count: a.f },
     ],
   }
 }

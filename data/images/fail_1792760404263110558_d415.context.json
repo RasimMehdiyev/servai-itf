@@ -1,0 +1,63 @@
+{
+  "imageId": "fail_1792760404263110558_d415",
+  "imageReceivedAt": "2026-10-23T13:00:04.169Z",
+  "windowFrom": "2026-10-23T12:59:34.169Z",
+  "windowTo": "2026-10-23T13:00:09.169Z",
+  "caption": "",
+  "events": [
+    {
+      "serverTs": "2026-10-23T12:59:37.961Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "BEGIN",
+      "detail": "operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:38.673Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "SUCCESS",
+      "detail": "waypoint 'critic-holding-item-check-waypoint' recorded from live pose",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:42.276Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "BEGIN",
+      "detail": "operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:42.983Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "SUCCESS",
+      "detail": "waypoint 'critic-holding-item-check-waypoint' recorded from live pose",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:00.522Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "ARM_GATE",
+      "status": "SUCCESS",
+      "detail": "operator-goto: ARM gate latched — GO tap taken as the operator's resume decision, motion permitted",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:04.164Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

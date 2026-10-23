@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react'
 import SmartCaption from '../../../components/ui/SmartCaption'
 import useRagChat from '../../../hooks/useRagChat'
+import { useRobot } from '../../../robots/RobotContext'
 
-const SUGGESTIONS = [
-  'How did ROBI perform this week?',
-  'Which orders took the longest?',
-  'Were there any failures today?',
+const suggestionsFor = (profile) => [
+  `How did ${profile.assistantName} perform this week?`,
+  `Which ${profile.nouns.orders} took the longest?`,
+  profile.id === 'bar' ? 'Did the rack run out of bottles today?' : 'Were there any failures today?',
 ]
 
 export default function ChatPanel({ open, onClose, onCitationClick, prefill }) {
   const { messages, loading, send } = useRagChat()
+  const { profile } = useRobot()
+  const SUGGESTIONS = suggestionsFor(profile)
   const [input, setInput] = useState('')
   const bottomRef = useRef(null)
   const prefillSent = useRef(null)
@@ -48,7 +51,7 @@ export default function ChatPanel({ open, onClose, onCitationClick, prefill }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-solid" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full" style={{ background: 'var(--teal, #14b8a6)' }} />
-          <span className="text-[15px] font-semibold" style={{ color: 'var(--text-primary)' }}>Ask ROBI</span>
+          <span className="text-[15px] font-semibold" style={{ color: 'var(--text-primary)' }}>Ask {profile.assistantName}</span>
         </div>
         <button
           onClick={onClose}
@@ -69,8 +72,8 @@ export default function ChatPanel({ open, onClose, onCitationClick, prefill }) {
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
-              <p className="text-[14px] font-medium" style={{ color: 'var(--text-primary)' }}>Hi! I'm ROBI's assistant.</p>
-              <p className="text-[13px]" style={{ color: 'var(--text-tertiary)' }}>Ask me about orders, performance, or failures.</p>
+              <p className="text-[14px] font-medium" style={{ color: 'var(--text-primary)' }}>Hi! I'm the {profile.assistantName} assistant.</p>
+              <p className="text-[13px]" style={{ color: 'var(--text-tertiary)' }}>Ask me about {profile.nouns.orders}, performance, or failures.</p>
             </div>
             <div className="flex flex-col gap-2">
               {SUGGESTIONS.map((s, i) => (

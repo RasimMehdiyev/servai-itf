@@ -23,9 +23,33 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 
-const PORT = parseInt(process.env.WS_PORT || '8765', 10)
+// Settings for the relay may live in .env (ROBOT_WS, ROBOT_WS_BAR, WS_PORT, …); real environment
+// variables win. A generic ROBOT_WS in .env belongs to the default robot only, so a second relay
+// does not end up pointed at the first robot — use ROBOT_WS_<ID> (e.g. ROBOT_WS_BAR) for the others.
+try {
+  const early = process.env.ROBOT || 'grocery'
+  for (const l of fs.readFileSync(path.join(__dirname, '.env'), 'utf8').split(/\r?\n/)) {
+    const m = l.match(/^\s*((?:ROBOT|WS_|RAW_LOG|REPLAY|LIVE_)[A-Z0-9_]*)\s*=\s*(.*?)\s*$/)
+    if (!m || process.env[m[1]] !== undefined) continue
+    if (m[1] === 'ROBOT_WS' && early !== 'grocery') continue
+    process.env[m[1]] = m[2].replace(/^["']|["']$/g, '')
+  }
+} catch { /* no .env: fine */ }
+
+// One relay per robot: ROBOT=grocery (default) | bar. Each robot has its own port, orders file
+// and replay state (src/robots/robots.json), and its own log dialect (src/robots/serverProfile.cjs).
+const ROBOTS = require('./src/robots/robots.json')
+const ROBOT_ID = process.env.ROBOT || ROBOTS.default
+const ROBOT = ROBOTS.robots[ROBOT_ID]
+if (!ROBOT) {
+  console.error(`Unknown ROBOT '${ROBOT_ID}'. Known robots: ${Object.keys(ROBOTS.robots).join(', ')}`)
+  process.exit(1)
+}
+const PROFILE = require('./src/robots/serverProfile.cjs')(ROBOT_ID)
+
+const PORT = parseInt(process.env.WS_PORT || String(ROBOT.port), 10)
 const REPLAY_SPEED = parseFloat(process.env.REPLAY_SPEED || '1.0')
-const ROBOT_WS = process.env.ROBOT_WS || 'ws://olifant.local:7878'
+const ROBOT_WS = process.env[`ROBOT_WS_${ROBOT_ID.toUpperCase()}`] || process.env.ROBOT_WS || ROBOT.robotWs
 const LIVE_RECONNECT_ATTEMPTS = parseInt(process.env.LIVE_RETRIES || '5', 10)
 const ROBOT_PROBE_INTERVAL = 30_000  // check for robot every 30s while in static mode
 // main-live is the real-connection-only branch: never replay grocery_logs.txt.
@@ -35,13 +59,39 @@ const ROBOT_PROBE_INTERVAL = 30_000  // check for robot every 30s while in stati
 // DATA_DIR so the Live page can be checked against recorded robot logs without
 // touching the real orders. The default stays real-connection-only.
 const ENABLE_STATIC_REPLAY = process.env.STATIC_REPLAY === '1'
-const LOG_FILE = process.env.REPLAY_LOG || path.join(__dirname, 'grocery_logs.txt')
+const LOG_FILE = process.env.REPLAY_LOG || path.join(__dirname, ROBOT.replayLog)
 const ORDERS_DIR = process.env.DATA_DIR || path.join(__dirname, 'data')
-const ORDERS_FILE = path.join(ORDERS_DIR, 'orders.json')
-const STATE_FILE = path.join(ORDERS_DIR, 'replay-state.json')
+const ORDERS_FILE = path.join(ORDERS_DIR, ROBOT.ordersFile)
+const STATE_FILE = path.join(ORDERS_DIR, ROBOT.stateFile)
+
+// ── Real data and replay data never share a folder ────────────────────────────────────────────────────
+// A live relay writes the robot's real orders; a replay writes demo orders. If both ever used one orders file the
+// real history would fill up with demo orders. So: a replay refuses the real data folder (and any folder a live
+// relay has used), a live relay refuses data/replay/ (and any folder a replay has used). Each marks its folder.
+{
+  const dir = path.resolve(ORDERS_DIR)
+  const realDir = path.resolve(__dirname, 'data')
+  const replayRoot = path.join(realDir, 'replay')
+  const liveMark = path.join(dir, '.live-data'), replayMark = path.join(dir, '.replay-data')
+  const stop = (why) => { console.error(`\n  Refusing to start: ${why}\n`); process.exit(1) }
+  if (process.env.STATIC_REPLAY === '1') {
+    if (dir === realDir) stop('a replay would write demo orders into the real orders file (data/). Start it with npm run replay, which uses data/replay/<robot>/, or set DATA_DIR to another folder.')
+    if (fs.existsSync(liveMark)) stop(`${dir} holds a live robot's orders; a replay must use a folder of its own.`)
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(replayMark, 'demo orders from a replayed log: never mix with the robot\'s real orders\n')
+  } else {
+    if (dir === replayRoot || dir.startsWith(replayRoot + path.sep)) stop(`${dir} is a replay folder; a live relay must not write the robot's real orders there.`)
+    if (fs.existsSync(replayMark)) stop(`${dir} holds replayed (demo) orders; a live relay must use a folder of its own, normally data/.`)
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(liveMark, 'the robot\'s real orders: a replay must never write here\n')
+  }
+}
 const LOOP_PAUSE = 5000
 const HEARTBEAT_INTERVAL = 4000
-const MAX_EVENT_DELAY = 5000
+// Longest pause between two replayed events. The default squeezes long gaps for quick demos;
+// REPLAY_MAX_DELAY=<ms> (scripts/dev-replay.cjs sets it very high) keeps the log's own timing.
+const SKIP_IDLE = process.env.REPLAY_SKIP_IDLE === '1'
+const MAX_EVENT_DELAY = parseInt(process.env.REPLAY_MAX_DELAY || '5000', 10)
 
 const CAPTION_CACHE_DIR = path.join(ORDERS_DIR, 'cache', 'captions')
 const VISION_CACHE_DIR = path.join(ORDERS_DIR, 'cache', 'vision')
@@ -74,22 +124,23 @@ function readLatestCaption(surfacePrefix) {
 let sourceMode = 'waiting'
 
 // ── Valid stock items (anything else is treated as accidental input) ─────────
-const VALID_STOCK = ['pen', 'ball', 't-shirt', 'water bottle', 'phone holder', 'towel', 'sock', 'coffee mug']
+const VALID_STOCK = ['pen', 'ball', 't-shirt', 'water bottle', 'phone holder', 'towel', 'sock', 'coffee mug', 'saddle cover', 'notebook', 'umbrella']
 function isValidItem(name) {
+  if (PROFILE.isValidItem) return PROFILE.isValidItem(name)
   const n = (name || '').toLowerCase().trim()
   return VALID_STOCK.some(v => n.includes(v) || v.includes(n))
 }
 
 // ── Phase mapping (mirrors src/lib/phases.js) ───────────────────────────────
 
-const PHASES = [
+const PHASES = PROFILE.phases || [
   { phase: 'scene_scan',    friendly_name: 'Scanning the scene',  components: ['SCENE_SCAN'] },
   { phase: 'searching',     friendly_name: 'Searching for item',  components: ['SEARCH_DETECT'] },
   { phase: 'anchor_select', friendly_name: 'Selecting target',    components: ['ANCHOR_SELECT'] },
   { phase: 'closeup_move',  friendly_name: 'Moving closer',       components: ['CLOSEUP_MOVE'] },
   { phase: 'analyzing',     friendly_name: 'Analyzing the grasp', components: ['CLOSEUP_MOLMO', 'CLOSEUP_REFINE', 'CLOSEUP_LIFT', 'SYNTHESISE', 'VISUALISE'] },
   { phase: 'grasping',      friendly_name: 'Picking up',          components: ['EXECUTE_GRASP', 'CLOSEUP_RETRY'] },
-  { phase: 'bringing_over', friendly_name: 'Bringing it over',    components: ['HANDOVER_TRANSIT', 'HANDOVER_MOVE'] },
+  { phase: 'bringing_over', friendly_name: 'Bringing it over',    components: ['ITEM_CHECK', 'HANDOVER_TRANSIT', 'HANDOVER_MOVE'] },
   { phase: 'handing_over',  friendly_name: 'Handing over',        components: ['HANDOVER_RELEASE'] },
   { phase: 'returning',     friendly_name: 'Returning',           components: ['HANDOVER_RETURN', 'RETURN_HOME'] },
 ]
@@ -100,7 +151,10 @@ for (const p of PHASES) for (const c of p.components) _compToPhase[c] = p
 // ── Failure classification ───────────────────────────────────────────────────
 
 function classifyFailure(detail) {
+  if (PROFILE.classifyFailure) return PROFILE.classifyFailure(detail)
   const d = (detail || '').toLowerCase()
+  if (d.includes('arm controller') || d.includes('arm refuses') || d.includes('arm could not be recovered') || d.includes('arm is faulted')) return 'arm_fault'
+  if (d.includes('AI judge') && (d.includes('not holding') || d.includes('no item'))) return 'item_not_held'
   if (d.includes('search exhausted') || d.includes('not found')) return 'search_exhausted'
   if (d.includes('reachability') || d.includes('plan_grasp failed') || d.includes('collision')) return 'reachability_failed'
   if (d.includes('no_valid_depth') || d.includes('no valid depth')) return 'no_valid_depth'
@@ -115,6 +169,7 @@ function classifyFailure(detail) {
 }
 
 function classifyFailureFriendly(detail) {
+  if (PROFILE.classifyFailureFriendly) return PROFILE.classifyFailureFriendly(detail)
   const map = {
     search_exhausted: 'Item not found',
     reachability_failed: 'Path blocked (collision)',
@@ -126,6 +181,8 @@ function classifyFailureFriendly(detail) {
     timeout: 'Timeout',
     operator_abort: 'Operator aborted',
     bridge_fault: 'Hardware fault',
+    arm_fault: 'Arm fault',
+    item_not_held: 'Item not in the gripper',
     unknown: 'Unknown failure',
   }
   return map[classifyFailure(detail)] || 'Unknown failure'
@@ -168,15 +225,54 @@ function groupEventsIntoPhases(rawSteps) {
 
 if (!fs.existsSync(ORDERS_DIR)) fs.mkdirSync(ORDERS_DIR, { recursive: true })
 
+// orders.json is shared with the RAG server, which reads it at any moment. Two rules keep
+// both sides honest: writes are atomic (temp file + rename), and a read that fails is
+// retried and never mistaken for "no orders" — an empty read followed by a write would
+// wipe the whole history.
+let lastGoodOrders = []
+const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
+
+function readOrdersStrict() {
+  if (!fs.existsSync(ORDERS_FILE)) return { orders: [], ok: true }
+  let lastErr = null
+  for (let i = 0; i < 5; i++) {
+    try {
+      const orders = JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf8'))
+      lastGoodOrders = orders
+      return { orders, ok: true }
+    } catch (err) {
+      lastErr = err
+      sleepSync(50)
+    }
+  }
+  console.error(`  orders.json unreadable after retries (${lastErr && lastErr.message}); using the last good copy (${lastGoodOrders.length} orders)`)
+  return { orders: lastGoodOrders, ok: false }
+}
+
 function readOrders() {
-  try { return JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf8')) }
-  catch { return [] }
+  return readOrdersStrict().orders
+}
+
+function writeOrdersAtomic(orders) {
+  const tmp = ORDERS_FILE + '.tmp'
+  const body = JSON.stringify(orders, null, 2)
+  fs.writeFileSync(tmp, body)
+  for (let i = 0; i < 5; i++) {
+    try { fs.renameSync(tmp, ORDERS_FILE); return } catch { sleepSync(40) }   // Windows: a reader may hold the file
+  }
+  fs.writeFileSync(ORDERS_FILE, body)
+  try { fs.unlinkSync(tmp) } catch {}
 }
 
 function writeOrder(entry) {
-  const orders = readOrders()
+  const { orders, ok } = readOrdersStrict()
+  if (!ok) {
+    console.error(`  NOT saving order ${entry && entry.id}: orders.json could not be read, and writing now would overwrite the history`)
+    return
+  }
   orders.push(entry)
-  fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2))
+  writeOrdersAtomic(orders)
+  lastGoodOrders = orders
 }
 
 function nextOrderId() {
@@ -187,12 +283,157 @@ function nextOrderId() {
 
 // ── Single-line parser (used by both file replay and live stream) ───────────
 
-const _parserState = { lastTimestamp: null }
+// Per-order facts from the log (where the item was, every grasp attempt, the robot's settings): saved as order.run_details
+const runDetails = require('./src/robots/runDetails.cjs').create()
+function announceRunDetails(evt) {
+  const details = runDetails.snapshot()
+  if (!details) return
+  const msg = { type: 'run_details', ts: evt.ts, details }
+  cycleHistory = cycleHistory.filter(e => e.type !== 'run_details')
+  cycleHistory.push(msg)
+  broadcast(msg)
+}
+
+const _parserState = { lastTimestamp: null, tzOffsetMs: null, criticPending: null, criticPhase: null }
+
+// ── AI Judge ──────────────────────────────────────────────────────────────
+// The critic is a separate service: an external camera and a vision-language model that judge the
+// scene as a third person. It logs through loguru ("2026-10-21 17:11:56.022 | DEBUG | __main__:…"),
+// in the machine's local time, while the orchestrator logs UTC. The offset between the two is
+// learned from the first judge line that follows an orchestrator line (they are a whole number of
+// half hours apart), so judge events land on the same clock as everything else.
+
+const CRITIC_WHERE = /__main__:(_run_fast_check|_process_fast_checks|_update_state|_drain_state|_start_recording|_stop_recording|run|clear|__init__):\d+/
+
+const CRITIC_QUESTIONS = {
+  not_holding_target_item: 'Is the robot holding the item?',
+}
+
+function criticIso(date, time) {
+  const local = Date.parse(`${date}T${time}Z`)
+  const ref = Date.parse(_parserState.lastTimestamp)
+  if (!Number.isFinite(local) || !Number.isFinite(ref)) return null
+  const HALF_HOUR = 30 * 60 * 1000
+  if (_parserState.tzOffsetMs == null || Math.abs(local - _parserState.tzOffsetMs - ref) > 10 * 60 * 1000) {
+    _parserState.tzOffsetMs = Math.round((local - ref) / HALF_HOUR) * HALF_HOUR
+  }
+  return new Date(local - _parserState.tzOffsetMs).toISOString()
+}
+
+function parseCriticLine(line, tag) {
+  const st = _parserState
+  const lg = line.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}\.\d{3})\s*\|\s*(\w+)\s*\|\s*([^\s|]+)\s+-\s+(.*)$/)
+  if (lg) {
+    if (tag !== 'critic-service' && !CRITIC_WHERE.test(lg[4])) return undefined
+    const level = lg[3]
+    const msg = lg[5].trim()
+    const ts = criticIso(lg[1], lg[2])
+    if (!ts) return null
+    const ev = (kind, fields) => ({ ts, type: 'critic', kind, origin: 'critic-service', ...fields })
+
+    let m = msg.match(/^Fast check: `([^`]+)` with frames \[(.*?)\] and latency=([\d.]+)s/)
+    if (m) {
+      st.criticPending = { check: m[1], looks: (m[2].match(/'/g) || []).length / 2, latency: parseFloat(m[3]), ts, question: null }
+      return null
+    }
+    m = msg.match(/^> Active check: `([^`]+)` for phase `([^`]+)` with ROI config: (\{.*\})/) || msg.match(/Active check: `([^`]+)` for phase `([^`]+)` with ROI config: (\{.*\})/)
+    if (m) {
+      const num = (k) => { const x = m[3].match(new RegExp(`'${k}': ([\\d.]+)`)); return x ? parseFloat(x[1]) : null }
+      return ev('roi', { check: m[1], phase: m[2], roi: { x0: num('x0') ?? 0, x1: num('x1') ?? 1, y0: num('y0') ?? 0, y1: num('y1') ?? 1 }, detail: `watching ${m[1]} in ${m[2]}` })
+    }
+    m = msg.match(/^Received event: (\{.*\})$/)
+    if (m) {
+      const ph = m[1].match(/'phase': '([^']+)'/)
+      if (!ph || ph[1] === st.criticPhase) return null
+      st.criticPhase = ph[1]
+      const target = m[1].match(/'target_item': '([^']+)'/)
+      return ev('phase', { phase: ph[1], target: target ? target[1] : null, detail: ph[1] })
+    }
+    if (/\balert(ed|s)?\b/i.test(msg) && !/ready to send alerts/i.test(msg) && (/^(WARNING|ERROR|CRITICAL)$/.test(level) || /alert\s*[:=]|sending alert|sent alert|ALERT/.test(msg))) {
+      return ev('alert', { text: msg.slice(0, 200), detail: msg.slice(0, 200) })
+    }
+    return null
+  }
+
+  // continuation lines of a fast check: the prompt dump, then the answer
+  const p = st.criticPending
+  if (p) {
+    if (/^\[\{'role'/.test(line)) {
+      const texts = [...line.matchAll(/'text':\s*(?:'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g)].map(x => x[1] ?? x[2])
+      const user = texts[texts.length - 1] || ''
+      const q = user.match(/^[^?]*\?/)
+      p.question = q ? q[0].trim() : null
+      return null
+    }
+    const a = line.match(/^>\s*`(YES|NO)`/i)
+    if (a) {
+      st.criticPending = null
+      return {
+        ts: p.ts, type: 'critic', kind: 'check', origin: 'critic-service',
+        check: p.check, question: p.question || CRITIC_QUESTIONS[p.check] || p.check.replace(/_/g, ' ') + '?',
+        answer: a[1].toUpperCase(), latency: p.latency, looks: p.looks,
+        detail: `${p.question || p.check} -> ${a[1].toUpperCase()} (${p.latency}s)`,
+      }
+    }
+  }
+  if (tag === 'critic-service') return null
+  return undefined
+}
+
+// ── Arm controller faults ────────────────────────────────────────────────────
+// These lines carry no timestamp and no SYSTEM/WORKFLOW marker. They explain why a handover
+// ended in "gripper open failed: no result": the arm's controller had faulted.
+
+const ARM_SAYS = {
+  fault: 'The arm controller reported a system fault.',
+  refuses: 'The arm refuses to move: its controller says motion is not possible. Someone has to check that the drives are powered and look for active alarms on the teach pendant.',
+  ladder: 'Automatic recovery of the arm did not work; trying a full reconnect.',
+  giveup: 'The arm could not be recovered automatically. It stays stopped until a person restarts it.',
+  bringup: (a, b) => `Restarting the arm failed (attempt ${a} of ${b}).`,
+  link: 'The link to the arm controller is down.',
+}
+
+function parseArmLine(line) {
+  const r = parseArmLineRaw(line)
+  if (!r) return r
+  // the controller repeats itself in bursts (every retry logs the same few lines): say each thing once
+  const st = _parserState
+  if (st.armSeen?.ts !== r.ts) st.armSeen = { ts: r.ts, said: new Set() }
+  if (st.armSeen.said.has(r.plain)) return null
+  st.armSeen.said.add(r.plain)
+  return r
+}
+
+function parseArmLineRaw(line) {
+  const fault = (plain) => ({
+    ts: _parserState.lastTimestamp, type: 'system_fault', source: 'arm', status: 'FAIL',
+    severity: 'red', reason: 'arm_fault', plain, detail: line.slice(0, 240), origin: 'ARM:FAULT',
+  })
+  let m
+  if (/FRC_SystemFault/.test(line)) return fault(ARM_SAYS.fault)
+  if (/^FanucDriverExecutor: FAULTED/.test(line)) return fault(ARM_SAYS.refuses)
+  if (/^FanucDriverExecutor: recovery FAILED/.test(line) || /^airo_fanuc: cold reconnect escalation failed/.test(line)) return fault(ARM_SAYS.giveup)
+  if (/^airo_fanuc: recovery ladder/.test(line)) return fault(ARM_SAYS.ladder)
+  if ((m = line.match(/^airo_fanuc: bring-up attempt (\d+)\/(\d+) failed/))) return fault(ARM_SAYS.bringup(m[1], m[2]))
+  if (/^RMI: (session down|transport error)/.test(line) || /^airo_fanuc: best-effort FRC_Continue/.test(line)) return fault(ARM_SAYS.link)
+  return undefined
+}
 
 function parseLine(rawLine) {
-  const line = rawLine.replace(/\r$/, '')
+  // Aggregated logs tag each line with its process: "[orchestrator] 2026-…". Strip the tag (it has no
+  // spaces inside the brackets, so the interactive "[cycle 1] …" / "[stage 1a …" lines are left alone).
+  const tagMatch = rawLine.match(/^\[([\w-]+)\]\s+/)
+  const tag = tagMatch ? tagMatch[1] : null
+  const line = rawLine.replace(/\r$/, '').replace(/^\[[\w-]+\]\s+/, '')
 
   if (!line.trim()) return null
+
+  // The AI Judge (critic service) and the arm controller write plain log lines, not
+  // "ts | SYSTEM | …" lines. undefined = not one of theirs, null = theirs but nothing to report.
+  const extra = parseCriticLine(line, tag)
+  if (extra !== undefined) return extra
+  const arm = parseArmLine(line)
+  if (arm !== undefined) return arm
   if (line.startsWith('Traceback') || line.startsWith('  File ') || line.startsWith('    ')) return null
   if (line.startsWith('/home/') || line.startsWith('Loading checkpoint')
       || line.match(/^\d+%\|/) || line.startsWith('(viser)')
@@ -204,7 +445,7 @@ function parseLine(rawLine) {
   if (line.match(/^\[stage \d+/) || line.match(/^\[search →/) || line.match(/^\[return-home →/)
       || line.match(/^\[goto →/) || line.match(/^\[cycle \d+\] (known|enter)/)
       || line.match(/execute\? \[y\/N\]/) || line.match(/\?\s*\[y\/N\]/)
-      || line.match(/close gripper\?/) || line.match(/release object/)
+      || line.match(/close gripper\?\s*\[/)
       || line.match(/^\[cycle \d+\] object>/) || line.match(/^\[cycle \d+\] '/)
       || line.match(/^  (import|warnings|torch)/)) return null
   if (line.startsWith('# connected to') || line.startsWith('uv run ')) return null
@@ -257,9 +498,13 @@ function parseLine(rawLine) {
     const status = structured[5]
     const detail = structured[6].trim()
 
+    // The bartender's cycles are "drink cycle N". A grocery relay that is pointed at the bar's log by
+    // mistake must not start an order for them (and the bar's profile does the same for ours).
+    if (component === 'CYCLE' && ROBOT_ID !== 'bar' && /^drink cycle/i.test(detail)) return null
+
     if (component === 'CYCLE' && status === 'BEGIN') {
       const m = detail.match(/cycle #?(\d+)/)
-      return { ts: _parserState.lastTimestamp, type: 'cycle_start', cycleNum: m ? parseInt(m[1]) : 0 }
+      return { ts: _parserState.lastTimestamp, type: 'cycle_start', cycleNum: m ? parseInt(m[1]) : 0, detail }
     }
     if (component === 'CYCLE' && (status === 'SUCCESS' || status === 'FAIL')) {
       return { ts: _parserState.lastTimestamp, type: 'cycle_end', outcome: status, detail }
@@ -308,11 +553,20 @@ function parseLine(rawLine) {
 
     if (component === 'GRIPPER') {
       const isOpen = action === 'OPEN'
+      const ok = status === 'SUCCESS'
       return {
-        ts: _parserState.lastTimestamp, type: 'gripper', success: status === 'SUCCESS',
-        message: isOpen ? 'Gripper opened' : 'Gripper closed',
+        ts: _parserState.lastTimestamp, type: 'gripper', success: ok,
+        message: ok ? (isOpen ? 'Gripper opened' : 'Gripper closed') : (isOpen ? 'Gripper failed to open' : 'Gripper failed to close'),
         raw: detail,
       }
+    }
+
+    // The handover: did the robot find a person to hold the item out to? (EXECUTOR:PRESENT lines)
+    if (component === 'EXECUTOR' && action === 'PRESENT') {
+      const person = /no person seen|no recipient/i.test(detail) ? false
+        : /presenting toward|presented toward|re-identified/i.test(detail) ? true : null
+      if (person === null) return { ts: _parserState.lastTimestamp, type: 'system_event', component, action, status, text: detail }
+      return { ts: _parserState.lastTimestamp, type: 'handover', kind: 'present', person, status, detail }
     }
 
     if (component === 'EXECUTOR' && action === 'TRAJECTORY') {
@@ -321,6 +575,13 @@ function parseLine(rawLine) {
 
     if (component === 'EXECUTOR' && action === 'SHUTDOWN') {
       return { ts: _parserState.lastTimestamp, type: 'executor_shutdown', detail }
+    }
+
+    if (component === 'EXECUTOR' && action === 'FAULT_RECOVER' && status === 'FAIL') {
+      return {
+        ts: _parserState.lastTimestamp, type: 'system_fault', source: 'arm', status: 'FAIL', severity: 'red', reason: 'arm_fault',
+        plain: ARM_SAYS.giveup, detail: detail.slice(0, 240), origin: 'EXECUTOR:FAULT_RECOVER',
+      }
     }
 
     if (component === 'EXECUTOR' && action === 'FAULT') {
@@ -385,14 +646,33 @@ function parseLine(rawLine) {
 
 // ── Batch file parser (wraps parseLine) ─────────────────────────────────────
 
+// "critic: holding 'coffee mug' (no alert in 2.5s) → handover" is the orchestrator reporting what the
+// AI Judge decided, so it also becomes a judge event next to the ordinary phase event.
+function itemCheckVerdict(e) {
+  const detail = e.detail || ''
+  const out = { ts: e.ts, type: 'critic', kind: 'verdict', topic: 'holding', status: e.status, origin: 'ITEM_CHECK', detail, holding: null, item: null, quiet: null }
+  const held = detail.match(/holding '([^']+)'/)
+  const quiet = detail.match(/no alert in ([\d.]+)s/)
+  if (held) out.item = held[1]
+  if (quiet) out.quiet = parseFloat(quiet[1])
+  if (e.status === 'SUCCESS') out.holding = true
+  else if (e.status === 'FAIL') out.holding = false
+  if (e.status === 'BEGIN') { const w = detail.match(/waypoint '([^']+)'/); out.waypoint = w ? w[1] : null }
+  return out
+}
+
+function normalizeEvents(evt) {
+  const events = PROFILE.normalize ? PROFILE.normalize(evt) : (evt ? [evt] : [])
+  return events.flatMap(e => (e && e.type === 'phase' && e.component === 'ITEM_CHECK') ? [e, itemCheckVerdict(e)] : [e])
+}
+
 function parseLog(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8').split(/\r?\n/)
   const events = []
   _parserState.lastTimestamp = null
 
   for (const rawLine of raw) {
-    const evt = parseLine(rawLine)
-    if (evt) events.push(evt)
+    for (const evt of normalizeEvents(parseLine(rawLine))) events.push(evt)
   }
 
   return events
@@ -419,7 +699,11 @@ function computeDelays(events) {
     const prev = tsToMs(events[i - 1].ts)
     const curr = tsToMs(events[i].ts)
     if (prev !== null && curr !== null && curr > prev) {
-      delays.push(Math.min(curr - prev, MAX_EVENT_DELAY) / REPLAY_SPEED)
+      let d = Math.min(curr - prev, MAX_EVENT_DELAY)
+      // REPLAY_SKIP_IDLE=1: the robot idling between orders ("idle behaviour" ticks, minutes of them) plays in
+      // a blink; the time inside an order keeps the log's own pace
+      if (SKIP_IDLE && (events[i].type === 'idle_tick' || events[i - 1].type === 'idle_tick')) d = Math.min(d, 300)
+      delays.push(d / REPLAY_SPEED)
     } else {
       delays.push(50 / REPLAY_SPEED)
     }
@@ -481,13 +765,41 @@ function findExistingImage(imageId) {
   return null
 }
 
+function looksLikeImage(buf) {
+  return buf.length > 200 && (
+    (buf[0] === 0xFF && buf[1] === 0xD8) ||
+    (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) ||
+    (buf[0] === 0x42 && buf[1] === 0x4D))
+}
+
+// A replay of a saved log has no picture data ("<base64 omitted …>", "<jpeg 80 kB>"). The picture is then taken
+// from the pictures the robot saved earlier in the repository's own data/images folder if it is there, and
+// otherwise a sample picture stands in for it, so a replay still shows what the dashboard does with pictures.
+function replacementImage(imageId) {
+  const shared = path.join(__dirname, 'data', 'images')
+  if (path.resolve(shared) !== path.resolve(IMAGES_DIR)) {
+    for (const ext of ['.jpg', '.jpeg', '.png', '.bmp']) {
+      const p = path.join(shared, `${imageId}${ext}`)
+      if (fs.existsSync(p)) return { buf: fs.readFileSync(p), ext }
+    }
+  }
+  const sample = path.join(__dirname, 'scripts', 'fixtures', `sample_failure_${/zed/i.test(imageId) ? 'zed' : 'd415'}.jpg`)
+  return fs.existsSync(sample) ? { buf: fs.readFileSync(sample), ext: '.jpg' } : null
+}
+
 function saveImage(imageId, base64) {
   // Never overwrite an existing image (allows manual placement of real photos)
   const existing = findExistingImage(imageId)
   if (existing) return existing
 
-  const buf = Buffer.from(base64, 'base64')
-  const ext = detectImageExtFromBuffer(buf)
+  let buf = Buffer.from(base64 || '', 'base64')
+  let ext = detectImageExtFromBuffer(buf)
+  if (!looksLikeImage(buf)) {
+    const r = replacementImage(imageId)
+    if (!r) return null
+    buf = r.buf
+    ext = r.ext
+  }
   const filePath = path.join(IMAGES_DIR, `${imageId}${ext}`)
   try {
     fs.writeFileSync(filePath, buf)
@@ -497,6 +809,25 @@ function saveImage(imageId, base64) {
     return null
   }
 }
+
+// ── Keeping pictures only as long as wanted ─────────────────────────────────────
+// IMAGE_RETENTION_HOURS=<n> deletes failure pictures (and their context files) older than n hours, when the
+// relay starts and then every hour. Unset or 0 keeps them.
+const IMAGE_RETENTION_HOURS = parseFloat(process.env.IMAGE_RETENTION_HOURS || '0')
+function purgeOldImages() {
+  if (!(IMAGE_RETENTION_HOURS > 0)) return
+  const cutoff = Date.now() - IMAGE_RETENTION_HOURS * 3600 * 1000
+  let n = 0
+  try {
+    for (const f of fs.readdirSync(IMAGES_DIR)) {
+      const p = path.join(IMAGES_DIR, f)
+      try { if (fs.statSync(p).isFile() && fs.statSync(p).mtimeMs < cutoff) { fs.unlinkSync(p); n++ } } catch {}
+    }
+  } catch {}
+  if (n) console.log(`  Deleted ${n} picture file(s) older than ${IMAGE_RETENTION_HOURS} h`)
+}
+purgeOldImages()
+if (IMAGE_RETENTION_HOURS > 0) setInterval(purgeOldImages, 3600 * 1000).unref()
 
 // ── Recent-event ring buffer (used as context for image analysis) ──────────
 // Every event we broadcast gets stamped with a *server* (UI-clock) timestamp
@@ -547,6 +878,7 @@ function composeImageCaption(events) {
     VISUALISE: 'previewing the grasp',
     EXECUTE_GRASP: 'picking up',
     CLOSEUP_RETRY: 'retrying the grasp',
+    ITEM_CHECK: 'checking the grip',
     HANDOVER_TRANSIT: 'bringing it over',
     HANDOVER_MOVE: 'moving to handover',
     HANDOVER_RELEASE: 'handing over',
@@ -651,6 +983,82 @@ function flushStep() {
   }
 }
 
+// ── AI Judge bookkeeping ──────────────────────────────────────────────────
+// What the judge said during the cycle, kept for the saved order (order.critic).
+
+let cycleCritic = null
+
+function criticTrack(evt) {
+  if (!cycleStartTime || cycleWritten) return
+  const c = cycleCritic || (cycleCritic = {
+    topic: null, item: null, checks: 0, yes: 0, no: 0, latency_ms: 0, question: null, roi: null,
+    phases: [], alerts: [], verdict: null, quiet_seconds: null, text: null, first_ts: evt.ts || null, last_ts: evt.ts || null,
+  })
+  c.last_ts = evt.ts || c.last_ts
+  if (evt.kind === 'phase') {
+    if (evt.target) c.item = evt.target
+    if (evt.phase && !c.phases.includes(evt.phase)) c.phases.push(evt.phase)
+  } else if (evt.kind === 'roi') {
+    c.roi = evt.roi
+  } else if (evt.kind === 'check') {
+    c.checks++
+    if (evt.answer === 'YES') c.yes++
+    else c.no++
+    c.latency_ms += Math.round((evt.latency || 0) * 1000)
+    c.question = evt.question || c.question
+    c.topic = c.topic || 'holding'
+  } else if (evt.kind === 'alert') {
+    c.alerts.push(evt.text)
+  } else if (evt.kind === 'verdict' && evt.status !== 'BEGIN') {
+    c.topic = evt.topic || c.topic
+    if (evt.item) c.item = evt.item
+    if (evt.quiet != null) c.quiet_seconds = evt.quiet
+    if (evt.verdict) c.verdict = evt.verdict
+    else if (evt.holding === true) c.verdict = 'holding'
+    else if (evt.holding === false) c.verdict = 'not_holding'
+    c.text = evt.text || evt.detail || c.text
+    if (evt.bottle != null) c.bottle = evt.bottle
+  }
+}
+
+function criticSummary() {
+  if (!cycleCritic) return null
+  const c = cycleCritic
+  return { ...c, avg_latency_ms: c.checks ? Math.round(c.latency_ms / c.checks) : null }
+}
+
+// Judge events are tracked for the order and passed on to the dashboard; they are part of the
+// cycle's catch-up history so a page opened mid-cycle still shows what the judge has said.
+// The picture itself stays on disk (GET /api/images/<id>); the dashboard is only told that it exists,
+// which step it belongs to and a short caption.
+function failureImageEvent(evt, component, caption) {
+  return {
+    type: 'failure_image', ts: evt.ts, imageId: evt.imageId, camera: evt.camera,
+    description: evt.description, component: component || null, caption: caption || '',
+  }
+}
+
+function handleCriticEvent(evt) {
+  criticTrack(evt)
+  cycleHistory.push(evt)
+  broadcast(evt)
+}
+
+// How the handover went, from the cycle's own events: was a person found to hold the item out to,
+// and why did the gripper open ("release_reason=tug": the customer pulled the item out).
+function handoverSummary() {
+  let person = null
+  let reason = null
+  for (const e of cycleHistory) {
+    if (e.type === 'handover' && e.person !== null && e.person !== undefined) person = e.person
+    if (e.type === 'phase' && e.component === 'HANDOVER_RELEASE' && e.status === 'SUCCESS') {
+      const m = (e.detail || '').match(/release_reason=(\w+)/)
+      if (m) reason = m[1]
+    }
+  }
+  return person === null && reason === null ? null : { person_seen: person, release_reason: reason }
+}
+
 // ── Write an order record ───────────────────────────────────────────────────
 
 function writeCompletedOrder(outcome, failDetail) {
@@ -678,7 +1086,7 @@ function writeCompletedOrder(outcome, failDetail) {
   if (status === 'failed') {
     const f = cycleFailures.find(f => f.level === 'red') || { message: failDetail || 'Unknown failure' }
     failure = {
-      reason: classifyFailure(f.message || failDetail),
+      reason: f.reason || classifyFailure(f.message || failDetail),
       detail: f.message || failDetail,
       at_phase: phaseOfFailure(f),
     }
@@ -686,7 +1094,7 @@ function writeCompletedOrder(outcome, failDetail) {
     const f = cycleFailures.find(f => f.level === 'red')
     if (f) {
       failure = {
-        reason: classifyFailure(f.message),
+        reason: f.reason || classifyFailure(f.message),
         detail: f.message,
         at_phase: phaseOfFailure(f) || 'analyzing',
       }
@@ -694,6 +1102,8 @@ function writeCompletedOrder(outcome, failDetail) {
   }
 
   const steps = groupEventsIntoPhases(rawStepLog)
+  const handover = handoverSummary()
+  const run_details = runDetails.snapshot()
 
   // Annotate each step with failure status for history UI coloring
   for (const step of steps) {
@@ -745,7 +1155,8 @@ function writeCompletedOrder(outcome, failDetail) {
     status,
     failure,
     item: currentItem || 'unknown',
-    robot_id: 'ROBI',
+    robot_id: PROFILE.robotId || 'ROBI',
+    robot: ROBOT_ID,
     started_at: startedAt,
     completed_at: new Date().toISOString(),
     total_seconds: totalSeconds,
@@ -759,6 +1170,10 @@ function writeCompletedOrder(outcome, failDetail) {
     steps,
     timestamp,
     rating: status === 'success' ? 5 : status === 'warning' ? 3 : 1,
+    ...(criticSummary() ? { critic: criticSummary() } : {}),
+    ...(handover ? { handover } : {}),
+    ...(run_details ? { run_details } : {}),
+    ...(PROFILE.orderExtras ? PROFILE.orderExtras() : {}),
   })
   cycleWritten = true
   nextOrderIdToAssign = orderId + 1
@@ -772,11 +1187,13 @@ let liveAttempts = 0
 let lastIdleBroadcast = 0
 
 function broadcastSourceMode() {
-  broadcast({ type: 'source_mode', mode: sourceMode })
+  broadcast({ type: 'source_mode', mode: sourceMode, robot: ROBOT_ID })
 }
 
 function processLiveEvent(evt) {
   if (!evt) return
+  if (PROFILE.observe) PROFILE.observe(evt)
+  if (runDetails.observe(evt)) announceRunDetails(evt)
 
   // ── Cycle bookkeeping (same logic as replay)
   if (evt.type === 'cycle_start') {
@@ -805,6 +1222,7 @@ function processLiveEvent(evt) {
     cycleImages = []
     lastFailComponent = null
     cycleHistory = []
+    cycleCritic = null
   }
 
   if (evt.type === 'object_selected') {
@@ -813,6 +1231,13 @@ function processLiveEvent(evt) {
       currentCycleIsAnomaly = true
       console.log(`  Anomaly input: '${evt.objectName}' — skipping cycle`)
     }
+  }
+
+  // The AI Judge's events (live)
+  if (evt.type === 'critic') {
+    handleCriticEvent(evt)
+    startHeartbeat()
+    return
   }
 
   // Stamp the event with server (UI-clock) time and append to the ring buffer
@@ -835,6 +1260,9 @@ function processLiveEvent(evt) {
         logCaption,                       // brief caption built from surrounding logs
       })
       console.log(`  Image saved: ${evt.imageId} (${evt.camera}) → ${lastFailComponent || 'no failure context'} [+context]`)
+      const ref = failureImageEvent(evt, lastFailComponent, logCaption)
+      cycleHistory.push(ref)
+      broadcast(ref)
     }
     return
   }
@@ -871,14 +1299,19 @@ function processLiveEvent(evt) {
     if (evt.status === 'FAIL') {
       lastFailComponent = evt.component
       const d = evt.detail || ''
-      const isCritical = evt.component === 'EXECUTE_GRASP' || evt.component === 'HANDOVER_MOVE'
+      const fc = PROFILE.failureClass ? PROFILE.failureClass(evt) : null
+      const isCritical = fc ? fc === 'red' : (evt.component === 'EXECUTE_GRASP' || evt.component === 'HANDOVER_MOVE'
         || evt.component === 'CLOSEUP_LIFT'
         || d.includes('search exhausted') || d.includes('no_valid_depth') || d.includes('no valid depth')
-        || d.includes('handover failed')
+        || d.includes('handover failed'))
       if (isCritical) {
-        cycleFailures.push({ level: 'red', message: evt.detail || `${evt.component} failed`, component: evt.component })
+        cycleFailures.push({ level: 'red', message: (PROFILE.failureMessage ? PROFILE.failureMessage(evt) : evt.detail) || `${evt.component} failed`, component: evt.component })
+      } else if (fc === 'orange') {
+        cycleFailures.push({ level: 'orange', message: PROFILE.failureMessage ? PROFILE.failureMessage(evt) : (evt.detail || `${evt.component} failed`), component: evt.component })
       } else if (evt.component === 'SEARCH_DETECT') {
         cycleFailures.push({ level: 'orange', message: `No detections at ${evt.waypoint || 'waypoint'}`, component: evt.component })
+      } else if (evt.component === 'ITEM_CHECK') {
+        cycleFailures.push({ level: 'orange', message: 'AI Judge: not holding the item', component: evt.component, reason: 'item_not_held' })
       }
     }
 
@@ -894,6 +1327,7 @@ function processLiveEvent(evt) {
       const m = evt.detail?.match(/depth_med=([\d.]+)/)
       if (m) stepMeta.depth_m = parseFloat(m[1])
     }
+    if (PROFILE.meta) Object.assign(stepMeta, PROFILE.meta(evt))
   }
 
   if (evt.type === 'collision_warning') { collisionWarnings++; return }
@@ -952,12 +1386,14 @@ function processLiveEvent(evt) {
     if (evt.status === 'FAIL') {
       const activePhase = _compToPhase[stepComponent]?.phase || null
       cycleFailures.push({
-        level: 'orange',
-        message: evt.detail || `${evt.source} fault`,
+        level: evt.severity === 'red' ? 'red' : 'orange',
+        message: evt.plain || evt.detail || `${evt.source} fault`,
         component: evt.source?.toUpperCase() || 'BRIDGE',
         phase: activePhase,
+        ...(evt.reason ? { reason: evt.reason } : {}),
       })
     }
+    if (evt.severity === 'red') cycleHistory.push(evt)
     broadcast(evt)
     startHeartbeat()
     return
@@ -989,6 +1425,72 @@ function processLiveEvent(evt) {
   startHeartbeat()
 }
 
+// ── Raw robot log ────────────────────────────────────────────────────────────
+// Everything the robot sends over the socket is also saved as-is, one file per day
+// (data/logs/robot-YYYY-MM-DD.log, or RAW_LOG_DIR), so a run can be inspected or replayed
+// later (REPLAY_LOG=<file>) exactly as the robot reported it. Only live connections are
+// recorded — never a static replay. The one change: IMAGE lines carry a base64 picture
+// that is already saved under data/images, so that payload is replaced by its size.
+// Nothing else is written: connects and disconnects go to the console, not into the log.
+const RAW_LOG_DIR = process.env.RAW_LOG_DIR || path.join(ORDERS_DIR, 'logs')
+let rawLogStream = null
+let rawLogDay = null
+
+function rawLogDayStr() {
+  const d = new Date()
+  const p = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
+function rawLogWrite(text) {
+  try {
+    const day = rawLogDayStr()
+    if (!rawLogStream || rawLogDay !== day) {
+      if (rawLogStream) rawLogStream.end()
+      fs.mkdirSync(RAW_LOG_DIR, { recursive: true })
+      rawLogStream = fs.createWriteStream(path.join(RAW_LOG_DIR, `robot-${ROBOT_ID === ROBOTS.default ? "" : ROBOT_ID + "-"}${day}.log`), { flags: 'a' })
+      rawLogStream.on('error', (err) => { console.error(`  raw log error: ${err.message}`); rawLogStream = null })
+      rawLogDay = day
+    }
+    rawLogStream.write(text.endsWith('\n') ? text : text + '\n')
+  } catch (err) {
+    console.error(`  raw log error: ${err.message}`)   // never let logging break the relay
+  }
+}
+
+// IMAGE lines: "<ts> | IMAGE | <id> | <description> | <base64>" (with or without a "[process] " prefix)
+const IMAGE_LINE = /^(.*?\|\s*IMAGE\s*\|[^|]*\|[^|]*\|\s*)(\S{200,})\s*$/
+
+function rawLogLine(line) {
+  const m = line.match(IMAGE_LINE)
+  rawLogWrite(m ? `${m[1]}<base64 omitted, ${m[2].length} chars; image saved under data/images>` : line)
+}
+
+// A robot that loses power or Wi-Fi never sends a close frame. Ping it; if nothing (no log line, no
+// pong) arrives for KEEPALIVE_TIMEOUT, drop the socket so the normal reconnect takes over.
+const KEEPALIVE_INTERVAL = 20_000
+const KEEPALIVE_TIMEOUT = 60_000
+let lastRobotActivity = Date.now()
+let robotKeepAlive = null
+
+function startRobotKeepAlive(sock) {
+  lastRobotActivity = Date.now()
+  if (robotKeepAlive) clearInterval(robotKeepAlive)
+  robotKeepAlive = setInterval(() => {
+    if (sock.readyState !== WebSocket.OPEN) return
+    if (Date.now() - lastRobotActivity > KEEPALIVE_TIMEOUT) {
+      console.log(`  No data or pong from the robot for ${KEEPALIVE_TIMEOUT / 1000}s — dropping the connection`)
+      try { sock.terminate() } catch {}
+      return
+    }
+    try { sock.ping() } catch {}
+  }, KEEPALIVE_INTERVAL)
+}
+
+function stopRobotKeepAlive() {
+  if (robotKeepAlive) { clearInterval(robotKeepAlive); robotKeepAlive = null }
+}
+
 function connectToRobot() {
   if (!ROBOT_WS) return
 
@@ -1012,15 +1514,22 @@ function connectToRobot() {
     console.log(`  Connected to robot at ${ROBOT_WS}`)
     broadcastSourceMode()
     _parserState.lastTimestamp = null
+    startRobotKeepAlive(robotWs)
   })
 
   robotWs.on('message', (data) => {
-    const line = data.toString()
-    const evt = parseLine(line)
-    if (evt) processLiveEvent(evt)
+    lastRobotActivity = Date.now()
+    // One log line per frame is the norm, but a streamer may batch several: handle each on its own
+    for (const line of data.toString().split(/\r?\n/)) {
+      if (!line.trim()) continue
+      rawLogLine(line)
+      for (const evt of normalizeEvents(parseLine(line))) processLiveEvent(evt)
+    }
   })
+  robotWs.on('pong', () => { lastRobotActivity = Date.now() })
 
   robotWs.on('close', () => {
+    stopRobotKeepAlive()
     console.log(`  Robot connection closed`)
     handleRobotDisconnect()
   })
@@ -1046,7 +1555,10 @@ function startStaticReplay() {
   sourceMode = 'static'
   broadcastSourceMode()
   console.log(`  No live robot — serving static replay of ${allEvents.length} events (mode: static).`)
-  globalReplay()
+  // REPLAY_START_DELAY=<ms> (tests): give a client time to connect before the first event
+  const delay = parseInt(process.env.REPLAY_START_DELAY || '0', 10)
+  if (delay > 0) globalTimeout = setTimeout(globalReplay, delay)
+  else globalReplay()
 }
 
 function stopStaticReplay() {
@@ -1097,6 +1609,8 @@ function globalReplay() {
     if (idx >= allEvents.length) {
       stopHeartbeat()
       console.log(`  Loop ${loopCount} complete. Pausing ${LOOP_PAUSE / 1000}s before next loop…`)
+      // REPLAY_ONCE=1 (tests): one pass through the log, then stop sending events
+      if (process.env.REPLAY_ONCE === '1') { saveReplayState(); return }
       saveReplayState()
       globalTimeout = setTimeout(globalReplay, LOOP_PAUSE / REPLAY_SPEED)
       return
@@ -1104,6 +1618,8 @@ function globalReplay() {
 
     currentEventIndex = idx
     const evt = allEvents[idx]
+    if (PROFILE.observe) PROFILE.observe(evt)
+    if (runDetails.observe(evt)) announceRunDetails(evt)
 
     // ── Cycle bookkeeping
     if (evt.type === 'cycle_start') {
@@ -1124,6 +1640,7 @@ function globalReplay() {
       cycleImages = []
       lastFailComponent = null
       cycleHistory = []
+      cycleCritic = null
     }
 
     if (evt.type === 'object_selected') {
@@ -1134,12 +1651,25 @@ function globalReplay() {
       }
     }
 
+    // The AI Judge's events (replay)
+    if (evt.type === 'critic') {
+      handleCriticEvent(evt)
+      saveReplayState()
+      startHeartbeat()
+      const nextDelay = (idx + 1 < delays.length) ? delays[idx + 1] : 50
+      globalTimeout = setTimeout(() => sendEvent(idx + 1), nextDelay)
+      return
+    }
+
     // Save failure images (replay mode — images come from log file)
     if (evt.type === 'image') {
       console.log(`  Processing image: ${evt.imageId} (b64 len: ${evt.base64?.length || 0}, failComp: ${lastFailComponent})`)
       const filePath = saveImage(evt.imageId, evt.base64)
       if (filePath) {
         console.log(`  Image saved: ${evt.imageId} → ${filePath}`)
+        const ref = failureImageEvent(evt, lastFailComponent, '')
+        cycleHistory.push(ref)
+        broadcast(ref)
         cycleImages.push({
           imageId: evt.imageId,
           camera: evt.camera,
@@ -1195,14 +1725,19 @@ function globalReplay() {
       if (evt.status === 'FAIL') {
         lastFailComponent = evt.component
         const d = evt.detail || ''
-        const isCritical = evt.component === 'EXECUTE_GRASP' || evt.component === 'HANDOVER_MOVE'
+        const fc = PROFILE.failureClass ? PROFILE.failureClass(evt) : null
+        const isCritical = fc ? fc === 'red' : (evt.component === 'EXECUTE_GRASP' || evt.component === 'HANDOVER_MOVE'
           || evt.component === 'CLOSEUP_LIFT'
           || d.includes('search exhausted') || d.includes('no_valid_depth') || d.includes('no valid depth')
-          || d.includes('handover failed')
+          || d.includes('handover failed'))
         if (isCritical) {
-          cycleFailures.push({ level: 'red', message: evt.detail || `${evt.component} failed`, component: evt.component })
+          cycleFailures.push({ level: 'red', message: (PROFILE.failureMessage ? PROFILE.failureMessage(evt) : evt.detail) || `${evt.component} failed`, component: evt.component })
+        } else if (fc === 'orange') {
+          cycleFailures.push({ level: 'orange', message: PROFILE.failureMessage ? PROFILE.failureMessage(evt) : (evt.detail || `${evt.component} failed`), component: evt.component })
         } else if (evt.component === 'SEARCH_DETECT') {
           cycleFailures.push({ level: 'orange', message: `No detections at ${evt.waypoint || 'waypoint'}`, component: evt.component })
+        } else if (evt.component === 'ITEM_CHECK') {
+          cycleFailures.push({ level: 'orange', message: 'AI Judge: not holding the item', component: evt.component, reason: 'item_not_held' })
         }
       }
 
@@ -1225,6 +1760,7 @@ function globalReplay() {
         const m = evt.detail?.match(/depth_med=([\d.]+)/)
         if (m) stepMeta.depth_m = parseFloat(m[1])
       }
+      if (PROFILE.meta) Object.assign(stepMeta, PROFILE.meta(evt))
     }
 
     // Track collision warnings
@@ -1273,8 +1809,15 @@ function globalReplay() {
 
     if (evt.type === 'system_fault') {
       if (evt.status === 'FAIL') {
-        cycleFailures.push({ level: 'orange', message: evt.detail || `${evt.source} fault`, component: evt.source?.toUpperCase() || 'BRIDGE' })
+        cycleFailures.push({
+          level: evt.severity === 'red' ? 'red' : 'orange',
+          message: evt.plain || evt.detail || `${evt.source} fault`,
+          component: evt.source?.toUpperCase() || 'BRIDGE',
+          phase: _compToPhase[stepComponent]?.phase || null,
+          ...(evt.reason ? { reason: evt.reason } : {}),
+        })
       }
+      if (evt.severity === 'red') cycleHistory.push(evt)
       broadcast(evt)
       const nextDelay = (idx + 1 < delays.length) ? delays[idx + 1] : 50
       globalTimeout = setTimeout(() => sendEvent(idx + 1), nextDelay)
@@ -1400,6 +1943,10 @@ const server = http.createServer(async (req, res) => {
       id: o.id, item: o.item, status: o.status, started_at: o.started_at,
       failure: o.failure ? { reason: o.failure.reason } : null,
       retries: o.retries || 0, total_seconds: o.total_seconds || 0, grasp_width_mm: o.grasp_width_mm ?? null,
+      // where the item was and how many tries it took (from run_details), for the counterfactual cards
+      item_position_m: o.run_details?.item_position_m ?? null, shelf_row: o.run_details?.shelf_row ?? null, shelf_side: o.run_details?.shelf_side ?? null,
+      attempt_count: o.run_details?.attempt_count ?? null, needed_more_than_one_try: o.run_details?.needed_more_than_one_try ?? null,
+      robot_clock_started_at: o.run_details?.robot_clock_started_at ?? null,
       steps: (o.steps || []).map(s => ({ phase: s.phase, duration_seconds: s.duration_seconds || 0 })),
     }))
     res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -1440,7 +1987,8 @@ const server = http.createServer(async (req, res) => {
       s === 'all' ? true
       : s === 'delivered' ? (o.status === 'success' || o.status === 'ok')
       : o.status === s
-    const matchItem = (o, it) => it === 'all' ? true : o.item === it
+    // `item` may list several items, comma-separated (the Orders item dropdown is multi-select)
+    const matchItem = (o, it) => it === 'all' ? true : it.split(',').includes(o.item)
 
     // Status chip counts reflect the *currently active item filter* so when
     // sock is selected, "Failed" shows the number of failed socks, not the
@@ -1479,6 +2027,10 @@ const server = http.createServer(async (req, res) => {
       grasp_width_mm: o.grasp_width_mm || null,
       collision_warnings: o.collision_warnings || 0,
       phases: o.steps || [],
+      robot: o.robot || ROBOT_ID,
+      // facts a robot's profile saves on its orders (the bar: bottle, glasses, pour, rack…)
+      ...Object.fromEntries(['bottle', 'glasses', 'glasses_filled', 'poured', 'customer_seen', 'decap_skipped', 'shake_unsafe', 'rack_bottles', 'critic', 'handover', 'run_details']
+        .filter(k => o[k] !== undefined).map(k => [k, o[k]])),
     }))
 
     const sortedByItem = Object.entries(byItem).sort((a, b) => b[1] - a[1])
@@ -1501,7 +2053,7 @@ const server = http.createServer(async (req, res) => {
 
   } else if (pathname === '/api/source') {
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ mode: sourceMode, robotWs: ROBOT_WS || null }))
+    res.end(JSON.stringify({ mode: sourceMode, robot: ROBOT_ID, robotWs: ROBOT_WS || null }))
 
   } else if (pathname.startsWith('/api/images/') && req.method === 'GET') {
     const imageId = pathname.replace('/api/images/', '')
@@ -1511,8 +2063,10 @@ const server = http.createServer(async (req, res) => {
     const extMap = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.bmp': 'image/bmp', '.png': 'image/png' }
     const tryExts = ['.jpg', '.jpeg', '.bmp', '.png']
     let found = false
-    for (const ext of tryExts) {
-      const filePath = path.join(IMAGES_DIR, `${imageId}${ext}`)
+    // a replay keeps its own folder; pictures the robot saved earlier in the repository's data/images are served too
+    const dirs = [IMAGES_DIR, path.join(__dirname, 'data', 'images')]
+    for (const [dir, ext] of dirs.flatMap(d => tryExts.map(e => [d, e]))) {
+      const filePath = path.join(dir, `${imageId}${ext}`)
       if (fs.existsSync(filePath)) {
         const data = fs.readFileSync(filePath)
         res.writeHead(200, { 'Content-Type': extMap[ext], 'Cache-Control': 'public, max-age=86400' })
@@ -1571,7 +2125,7 @@ wss.on('connection', (ws) => {
 
   // Tell client which mode we're in
   if (ws.readyState === ws.OPEN) {
-    ws.send(JSON.stringify({ type: 'source_mode', mode: sourceMode }))
+    ws.send(JSON.stringify({ type: 'source_mode', mode: sourceMode, robot: ROBOT_ID }))
   }
 
   for (const evt of cycleHistory) {

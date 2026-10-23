@@ -1,7 +1,9 @@
 import React from 'react'
 import Card from '../../../components/ui/Card'
+import { useRobot } from '../../../robots/RobotContext'
 
 export default function ChatCard({ onOpenChat }) {
+  const { profile } = useRobot()
   return (
     <Card>
       <div className="flex items-center justify-between">
@@ -16,12 +18,12 @@ export default function ChatCard({ onOpenChat }) {
               Have a question about today's operations?
             </div>
             <div className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
-              Ask ROBI anything about orders, timing, or failures.
+              {profile.askPlaceholder}
             </div>
           </div>
         </div>
         <button onClick={onOpenChat} className="btn btn-sm btn-accent shrink-0">
-          Ask ROBI
+          Ask {profile.assistantName}
         </button>
       </div>
     </Card>

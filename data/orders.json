@@ -42089,5 +42089,2151 @@
     ],
     "timestamp": "14:26",
     "rating": 5
+  },
+  {
+    "id": 266,
+    "order_number": "266",
+    "status": "warning",
+    "failure": {
+      "reason": "reachability_failed",
+      "detail": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+      "at_phase": "grasping"
+    },
+    "item": "water bottle",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T12:49:19.363Z",
+    "completed_at": "2026-10-23T12:50:38.658Z",
+    "total_seconds": 79,
+    "robot_seconds": 80,
+    "human_wait_seconds": 0,
+    "retries": 1,
+    "waypoints_searched": [
+      "right-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792759766404150137_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T12:49:26.319Z"
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 4,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792759766404150137_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T12:49:26.319Z"
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 18,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792759766404150137_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T12:49:26.319Z"
+          }
+        ]
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 37,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 3,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 10,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:49",
+    "rating": 3,
+    "critic": {
+      "topic": "holding",
+      "item": "water bottle",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 'water bottle' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T12:49:49.545Z",
+      "last_ts": "2026-10-23T12:50:00.668Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": true,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T12:49:19.490Z",
+      "item_position_m": {
+        "x": 0.926,
+        "y": -0.151,
+        "z": 1.651
+      },
+      "shelf_row": "top",
+      "shelf_side": "left",
+      "target_candidates": [
+        {
+          "distance_cm": 71.5,
+          "match_score": 0.81
+        },
+        {
+          "distance_cm": 74.9,
+          "match_score": 0.86
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-shelve",
+          "looking_for": "blue white cylindrical bottle",
+          "pictures_checked": 6,
+          "raw_detections": 59,
+          "clusters_found": 10,
+          "clusters_kept": 10
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T12:49:24.455Z",
+          "seconds": 1.9,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.352,
+              "y": -0.089,
+              "z": 1.732
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            953.6,
+            396.7
+          ],
+          "pointing_seconds": 1.1,
+          "item_outline": {
+            "score": 0.852,
+            "visible_area_px": 22937,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 10
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "no_reachable_grip",
+          "failure_text": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+          "ended_at": "2026-10-23T12:49:26.404Z"
+        },
+        {
+          "attempt_number": 2,
+          "started_at": "2026-10-23T12:49:30.243Z",
+          "seconds": 15.2,
+          "after_failure": {
+            "retry_number": 1,
+            "retry_limit": 5,
+            "cause": "grasp:grasp",
+            "new_angle_search": {
+              "steepness_tiers_deg": [
+                19.9,
+                14.9,
+                9.9
+              ],
+              "distance_m": 0.69,
+              "start_pitch_deg": 15
+            }
+          },
+          "look_from": {
+            "kind": "new_angle",
+            "hand_position_m": {
+              "x": 0.377,
+              "y": -0.132,
+              "z": 1.78
+            },
+            "camera_position_m": {
+              "x": 0.279,
+              "y": -0.078,
+              "z": 1.886
+            },
+            "look_down_deg": 20,
+            "candidate_index": 5,
+            "candidate_count": 27
+          },
+          "grasp_point_px": [
+            851.2,
+            435.6
+          ],
+          "pointing_seconds": 1.09,
+          "item_outline": {
+            "score": 0.895,
+            "visible_area_px": 22366,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 10
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T12:49:45.441Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 85,
+        "hand_opening_mode": "FULL",
+        "chosen_grip_index": 11,
+        "set_per_item": false
+      },
+      "planner_settings": {
+        "proposed_grips": 20,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 200
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.06,
+        0.25,
+        0.06
+      ],
+      "gripper_close_force": 1,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.4,
+          -85.2,
+          16.1,
+          173.4
+        ],
+        "person_position_m": {
+          "x": 0.38,
+          "y": -1.48,
+          "z": 1.5
+        }
+      },
+      "attempt_count": 2,
+      "needed_more_than_one_try": true,
+      "robot_setup": null
+    }
+  },
+  {
+    "id": 267,
+    "order_number": "267",
+    "status": "success",
+    "failure": null,
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T12:51:17.967Z",
+    "completed_at": "2026-10-23T12:52:20.024Z",
+    "total_seconds": 62,
+    "robot_seconds": 63,
+    "human_wait_seconds": 0,
+    "retries": 0,
+    "waypoints_searched": [
+      "right-bar"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 3,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 15,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 29,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 2,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 9,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:51",
+    "rating": 5,
+    "critic": {
+      "topic": "holding",
+      "item": "t-shirt",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 't-shirt' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T12:51:40.909Z",
+      "last_ts": "2026-10-23T12:51:52.054Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": true,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T12:51:18.090Z",
+      "item_position_m": {
+        "x": 0.99,
+        "y": -0.076,
+        "z": 1.175
+      },
+      "shelf_row": "lower",
+      "shelf_side": "left",
+      "target_candidates": [
+        {
+          "distance_cm": 65.9,
+          "match_score": 0.9
+        },
+        {
+          "distance_cm": 67.6,
+          "match_score": 0.71
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-bar",
+          "looking_for": "clothes hanger",
+          "pictures_checked": 6,
+          "raw_detections": 52,
+          "clusters_found": 10,
+          "clusters_kept": 10
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T12:51:23.053Z",
+          "seconds": 14.7,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.451,
+              "y": -0.089,
+              "z": 1.253
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            681,
+            255.6
+          ],
+          "pointing_seconds": 1.21,
+          "item_outline": {
+            "score": 0.871,
+            "visible_area_px": 8556,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 6
+          },
+          "grip_plan": {
+            "planner": "graspgen",
+            "reachable_grips": 13,
+            "proposed_grips": 13,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T12:51:37.790Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 60,
+        "hand_opening_mode": "MID",
+        "chosen_grip_index": 4,
+        "set_per_item": true
+      },
+      "planner_settings": {
+        "proposed_grips": 13,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 30
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.03,
+        0.1,
+        0.1
+      ],
+      "gripper_close_force": 1,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.3,
+          -85.2,
+          16.1,
+          173.4
+        ],
+        "person_position_m": {
+          "x": 0.37,
+          "y": -1.53,
+          "z": 1.49
+        }
+      },
+      "attempt_count": 1,
+      "needed_more_than_one_try": false,
+      "robot_setup": null
+    }
+  },
+  {
+    "id": 268,
+    "order_number": "268",
+    "status": "success",
+    "failure": null,
+    "item": "coffee mug",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T12:53:55.358Z",
+    "completed_at": "2026-10-23T12:54:50.219Z",
+    "total_seconds": 55,
+    "robot_seconds": 54,
+    "human_wait_seconds": 1,
+    "retries": 0,
+    "waypoints_searched": [
+      "right-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 14,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 22,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 4,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 8,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "14:53",
+    "rating": 5,
+    "critic": {
+      "topic": "holding",
+      "item": "coffee mug",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 'coffee mug' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T12:54:15.876Z",
+      "last_ts": "2026-10-23T12:54:27.104Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": false,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T12:53:55.488Z",
+      "item_position_m": {
+        "x": 0.95,
+        "y": 0.104,
+        "z": 1.636
+      },
+      "shelf_row": "top",
+      "shelf_side": "middle",
+      "target_candidates": [
+        {
+          "distance_cm": 71.5,
+          "match_score": 0.89
+        },
+        {
+          "distance_cm": 81.5,
+          "match_score": 0.91
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-shelve",
+          "looking_for": "white coffee cup with blue grip and lid",
+          "pictures_checked": 6,
+          "raw_detections": 33,
+          "clusters_found": 6,
+          "clusters_kept": 6
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T12:54:00.089Z",
+          "seconds": 13.2,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.352,
+              "y": -0.089,
+              "z": 1.732
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            710.4,
+            428.4
+          ],
+          "pointing_seconds": 1.18,
+          "item_outline": {
+            "score": 0.832,
+            "visible_area_px": 17738,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 5
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T12:54:13.267Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 85,
+        "hand_opening_mode": "FULL",
+        "chosen_grip_index": 13,
+        "set_per_item": true
+      },
+      "planner_settings": {
+        "proposed_grips": 20,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 200
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.06,
+        0.18,
+        0.06
+      ],
+      "gripper_close_force": 2,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.4,
+          -85.2,
+          16.1,
+          173.4
+        ]
+      },
+      "attempt_count": 1,
+      "needed_more_than_one_try": false,
+      "robot_setup": null
+    }
+  },
+  {
+    "id": 269,
+    "order_number": "269",
+    "status": "success",
+    "failure": null,
+    "item": "coffee mug",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T13:28:09.589Z",
+    "completed_at": "2026-10-23T13:29:31.356Z",
+    "total_seconds": 82,
+    "robot_seconds": 82,
+    "human_wait_seconds": 0,
+    "retries": 0,
+    "waypoints_searched": [
+      "right-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 21,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 36,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 11,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 8,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "15:28",
+    "rating": 5,
+    "critic": {
+      "topic": "holding",
+      "item": "coffee mug",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 'coffee mug' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T13:28:36.915Z",
+      "last_ts": "2026-10-23T13:28:43.112Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": false,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T13:28:09.719Z",
+      "item_position_m": {
+        "x": 0.96,
+        "y": 0.135,
+        "z": 1.632
+      },
+      "shelf_row": "top",
+      "shelf_side": "middle",
+      "target_candidates": [
+        {
+          "distance_cm": 74.6,
+          "match_score": 0.93
+        },
+        {
+          "distance_cm": 81.5,
+          "match_score": 0.92
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-shelve",
+          "looking_for": "white coffee cup with blue grip and lid",
+          "pictures_checked": 6,
+          "raw_detections": 30,
+          "clusters_found": 5,
+          "clusters_kept": 5
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T13:28:14.519Z",
+          "seconds": 13.6,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.352,
+              "y": -0.089,
+              "z": 1.732
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            633.6,
+            399.6
+          ],
+          "pointing_seconds": 1.2,
+          "item_outline": {
+            "score": 0.914,
+            "visible_area_px": 16256,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 5
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T13:28:28.113Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 85,
+        "hand_opening_mode": "FULL",
+        "chosen_grip_index": 13,
+        "set_per_item": true
+      },
+      "planner_settings": {
+        "proposed_grips": 20,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 200
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.06,
+        0.18,
+        0.06
+      ],
+      "gripper_close_force": 2,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.4,
+          -85.2,
+          16.1,
+          173.4
+        ]
+      },
+      "attempt_count": 1,
+      "needed_more_than_one_try": false,
+      "robot_setup": {
+        "object_catalog_size": 8,
+        "perception_device": "cuda:1",
+        "perception_models": [
+          "sam3",
+          "molmo",
+          "yolo",
+          "face"
+        ],
+        "planner": {
+          "name": "cuRobo",
+          "ik_backend": "curobo",
+          "collision_voxels_on": true
+        },
+        "arm_driver": {
+          "name": "airo_fanuc",
+          "start_joint_angles_deg": [
+            -67.7,
+            -18.3,
+            -23.6,
+            -78.2,
+            -26.1,
+            173.3
+          ]
+        },
+        "close_up_camera_resolution_px": [
+          1280,
+          720
+        ],
+        "shelves_searched_per_item": {
+          "water bottle": [
+            "right-shelve"
+          ],
+          "coffee mug": [
+            "right-shelve"
+          ],
+          "pen": [
+            "left-shelve"
+          ],
+          "notebook": [
+            "right-shelve"
+          ],
+          "ball": [
+            "left-shelve"
+          ],
+          "umbrella": [
+            "center"
+          ],
+          "saddle cover": [
+            "left-shelve"
+          ],
+          "t-shirt": [
+            "right-bar",
+            "left-bar"
+          ]
+        },
+        "tactile_release_default_threshold": 20,
+        "wheel_spin_trigger": "D415 attentive-watch (YOLO approach + static confirm)",
+        "tactile_grip_threshold_sigma": 3
+      }
+    }
+  },
+  {
+    "id": 270,
+    "order_number": "270",
+    "status": "warning",
+    "failure": {
+      "reason": "reachability_failed",
+      "detail": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+      "at_phase": "grasping"
+    },
+    "item": "water bottle",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T13:29:44.799Z",
+    "completed_at": "2026-10-23T13:31:45.618Z",
+    "total_seconds": 121,
+    "robot_seconds": 119,
+    "human_wait_seconds": 2,
+    "retries": 2,
+    "waypoints_searched": [
+      "right-shelve"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792762191833059786_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up · gripper open",
+            "captured_at": "2026-10-23T13:29:51.739Z"
+          },
+          {
+            "imageId": "fail_1792762208747871493_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "While picking up",
+            "captured_at": "2026-10-23T13:30:08.648Z"
+          },
+          {
+            "imageId": "fail_1792762208759799231_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T13:30:08.669Z"
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 4,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792762191833059786_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up · gripper open",
+            "captured_at": "2026-10-23T13:29:51.739Z"
+          },
+          {
+            "imageId": "fail_1792762208747871493_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "While picking up",
+            "captured_at": "2026-10-23T13:30:08.648Z"
+          },
+          {
+            "imageId": "fail_1792762208759799231_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T13:30:08.669Z"
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 11,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792762191833059786_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up · gripper open",
+            "captured_at": "2026-10-23T13:29:51.739Z"
+          },
+          {
+            "imageId": "fail_1792762208747871493_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "While picking up",
+            "captured_at": "2026-10-23T13:30:08.648Z"
+          },
+          {
+            "imageId": "fail_1792762208759799231_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T13:30:08.669Z"
+          }
+        ]
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 7,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 1,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792762191833059786_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up · gripper open",
+            "captured_at": "2026-10-23T13:29:51.739Z"
+          },
+          {
+            "imageId": "fail_1792762208747871493_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "While picking up",
+            "captured_at": "2026-10-23T13:30:08.648Z"
+          },
+          {
+            "imageId": "fail_1792762208759799231_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T13:30:08.669Z"
+          }
+        ]
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 21,
+        "meta": {},
+        "status": "warning",
+        "failure_detail": "Path blocked (collision)",
+        "images": [
+          {
+            "imageId": "fail_1792762191833059786_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up · gripper open",
+            "captured_at": "2026-10-23T13:29:51.739Z"
+          },
+          {
+            "imageId": "fail_1792762208747871493_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "While picking up",
+            "captured_at": "2026-10-23T13:30:08.648Z"
+          },
+          {
+            "imageId": "fail_1792762208759799231_d415",
+            "camera": "d415",
+            "description": "failure capture from d415",
+            "log_caption": "Failed while picking up",
+            "captured_at": "2026-10-23T13:30:08.669Z"
+          }
+        ]
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 18,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 44,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "15:29",
+    "rating": 3,
+    "critic": {
+      "topic": "holding",
+      "item": "water bottle",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 'water bottle' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T13:30:38.641Z",
+      "last_ts": "2026-10-23T13:30:44.805Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": true,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T13:29:44.929Z",
+      "item_position_m": {
+        "x": 0.943,
+        "y": -0.253,
+        "z": 1.659
+      },
+      "shelf_row": "top",
+      "shelf_side": "left",
+      "target_candidates": [
+        {
+          "distance_cm": 75,
+          "match_score": 0.88
+        },
+        {
+          "distance_cm": 75.2,
+          "match_score": 0.88
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-shelve",
+          "looking_for": "blue white cylindrical bottle",
+          "pictures_checked": 6,
+          "raw_detections": 51,
+          "clusters_found": 9,
+          "clusters_kept": 9
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T13:29:49.768Z",
+          "seconds": 2.1,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.352,
+              "y": -0.089,
+              "z": 1.732
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            1167.4,
+            399.6
+          ],
+          "pointing_seconds": 1.13,
+          "item_outline": {
+            "score": 0.855,
+            "visible_area_px": 28949,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 8
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "no_reachable_grip",
+          "failure_text": "failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset",
+          "ended_at": "2026-10-23T13:29:51.833Z"
+        },
+        {
+          "attempt_number": 2,
+          "started_at": "2026-10-23T13:29:55.682Z",
+          "seconds": 13.1,
+          "after_failure": {
+            "retry_number": 1,
+            "retry_limit": 5,
+            "cause": "grasp:grasp",
+            "new_angle_search": {
+              "steepness_tiers_deg": [
+                18.6,
+                13.6,
+                8.6
+              ],
+              "distance_m": 0.73,
+              "start_pitch_deg": 14
+            }
+          },
+          "look_from": {
+            "kind": "new_angle",
+            "hand_position_m": {
+              "x": 0.505,
+              "y": -0.188,
+              "z": 1.741
+            },
+            "camera_position_m": {
+              "x": 0.413,
+              "y": -0.118,
+              "z": 1.843
+            },
+            "look_down_deg": 19,
+            "candidate_index": 2,
+            "candidate_count": 27
+          },
+          "grasp_point_px": [
+            761.6,
+            442.8
+          ],
+          "pointing_seconds": 1.17,
+          "item_outline": {
+            "score": 0.914,
+            "visible_area_px": 32367,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 6
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "lift_failed_awkward_wrist",
+          "failure_text": "failed at plan_grasp: plan_grasp failed at lift: Chained-IK plan_grasp: all 9 ranked candidates failed at lift — last: #5: lift — chained-IK branch flip at knot 2/7: \\|Δq\\|.max=5.73° > 5.00° (distance=50 mm)",
+          "ended_at": "2026-10-23T13:30:08.759Z"
+        },
+        {
+          "attempt_number": 3,
+          "started_at": "2026-10-23T13:30:15.995Z",
+          "seconds": 12.4,
+          "after_failure": {
+            "retry_number": 2,
+            "retry_limit": 5,
+            "cause": "grasp:lift",
+            "new_angle_search": {
+              "steepness_tiers_deg": null,
+              "distance_m": null,
+              "start_pitch_deg": null
+            }
+          },
+          "look_from": {
+            "kind": "new_angle",
+            "hand_position_m": {
+              "x": 0.552,
+              "y": -0.477,
+              "z": 1.656
+            },
+            "camera_position_m": {
+              "x": 0.428,
+              "y": -0.5,
+              "z": 1.745
+            },
+            "look_down_deg": 9,
+            "candidate_index": 21,
+            "candidate_count": 26
+          },
+          "grasp_point_px": [
+            761.6,
+            435.6
+          ],
+          "pointing_seconds": 1.11,
+          "item_outline": {
+            "score": 0.809,
+            "visible_area_px": 38913,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 8
+          },
+          "grip_plan": {
+            "planner": "front_approach",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T13:30:28.365Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 85,
+        "hand_opening_mode": "FULL",
+        "chosen_grip_index": 13,
+        "set_per_item": false
+      },
+      "planner_settings": {
+        "proposed_grips": 20,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 200
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.06,
+        0.25,
+        0.06
+      ],
+      "gripper_close_force": 1,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.4,
+          -85.2,
+          16.1,
+          173.4
+        ]
+      },
+      "attempt_count": 3,
+      "needed_more_than_one_try": true,
+      "robot_setup": {
+        "object_catalog_size": 8,
+        "perception_device": "cuda:1",
+        "perception_models": [
+          "sam3",
+          "molmo",
+          "yolo",
+          "face"
+        ],
+        "planner": {
+          "name": "cuRobo",
+          "ik_backend": "curobo",
+          "collision_voxels_on": true
+        },
+        "arm_driver": {
+          "name": "airo_fanuc",
+          "start_joint_angles_deg": [
+            -67.7,
+            -18.3,
+            -23.6,
+            -78.2,
+            -26.1,
+            173.3
+          ]
+        },
+        "close_up_camera_resolution_px": [
+          1280,
+          720
+        ],
+        "shelves_searched_per_item": {
+          "water bottle": [
+            "right-shelve"
+          ],
+          "coffee mug": [
+            "right-shelve"
+          ],
+          "pen": [
+            "left-shelve"
+          ],
+          "notebook": [
+            "right-shelve"
+          ],
+          "ball": [
+            "left-shelve"
+          ],
+          "umbrella": [
+            "center"
+          ],
+          "saddle cover": [
+            "left-shelve"
+          ],
+          "t-shirt": [
+            "right-bar",
+            "left-bar"
+          ]
+        },
+        "tactile_release_default_threshold": 20,
+        "wheel_spin_trigger": "D415 attentive-watch (YOLO approach + static confirm)",
+        "tactile_grip_threshold_sigma": 3
+      }
+    }
+  },
+  {
+    "id": 271,
+    "order_number": "271",
+    "status": "success",
+    "failure": null,
+    "item": "t-shirt",
+    "robot_id": "ROBI",
+    "robot": "grocery",
+    "started_at": "2026-10-23T13:32:43.663Z",
+    "completed_at": "2026-10-23T13:34:11.794Z",
+    "total_seconds": 88,
+    "robot_seconds": 88,
+    "human_wait_seconds": 0,
+    "retries": 0,
+    "waypoints_searched": [
+      "right-bar"
+    ],
+    "waypoint_found_at": null,
+    "grasp_width_mm": 85,
+    "collision_warnings": 0,
+    "steps": [
+      {
+        "phase": "searching",
+        "friendly_name": "Searching for item",
+        "components": [
+          "SEARCH_DETECT"
+        ],
+        "duration_seconds": 5,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "anchor_select",
+        "friendly_name": "Selecting target",
+        "components": [
+          "ANCHOR_SELECT"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "closeup_move",
+        "friendly_name": "Moving closer",
+        "components": [
+          "CLOSEUP_MOVE"
+        ],
+        "duration_seconds": 0,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "analyzing",
+        "friendly_name": "Analyzing the grasp",
+        "components": [
+          "CLOSEUP_MOLMO",
+          "CLOSEUP_REFINE",
+          "CLOSEUP_LIFT",
+          "SYNTHESISE",
+          "VISUALISE"
+        ],
+        "duration_seconds": 3,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "grasping",
+        "friendly_name": "Picking up",
+        "components": [
+          "EXECUTE_GRASP",
+          "CLOSEUP_RETRY"
+        ],
+        "duration_seconds": 22,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "bringing_over",
+        "friendly_name": "Bringing it over",
+        "components": [
+          "ITEM_CHECK",
+          "HANDOVER_TRANSIT",
+          "HANDOVER_MOVE"
+        ],
+        "duration_seconds": 21,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "handing_over",
+        "friendly_name": "Handing over",
+        "components": [
+          "HANDOVER_RELEASE"
+        ],
+        "duration_seconds": 27,
+        "meta": {},
+        "status": "ok"
+      },
+      {
+        "phase": "returning",
+        "friendly_name": "Returning",
+        "components": [
+          "HANDOVER_RETURN",
+          "RETURN_HOME"
+        ],
+        "duration_seconds": 10,
+        "meta": {},
+        "status": "ok"
+      }
+    ],
+    "timestamp": "15:32",
+    "rating": 5,
+    "critic": {
+      "topic": "holding",
+      "item": "t-shirt",
+      "checks": 0,
+      "yes": 0,
+      "no": 0,
+      "latency_ms": 0,
+      "question": null,
+      "roi": null,
+      "phases": [],
+      "alerts": [],
+      "verdict": "holding",
+      "quiet_seconds": 2.5,
+      "text": "critic: holding 't-shirt' (no alert in 2.5s) → handover",
+      "first_ts": "2026-10-23T13:33:13.839Z",
+      "last_ts": "2026-10-23T13:33:20.028Z",
+      "avg_latency_ms": null
+    },
+    "handover": {
+      "person_seen": true,
+      "release_reason": "tug"
+    },
+    "run_details": {
+      "robot_clock_started_at": "2026-10-23T13:32:43.797Z",
+      "item_position_m": {
+        "x": 1.003,
+        "y": -0.146,
+        "z": 1.168
+      },
+      "shelf_row": "lower",
+      "shelf_side": "left",
+      "target_candidates": [
+        {
+          "distance_cm": 68.2,
+          "match_score": 0.95
+        },
+        {
+          "distance_cm": 69.1,
+          "match_score": 0.95
+        }
+      ],
+      "item_search": [
+        {
+          "shelf_name": "right-bar",
+          "looking_for": "clothes hanger",
+          "pictures_checked": 6,
+          "raw_detections": 46,
+          "clusters_found": 9,
+          "clusters_kept": 8
+        }
+      ],
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "started_at": "2026-10-23T13:32:48.631Z",
+          "seconds": 16,
+          "after_failure": null,
+          "look_from": {
+            "kind": "search_shelf_view",
+            "hand_position_m": {
+              "x": 0.451,
+              "y": -0.089,
+              "z": 1.253
+            },
+            "camera_position_m": null,
+            "look_down_deg": null,
+            "candidate_index": null,
+            "candidate_count": null
+          },
+          "grasp_point_px": [
+            761.6,
+            255.6
+          ],
+          "pointing_seconds": 1.19,
+          "item_outline": {
+            "score": 0.949,
+            "visible_area_px": 6670,
+            "point_inside_outline": true,
+            "used_nearest_fallback": false,
+            "outline_candidates": 8
+          },
+          "grip_plan": {
+            "planner": "graspgen",
+            "reachable_grips": 20,
+            "proposed_grips": 20,
+            "accepted": true,
+            "width_mm": 85,
+            "reason": "ok"
+          },
+          "outcome": "grabbed",
+          "failure_text": null,
+          "ended_at": "2026-10-23T13:33:04.595Z"
+        }
+      ],
+      "grip": {
+        "width_mm": 85,
+        "hand_opening_before_mm": 60,
+        "hand_opening_mode": "MID",
+        "chosen_grip_index": 10,
+        "set_per_item": true
+      },
+      "planner_settings": {
+        "proposed_grips": 20,
+        "stop_in_front_mm": 120,
+        "lift_mm": 50,
+        "retract_mm": 30
+      },
+      "motion_speed_ceiling_x": 1,
+      "held_item_box_m": [
+        0.03,
+        0.1,
+        0.1
+      ],
+      "gripper_close_force": 1,
+      "handover": {
+        "arm_joint_angles_deg": [
+          -67.9,
+          -58.2,
+          -52.4,
+          -85.2,
+          16.1,
+          173.4
+        ],
+        "person_position_m": {
+          "x": 0.24,
+          "y": -1.32,
+          "z": 1.43
+        }
+      },
+      "attempt_count": 1,
+      "needed_more_than_one_try": false,
+      "robot_setup": {
+        "object_catalog_size": 8,
+        "perception_device": "cuda:1",
+        "perception_models": [
+          "sam3",
+          "molmo",
+          "yolo",
+          "face"
+        ],
+        "planner": {
+          "name": "cuRobo",
+          "ik_backend": "curobo",
+          "collision_voxels_on": true
+        },
+        "arm_driver": {
+          "name": "airo_fanuc",
+          "start_joint_angles_deg": [
+            -67.7,
+            -18.3,
+            -23.6,
+            -78.2,
+            -26.1,
+            173.3
+          ]
+        },
+        "close_up_camera_resolution_px": [
+          1280,
+          720
+        ],
+        "shelves_searched_per_item": {
+          "water bottle": [
+            "right-shelve"
+          ],
+          "coffee mug": [
+            "right-shelve"
+          ],
+          "pen": [
+            "left-shelve"
+          ],
+          "notebook": [
+            "right-shelve"
+          ],
+          "ball": [
+            "left-shelve"
+          ],
+          "umbrella": [
+            "center"
+          ],
+          "saddle cover": [
+            "left-shelve"
+          ],
+          "t-shirt": [
+            "right-bar",
+            "left-bar"
+          ]
+        },
+        "tactile_release_default_threshold": 20,
+        "wheel_spin_trigger": "D415 attentive-watch (YOLO approach + static confirm)",
+        "tactile_grip_threshold_sigma": 3
+      }
+    }
   }
 ]

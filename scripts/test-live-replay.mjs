@@ -1,7 +1,7 @@
 /**
  * End-to-end check of the Live page logic against recorded robot logs.
  *
- *   node scripts/test-live-replay.mjs [path/to/log.txt]      (default: grocery_logs.txt)
+ *   node scripts/test-live-replay.mjs [path/to/log.txt]      (default: recent_grocery_logs.txt)
  *
  * 1. starts the real relay (ws-test-server.js) in replay mode, writing into a
  *    throw-away data folder seeded with a copy of data/orders.json
@@ -25,7 +25,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(import.meta.url)
 const WebSocket = require('ws')
 
-const logFile = path.resolve(process.argv[2] || path.join(ROOT, 'grocery_logs.txt'))
+// recent_grocery_logs.txt is the untagged recorded log; grocery_logs.txt is whatever the robot last produced
+const logFile = path.resolve(process.argv[2] || path.join(ROOT, 'recent_grocery_logs.txt'))
 const PORT = 8791
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'servai-replay-'))
 const dataDir = path.join(tmp, 'data')
@@ -40,6 +41,7 @@ export { liveReducer, liveInitialState } from ${JSON.stringify(path.join(ROOT, '
 export { deriveNowServing, deriveSteps, deriveLog } from ${JSON.stringify(path.join(ROOT, 'src/lib/liveView.js').replace(/\\/g, '/'))}
 export * as stats from ${JSON.stringify(path.join(ROOT, 'src/lib/orderStats.js').replace(/\\/g, '/'))}
 export * as heat from ${JSON.stringify(path.join(ROOT, 'src/lib/heatmap.js').replace(/\\/g, '/'))}
+export * as orderSteps from ${JSON.stringify(path.join(ROOT, 'src/lib/orderSteps.js').replace(/\\/g, '/'))}
 export * as translate from ${JSON.stringify(path.join(ROOT, 'src/lib/logTranslate.js').replace(/\\/g, '/'))}
 `)
 const bundle = path.join(tmp, 'app.mjs')
@@ -209,6 +211,23 @@ try {
   check(ro.today.recent.length === Math.min(2, ro.today.total), 'Today so far: two most recent orders')
   const times = await get(`/api/orders/times?from=${dayStr}&to=${dayStr}`)
   check(times.orders.length >= expected.total, 'heatmap endpoint returns the day’s orders', [times.orders.length, expected.total])
+
+  // ── Saved-order drawer: the same step rows as the Live pipeline, for every saved order ──
+  {
+    let rowsChecked = 0
+    for (const o of written) {
+      const rows = App.orderSteps.deriveOrderSteps(o, written)
+      rowsChecked += rows.length
+      const junk = rows.filter(r => [r.summary, r.dur, r.typ, r.why, r.badge].some(t => /undefined|NaN|\[object/.test(String(t))))
+      if (junk.length) check(false, `order ${o.id}: step rows read cleanly`, junk[0])
+      if (o.status === 'failed') check(rows.some(r => r.state === 'fail'), `order ${o.id}: a failed order shows a failed step`, rows.map(r => r.state))
+      if (o.status === 'success') check(!rows.some(r => r.state === 'fail'), `order ${o.id}: a delivered order shows no failed step`)
+      const tries = rows.find(r => r.key === 'grasping')?.attempts
+      if (tries) check(tries.length === o.steps.filter(s => s.phase === 'grasping').length, `order ${o.id}: grasp tries match the saved steps`)
+    }
+    console.log(`
+Saved-order drawer: ${written.length} orders → ${rowsChecked} step rows checked`)
+  }
 
   // ── History heatmap against the real order history ─────────────────────────
   {

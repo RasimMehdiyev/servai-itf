@@ -1,1 +1,7 @@
 node_modules/
+# raw robot logs saved by the relay
+data/logs/
+data/replay/
+__pycache__/
+data/*.before-run-details
+data/replay/**/*.before-run-details

@@ -1,0 +1,81 @@
+{
+  "imageId": "fail_1792760405873642197_d415",
+  "imageReceivedAt": "2026-10-23T13:00:05.782Z",
+  "windowFrom": "2026-10-23T12:59:35.782Z",
+  "windowTo": "2026-10-23T13:00:10.782Z",
+  "caption": "Hardware fault: idle: controller fault (Fault(type=<FaultType.HARDWARE_UNAVA",
+  "events": [
+    {
+      "serverTs": "2026-10-23T12:59:37.961Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "BEGIN",
+      "detail": "operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:38.673Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "SUCCESS",
+      "detail": "waypoint 'critic-holding-item-check-waypoint' recorded from live pose",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:42.276Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "BEGIN",
+      "detail": "operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:59:42.983Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "SUCCESS",
+      "detail": "waypoint 'critic-holding-item-check-waypoint' recorded from live pose",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:00.522Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "ARM_GATE",
+      "status": "SUCCESS",
+      "detail": "operator-goto: ARM gate latched — GO tap taken as the operator's resume decision, motion permitted",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:04.164Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:05.747Z",
+      "type": "system_fault",
+      "component": null,
+      "action": null,
+      "status": "FAIL",
+      "detail": "idle: controller fault (Fault(type=<FaultType.HARDWARE_UNAVAILABLE: 'hardware_unavailable'>, message='driver refused motion: in_error — Press RESET on the teach pendant to clear the latched alarm.', t_wall=1792760405.6610885)); halting gest",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:00:05.776Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

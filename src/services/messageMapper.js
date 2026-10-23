@@ -11,6 +11,7 @@
  */
 
 import { friendlyWaypoint, translateEvent, translateFault, rawText } from '../lib/logTranslate'
+import { applyCritic, resetCritic } from '../lib/critic'
 
 export const PIPELINE = [
   { key: 'scene_scan',    title: 'Scanning the scene',   components: ['SCENE_SCAN'] },
@@ -19,7 +20,7 @@ export const PIPELINE = [
   { key: 'closeup_move',  title: 'Moving closer',        components: ['CLOSEUP_MOVE'] },
   { key: 'analyzing',     title: 'Analyzing the grasp',  components: ['CLOSEUP_MOLMO', 'CLOSEUP_REFINE', 'CLOSEUP_LIFT', 'SYNTHESISE', 'VISUALISE'] },
   { key: 'grasping',      title: 'Picking up',           components: ['EXECUTE_GRASP', 'CLOSEUP_RETRY'] },
-  { key: 'transit',       title: 'Bringing it over',     components: ['HANDOVER_TRANSIT', 'HANDOVER_MOVE'] },
+  { key: 'transit',       title: 'Bringing it over',     components: ['ITEM_CHECK', 'HANDOVER_TRANSIT', 'HANDOVER_MOVE'] },
   { key: 'release',       title: 'Handing over',         components: ['HANDOVER_RELEASE'] },
   { key: 'returning',     title: 'Returning',            components: ['HANDOVER_RETURN', 'RETURN_HOME'] },
 ]
@@ -44,6 +45,7 @@ function progressFromComponent(component, status) {
     'VISUALISE':        { milestone: 0, fraction: 0.54 },
     'EXECUTE_GRASP':    { milestone: 0, fraction: 0.58 },
     'CLOSEUP_RETRY':    { milestone: 0, fraction: 0.55 },
+    'ITEM_CHECK':       { milestone: 1, fraction: 0.68 },
     'HANDOVER_TRANSIT': { milestone: 1, fraction: 0.72 },
     'HANDOVER_MOVE':    { milestone: 1, fraction: 0.80 },
     'HANDOVER_RELEASE': { milestone: 2, fraction: 0.92 },
@@ -104,6 +106,13 @@ function friendlyFailureMessage(event, data) {
   const d = detail.toLowerCase()
   const itemName = data?._itemName || 'the item'
 
+  // the arm's controller faulted: that, not the step that happened to be running, is the reason
+  if (data?._armFault && (component === 'CYCLE' || component === 'HANDOVER_RELEASE' || component === 'GRIPPER')) {
+    return data._armFault.plain
+  }
+  if (component === 'ITEM_CHECK') return 'The AI Judge could not confirm the item in the gripper'
+  if (d.includes('gripper_open')) return 'The gripper did not open to release the item'
+
   if (d.includes('keyboardinterrupt') || d.includes('keyboard interrupt') || d.includes('operator abort')) {
     return 'Operator aborted the handover'
   }
@@ -155,6 +164,9 @@ function deriveCardState(data, event) {
   }
 
   if (event.type === 'phase') {
+    if (event.status === 'FAIL' && event.component === 'ITEM_CHECK') {
+      return { state: 'orange', failure: { level: 'orange', message: friendlyFailureMessage(event, data), ts, component: event.component } }
+    }
     if (event.status === 'FAIL') {
       const d = event.detail || ''
       // Operator abort (KeyboardInterrupt) → orange, not red
@@ -226,6 +238,7 @@ function applyCore(currentData, message) {
       _stageDebugMessages: {},
       _activeStageIndex: -1,
       _cardState: 'green',
+      _armFault: null,
       _itemName: null,
       _cycleStartedAt: message._cycleStartedAt || Date.now(),
       _motionDuration: null,
@@ -474,11 +487,9 @@ function applyCore(currentData, message) {
   // Between-cycle states (idle, calibrating, wheel watching, wheel spun)
   // belong to "no order is being served right now". Reset failure-bearing
   // fields so the previous cycle's red/orange colour doesn't leak through.
-  const interCycleReset = {
-    _cardState: 'green',
-    _cycleFailures: [],
-    attentionLevel: 'ok',
-  }
+  const interCycleReset = data._armFault
+    ? { _cardState: 'red', _cycleFailures: data._cycleFailures || [], attentionLevel: 'needs_attention' }
+    : { _cardState: 'green', _cycleFailures: [], attentionLevel: 'ok' }
 
   // ── system_state (idle, calibrating — from throttled broadcasts) ─────────
   if (type === 'system_state') {
@@ -488,7 +499,7 @@ function applyCore(currentData, message) {
       liveStatus: 'live',
       _systemState: message.state,
       explanationTitle: 'STATUS',
-      explanationText: message.state === 'idle'
+      explanationText: data._armFault ? data._armFault.plain : message.state === 'idle'
         ? 'Waiting for next task…'
         : data.explanationText,
     }
@@ -552,6 +563,20 @@ function applyCore(currentData, message) {
 
   // ── system_fault (bridge fault, executor fault — recoverable) ────────────
   if (type === 'system_fault') {
+    if (message.status === 'FAIL' && message.severity === 'red') {
+      // The arm's controller faulted. It stays faulted until a person restarts it (or the robot reports
+      // that motion is possible again), so this is remembered beyond the order it happened in.
+      const plain = message.plain || message.detail || 'The arm reported a fault.'
+      const prev = data._armFault
+      return {
+        ...data,
+        _cardState: 'red',
+        _armFault: { plain: prev ? prev.plain : plain, latest: plain, ts: prev?.ts || message.ts, count: (prev?.count || 0) + 1, refuses: !!prev?.refuses || /refuses/.test(plain) },
+        _cycleFailures: appendFailure(data, { level: 'red', message: plain, ts: message.ts, component: 'ARM' }),
+        attentionLevel: 'needs_attention',
+        explanationText: plain,
+      }
+    }
     if (message.status === 'FAIL') {
       return {
         ...data,
@@ -565,10 +590,12 @@ function applyCore(currentData, message) {
 
   // ── fault_recovery (bridge recovered from fault) ─────────────────────────
   if (type === 'fault_recovery') {
+    const armBack = !!data._armFault
     return {
       ...data,
-      _cardState: data._cardState === 'orange' ? 'green' : data._cardState,
-      attentionLevel: data._cardState === 'orange' ? 'ok' : data.attentionLevel,
+      _armFault: null,
+      _cardState: data._cardState === 'orange' || armBack ? 'green' : data._cardState,
+      attentionLevel: data._cardState === 'orange' || armBack ? 'ok' : data.attentionLevel,
       explanationText: 'Fault recovered. Continuing…',
     }
   }
@@ -656,6 +683,12 @@ function extractPhaseDescription(msg, data) {
     if (status === 'SUCCESS') return 'New viewpoint reached'
     return null
   }
+  if (component === 'ITEM_CHECK') {
+    if (status === 'BEGIN') return 'Carrying it to the AI Judge’s check…'
+    if (status === 'SUCCESS') return 'AI Judge confirmed the grip'
+    if (status === 'FAIL') return 'AI Judge could not confirm the grip'
+    return null
+  }
   if (component === 'HANDOVER_TRANSIT') {
     if (status === 'SUCCESS') return 'At transit waypoint'
     if (status === 'BEGIN') return 'Transiting…'
@@ -725,6 +758,8 @@ export function newEvidence() {
     retryMax: null,
     collisions: 0,
     handoverBlocked: false,
+    person: null,        // was a person found at the handover desk? (null = not known)
+    releaseReason: null, // why the gripper opened at the handover ("tug": the customer pulled the item out)
     lastWp: null,        // waypoint of the latest SEARCH_DETECT (SUCCESS lines omit it)
   }
 }
@@ -742,6 +777,9 @@ export function trackEvidence(prev, msg) {
   if (msg.type === 'collision_warning') {
     ev.collisions = (ev.collisions || 0) + 1
     return ev
+  }
+  if (msg.type === 'handover') {
+    return msg.person === null || msg.person === undefined ? prev : { ...ev, person: msg.person }
   }
   if (msg.type !== 'phase') return prev
 
@@ -805,6 +843,9 @@ export function trackEvidence(prev, msg) {
     }
   } else if (component === 'HANDOVER_MOVE' && status === 'FAIL') {
     ev.handoverBlocked = true
+  } else if (component === 'HANDOVER_RELEASE' && status === 'SUCCESS') {
+    const m = detail.match(/release_reason=(\w+)/)
+    if (m) ev.releaseReason = m[1]
   }
   return ev
 }
@@ -835,12 +876,25 @@ function trackStage(info, cursor, msg) {
 const MAX_LOG_ROWS = 40
 
 export function applyMessageToScenario(currentData, message) {
+  // The AI Judge's events are not the robot's: they have their own state (`_critic`) and log rows
+  if (message?.type === 'critic') return applyCritic(currentData, message)
+
+  // What the relay worked out about this order so far: where the item is, every grasp attempt (see runDetails.cjs)
+  if (message?.type === 'run_details') return { ...currentData, _runDetails: message.details }
+
+  // A picture the robot took when something went wrong (the file itself is served by the relay)
+  if (message?.type === 'failure_image') {
+    const have = currentData._failureImages || []
+    if (have.some(i => i.imageId === message.imageId)) return currentData
+    return { ...currentData, _failureImages: [...have, { imageId: message.imageId, camera: message.camera, description: message.description, component: message.component, caption: message.caption, ts: message.ts }] }
+  }
+
   const next = applyCore(currentData, message)
   if (!message) return next
   const type = message.type
 
   if (type === 'cycle_start') {
-    return { ...next, _stageInfo: {}, _ev: newEvidence(), _log: [], _stageCursor: null, _lastEvent: null, _cycleEndedAt: null }
+    return resetCritic({ ...next, _failureImages: [], _runDetails: null, _stageInfo: {}, _ev: newEvidence(), _log: [], _stageCursor: null, _lastEvent: null, _cycleEndedAt: null })
   }
 
   // Ignore anything that arrives before the first real cycle (startup scans etc.)
@@ -851,7 +905,7 @@ export function applyMessageToScenario(currentData, message) {
   let log = next._log || []
   let changed = false
 
-  if (type === 'phase' || type === 'collision_warning') {
+  if (type === 'phase' || type === 'collision_warning' || type === 'handover') {
     const ev2 = trackEvidence(ev, message)
     if (ev2 !== ev) { ev = ev2; changed = true }
   }

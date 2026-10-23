@@ -1,0 +1,1092 @@
+2026-10-23T12:49:19.490Z | WORKFLOW | CYCLE | BEGIN | cycle 1 starting
+2026-10-23T12:49:19.491Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:19.494Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='water bottle'
+2026-10-23T12:49:19.495Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'blue white cylindrical bottle'
+2026-10-23T12:49:19.495Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:23.096Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+2026-10-23T12:49:23.398Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:24.252Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:24.352Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 59 raw detections → 10 cluster(s); 10 survived vote≥2 [votes=6,6,6,6,6,6,6,6,6,5]
+2026-10-23T12:49:24.353Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+2026-10-23T12:49:24.353Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 10 representative(s) at 'right-shelve'
+2026-10-23T12:49:24.392Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#6(d=71.5cm,score=0.81), #4(d=74.9cm,score=0.86) → anchor [0.926, -0.151, 1.651] m
+2026-10-23T12:49:24.392Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T12:49:24.393Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:24.455Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+2026-10-23T12:49:24.456Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+2026-10-23T12:49:25.558Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.10 s; selected (953.6, 396.7)
+2026-10-23T12:49:25.559Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+2026-10-23T12:49:25.716Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.852 region=22937px body=22937px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (10 body / 0 region cand)
+2026-10-23T12:49:25.717Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T12:49:25.892Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T12:49:25.892Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T12:49:25.913Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T12:49:25.913Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T12:49:25.914Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T12:49:26.395Z | SYSTEM | PLANNER:GRASP_PLAN | FAIL | failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset
+2026-10-23T12:49:26.402Z | IMAGE | fail_1792759766395505915_d415 | failure capture from d415 | <base64 omitted, 132468 chars; image saved under data/images>
+2026-10-23T12:49:26.404Z | WORKFLOW | EXECUTE_GRASP | FAIL | failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset
+2026-10-23T12:49:26.407Z | IMAGE | fail_1792759766404150137_d415 | failure capture from d415 | <base64 omitted, 132468 chars; image saved under data/images>
+2026-10-23T12:49:26.407Z | WORKFLOW | CLOSEUP_RETRY | BEGIN | retry 1/5 (cause=grasp:grasp, remaining=fan-generate)
+2026-10-23T12:49:26.408Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:26.414Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | downward retry viewpoint (steepest-first) tiers [19.9, 14.9, 9.9]° over 3×3 (distance × azimuth) aimed down at the object (d0=0.69 m, pitch0=15°, view_fan override ['azimuth_deg', 'distance_offsets_m', 'lookdown_deg'])
+2026-10-23T12:49:27.042Z | SYSTEM | PLANNER:PLAN_POSE | SUCCESS | close-up goalset plan ok (27 candidates, dt=0.625 s)
+2026-10-23T12:49:27.042Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:29.896Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 5 → close-up viewpoint (goalset): trajectory complete
+2026-10-23T12:49:30.199Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:49:30.243Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | picked candidate #5/27 (27 after filter); look-down=20°; tcp=[0.377, -0.132, 1.78] m, camera=[0.279, -0.078, 1.886] m
+2026-10-23T12:49:30.244Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+2026-10-23T12:49:31.338Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.09 s; selected (851.2, 435.6)
+2026-10-23T12:49:31.339Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+2026-10-23T12:49:31.483Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.895 region=22366px body=22366px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (10 body / 0 region cand)
+2026-10-23T12:49:31.483Z | WORKFLOW | CLOSEUP_RETRY | SUCCESS | retry 1/5 reached new viewpoint
+2026-10-23T12:49:31.484Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T12:49:31.589Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T12:49:31.589Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T12:49:31.650Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T12:49:31.651Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T12:49:31.651Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T12:49:33.880Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:49:38.418Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+2026-10-23T12:49:41.384Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T12:49:45.438Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('water bottle') size=(0.06, 0.25, 0.06) offset=(0.0, -0.05, 0.0)
+2026-10-23T12:49:45.439Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=11)
+2026-10-23T12:49:45.441Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm); chose primary (goalset_idx=11, width=85.0 mm)
+2026-10-23T12:49:49.544Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+2026-10-23T12:49:49.545Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' for critic verify
+2026-10-23T12:49:58.161Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T12:50:00.668Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'water bottle' (no alert in 2.5s) → handover
+2026-10-23T12:50:00.668Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:50:00.669Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T12:50:05.185Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T12:50:05.185Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T12:50:05.187Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T12:50:06.371Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T12:50:06.373Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T12:50:06.379Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T12:50:07.744Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T12:50:09.666Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-left (best cos=0.71, threshold 0.40)
+2026-10-23T12:50:09.666Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-left match didn't lock — resuming sweep
+2026-10-23T12:50:10.433Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan center: preempted on match
+2026-10-23T12:50:12.281Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-center (best cos=0.75, threshold 0.40)
+2026-10-23T12:50:12.281Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-center match didn't lock — resuming sweep
+2026-10-23T12:50:12.881Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan right: preempted on match
+2026-10-23T12:50:14.700Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-right (best cos=0.74, threshold 0.40)
+2026-10-23T12:50:14.700Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-right match didn't lock — resuming sweep
+2026-10-23T12:50:15.288Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan center: preempted on match
+2026-10-23T12:50:17.189Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-center (best cos=0.75, threshold 0.40)
+2026-10-23T12:50:17.189Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-center match didn't lock — resuming sweep
+2026-10-23T12:50:17.738Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T12:50:18.743Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-left via torso (cos=0.63)
+2026-10-23T12:50:19.451Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.38, -1.48, 1.5]
+2026-10-23T12:50:26.274Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+2026-10-23T12:50:26.274Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+2026-10-23T12:50:26.275Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T12:50:27.780Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T12:50:28.782Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T12:50:28.846Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T12:50:33.972Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T12:50:38.779Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T12:50:38.780Z | WORKFLOW | CYCLE | SUCCESS | cycle 1 complete
+2026-10-23T12:50:38.782Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:50:38.782Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T12:50:45.421Z | WORKFLOW | IDLE | BEGIN | tick #8: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.8, 0.0])
+2026-10-23T12:50:48.327Z | WORKFLOW | IDLE | BEGIN | tick #9: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.5, -3.3])
+2026-10-23T12:50:48.434Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:50:49.076Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:50:51.204Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:50:52.270Z | WORKFLOW | IDLE | BEGIN | tick #10: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.4, -4.0])
+2026-10-23T12:50:53.563Z | WORKFLOW | IDLE | BEGIN | tick #11: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.7, 8.6])
+2026-10-23T12:50:56.462Z | WORKFLOW | IDLE | BEGIN | tick #12: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.3, 4.9])
+2026-10-23T12:50:58.322Z | WORKFLOW | IDLE | BEGIN | tick #13: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.6, 0.0])
+2026-10-23T12:50:59.629Z | WORKFLOW | IDLE | BEGIN | tick #14: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.1, 0.0])
+2026-10-23T12:51:01.852Z | WORKFLOW | IDLE | BEGIN | tick #15: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.6, -0.0])
+2026-10-23T12:51:02.087Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:51:02.866Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:51:13.240Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=116.4px peak=127.5px/s frames=87)
+2026-10-23T12:51:13.733Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T12:51:15.579Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T12:51:16.307Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T12:51:17.086Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 't-shirt' → grasp 't-shirt'
+2026-10-23T12:51:18.090Z | WORKFLOW | CYCLE | BEGIN | cycle 2 starting
+2026-10-23T12:51:18.091Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:51:18.213Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='t-shirt'
+2026-10-23T12:51:18.214Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-bar' (#0) — looking for 'clothes hanger'
+2026-10-23T12:51:18.214Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:51:21.683Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-bar': trajectory complete
+2026-10-23T12:51:21.992Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:51:22.818Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:51:22.885Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 52 raw detections → 10 cluster(s); 10 survived vote≥2 [votes=6,6,6,6,6,5,5,5,5,2]
+2026-10-23T12:51:22.969Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-bar)) — grasp-area transits slowed to the validated envelope
+2026-10-23T12:51:22.969Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 10 representative(s) at 'right-bar'
+2026-10-23T12:51:23.009Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#2(d=65.9cm,score=0.90), #8(d=67.6cm,score=0.71) → anchor [0.99, -0.076, 1.175] m
+2026-10-23T12:51:23.010Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T12:51:23.011Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:51:23.053Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.451, -0.089, 1.253] m (image 1280×720)
+2026-10-23T12:51:23.053Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost/central wooden or plastic shirt hanger. Single point.'
+2026-10-23T12:51:24.262Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.21 s; selected (681.0, 255.6)
+2026-10-23T12:51:24.263Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 't-shirt' (body_prompt='clothes hanger')
+2026-10-23T12:51:24.388Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.871 region=8556px body=8556px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (6 body / 0 region cand)
+2026-10-23T12:51:24.389Z | WORKFLOW | SYNTHESISE | BEGIN | GraspGenX synthesis (segmented depth → reachable world-tcp grasps)
+2026-10-23T12:51:26.162Z | WORKFLOW | SYNTHESISE | SUCCESS | graspgen goalset=13/13 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T12:51:26.162Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T12:51:26.187Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T12:51:26.188Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=13/13 accepted
+2026-10-23T12:51:26.188Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=13 standoff=120 mm lift=50.0 mm (world+Z + 30 mm diagonal pull) + 50 mm (SDF+centering retract, λ=1.00)
+2026-10-23T12:51:29.501Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:51:32.533Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=1)
+2026-10-23T12:51:35.679Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T12:51:37.784Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('t-shirt') size=(0.03, 0.1, 0.1) offset=(0.0, -0.1, 0.0)
+2026-10-23T12:51:37.789Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=4)
+2026-10-23T12:51:37.790Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=MID (POSITION 75, ~60 mm) [per-object override]; chose primary (goalset_idx=4, width=85.0 mm)
+2026-10-23T12:51:40.909Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-bar': trajectory complete
+2026-10-23T12:51:40.909Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-bar' for critic verify
+2026-10-23T12:51:49.540Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T12:51:52.054Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 't-shirt' (no alert in 2.5s) → handover
+2026-10-23T12:51:52.054Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:51:52.054Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T12:51:56.477Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T12:51:56.477Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T12:51:56.478Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T12:51:57.669Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T12:51:57.669Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.3, -85.2, 16.1, 173.4] deg
+2026-10-23T12:51:57.671Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T12:51:58.342Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T12:52:00.174Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-left (best cos=0.62, threshold 0.40)
+2026-10-23T12:52:00.174Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-left match didn't lock — resuming sweep
+2026-10-23T12:52:00.917Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan right: preempted on match
+2026-10-23T12:52:01.994Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-right via torso (cos=0.56)
+2026-10-23T12:52:02.666Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.37, -1.53, 1.49]
+2026-10-23T12:52:09.581Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+2026-10-23T12:52:09.582Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+2026-10-23T12:52:09.582Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T12:52:10.582Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T12:52:11.583Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T12:52:11.617Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T12:52:16.773Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T12:52:20.088Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T12:52:20.155Z | WORKFLOW | CYCLE | SUCCESS | cycle 2 complete
+2026-10-23T12:52:20.159Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:52:20.159Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T12:52:23.433Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:52:23.877Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:52:29.105Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=62.8px peak=142.8px/s frames=66)
+2026-10-23T12:52:29.890Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T12:52:31.535Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T12:52:32.298Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T12:52:33.027Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 't-shirt' → grasp 't-shirt'
+2026-10-23T12:52:33.031Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:52:33.031Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T12:52:35.256Z | WORKFLOW | IDLE | BEGIN | tick #16: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.7, 0.0])
+2026-10-23T12:52:35.472Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:52:36.197Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:52:38.312Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:52:38.774Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:52:39.354Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:52:51.362Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:52:51.525Z | WORKFLOW | IDLE | BEGIN | tick #17: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.1, -7.0])
+2026-10-23T12:52:51.654Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:52:52.093Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:53:04.102Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:53:04.222Z | WORKFLOW | IDLE | BEGIN | tick #18: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.6, 0.0])
+2026-10-23T12:53:04.321Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:53:04.757Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:53:16.760Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:53:16.955Z | WORKFLOW | IDLE | BEGIN | tick #19: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.3, 3.3])
+2026-10-23T12:53:17.062Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:53:17.501Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:53:29.508Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:53:29.629Z | WORKFLOW | IDLE | BEGIN | tick #20: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.4, 0.0])
+2026-10-23T12:53:29.716Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:53:30.188Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:53:42.195Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:53:42.294Z | WORKFLOW | IDLE | BEGIN | tick #21: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.1, 0.0])
+2026-10-23T12:53:42.310Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:53:42.770Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:53:51.039Z | WORKFLOW | IDLE | SUCCESS | wheel-spin event consumed; payload keys=['cos_sim', 'motion_peak', 'timestamp_ns']
+2026-10-23T12:53:52.875Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T12:53:53.691Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T12:53:54.484Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'coffee mug' → grasp 'coffee mug'
+2026-10-23T12:53:55.488Z | WORKFLOW | CYCLE | BEGIN | cycle 4 starting
+2026-10-23T12:53:55.489Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:53:55.501Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='coffee mug'
+2026-10-23T12:53:55.501Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'white coffee cup with blue grip and lid'
+2026-10-23T12:53:55.501Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:53:58.947Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+2026-10-23T12:53:59.250Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:54:00.020Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:54:00.049Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 33 raw detections → 6 cluster(s); 6 survived vote≥2 [votes=6,6,6,5,6,4]
+2026-10-23T12:54:00.050Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+2026-10-23T12:54:00.050Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 6 representative(s) at 'right-shelve'
+2026-10-23T12:54:00.066Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#3(d=71.5cm,score=0.89), #2(d=81.5cm,score=0.91) → anchor [0.95, 0.104, 1.636] m
+2026-10-23T12:54:00.066Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T12:54:00.068Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:54:00.089Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+2026-10-23T12:54:00.089Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost coffee cup with blue grip and lid. Single point.'
+2026-10-23T12:54:01.271Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.18 s; selected (710.4, 428.4)
+2026-10-23T12:54:01.271Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'coffee mug' (body_prompt='white coffee cup with blue grip and lid')
+2026-10-23T12:54:01.391Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.832 region=17738px body=17738px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (5 body / 0 region cand)
+2026-10-23T12:54:01.392Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T12:54:01.522Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T12:54:01.523Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T12:54:01.534Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T12:54:01.534Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T12:54:01.535Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T12:54:01.561Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | live target carve ACTIVE (28 cells; environment stays live)
+2026-10-23T12:54:03.155Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:54:06.146Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+2026-10-23T12:54:09.101Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=2): gripper close complete
+2026-10-23T12:54:13.254Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('coffee mug') size=(0.06, 0.18, 0.06) offset=(0.0, 0.0, 0.0)
+2026-10-23T12:54:13.263Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=13)
+2026-10-23T12:54:13.267Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm) [per-object override]; chose primary (goalset_idx=13, width=85.0 mm)
+2026-10-23T12:54:15.875Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+2026-10-23T12:54:15.876Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' for critic verify
+2026-10-23T12:54:24.587Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T12:54:27.104Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'coffee mug' (no alert in 2.5s) → handover
+2026-10-23T12:54:27.104Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T12:54:27.105Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T12:54:31.579Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T12:54:31.579Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T12:54:31.579Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T12:54:32.756Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T12:54:32.756Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T12:54:35.630Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no person seen — retreating to the handover-fallback waypoint
+2026-10-23T12:54:35.631Z | SYSTEM | EXECUTOR:PRESENT | FALLBACK | no recipient found — retreating to 'handover-fallback' to await pickup
+2026-10-23T12:54:38.295Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → handover-fallback 'handover-fallback': trajectory complete
+2026-10-23T12:54:38.296Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T12:54:40.974Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T12:54:41.975Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T12:54:42.076Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T12:54:45.132Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T12:54:50.345Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T12:54:50.347Z | WORKFLOW | CYCLE | SUCCESS | cycle 4 complete
+2026-10-23T12:54:50.348Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T12:54:50.348Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T12:54:53.727Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:54:54.176Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:55:06.179Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:55:06.451Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:55:07.370Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:55:19.389Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:55:19.624Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:55:20.580Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:55:32.587Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:55:32.907Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:55:33.748Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:55:40.219Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:55:41.252Z | WORKFLOW | IDLE | BEGIN | tick #22: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.6, 0.0])
+2026-10-23T12:55:43.996Z | WORKFLOW | IDLE | BEGIN | tick #23: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.8, 0.0])
+2026-10-23T12:55:45.477Z | WORKFLOW | IDLE | BEGIN | tick #24: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.2, 0.0])
+2026-10-23T12:55:45.584Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:55:46.237Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:55:58.241Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:55:58.485Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:55:59.496Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:56:11.501Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:56:12.146Z | WORKFLOW | IDLE | BEGIN | tick #25: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, 0.0])
+2026-10-23T12:56:14.846Z | WORKFLOW | IDLE | BEGIN | tick #26: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.1, -8.9])
+2026-10-23T12:56:15.852Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:56:16.369Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:56:23.891Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:56:24.742Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:56:25.420Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:56:37.428Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:56:37.562Z | WORKFLOW | IDLE | BEGIN | tick #27: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.2, 0.0])
+2026-10-23T12:56:37.566Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:56:38.002Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:56:48.769Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:56:48.884Z | SYSTEM | EXECUTOR:FAULT_RECOVER | FAIL | idle: controller fault (Fault(type=<FaultType.INTERNAL: 'internal'>, message='motion rejected (fault_reason=none)', t_wall=1792760197.569984)); halting gestures + recovering
+2026-10-23T12:56:48.888Z | IMAGE | fail_1792760208884035056_d415 | failure capture from d415 | <base64 omitted, 134660 chars; image saved under data/images>
+2026-10-23T12:56:48.995Z | SYSTEM | EXECUTOR:FAULT_RECOVER | SUCCESS | idle: controller recovered; re-anchoring to idle waypoint
+2026-10-23T12:56:49.118Z | WORKFLOW | IDLE | BEGIN | tick #28: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.4, -4.7])
+2026-10-23T12:56:49.840Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:56:50.381Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:56:52.517Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:56:53.413Z | WORKFLOW | IDLE | BEGIN | tick #29: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.9, 0.0])
+2026-10-23T12:56:53.647Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:56:54.393Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:57:00.848Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:57:01.189Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:57:01.879Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:57:06.155Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T12:57:06.258Z | WORKFLOW | IDLE | BEGIN | tick #30: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.7, 0.0])
+2026-10-23T12:57:07.701Z | WORKFLOW | IDLE | BEGIN | tick #31: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.8, 4.6])
+2026-10-23T12:57:10.416Z | WORKFLOW | IDLE | BEGIN | tick #32: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.8, 0.0])
+2026-10-23T12:57:13.130Z | WORKFLOW | IDLE | BEGIN | tick #33: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.6, 0.0])
+2026-10-23T12:57:14.807Z | WORKFLOW | IDLE | BEGIN | tick #34: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, 0.0])
+2026-10-23T12:57:16.707Z | WORKFLOW | IDLE | BEGIN | tick #35: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.8, -1.5])
+2026-10-23T12:57:18.398Z | WORKFLOW | IDLE | BEGIN | tick #36: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.8, 0.0])
+2026-10-23T12:57:19.789Z | WORKFLOW | IDLE | BEGIN | tick #37: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.6, -2.4])
+2026-10-23T12:57:21.518Z | WORKFLOW | IDLE | BEGIN | tick #38: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.2, 4.3])
+2026-10-23T12:57:23.162Z | WORKFLOW | IDLE | BEGIN | tick #39: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.5, 0.0])
+2026-10-23T12:57:25.678Z | WORKFLOW | IDLE | BEGIN | tick #40: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.4, -1.4])
+2026-10-23T12:57:27.051Z | WORKFLOW | IDLE | BEGIN | tick #41: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -1.2, 0.0])
+2026-10-23T12:57:29.142Z | WORKFLOW | IDLE | BEGIN | tick #42: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.4, 0.0])
+2026-10-23T12:57:29.258Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:57:29.936Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:57:41.946Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:57:42.173Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T12:57:42.908Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T12:57:54.915Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T12:57:55.085Z | SYSTEM | CAMERA_D415:SPIN_WATCH | SUCCESS | spin watch disabled by operator
+2026-10-23T12:57:55.270Z | WORKFLOW | IDLE | BEGIN | tick #43: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.7, 0.0])
+2026-10-23T12:57:56.885Z | WORKFLOW | IDLE | BEGIN | tick #44: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, -4.0])
+2026-10-23T12:57:58.103Z | SYSTEM | EXECUTOR:LOOKAROUND | SUCCESS | look-around disabled by operator
+2026-10-23T12:58:04.400Z | WORKFLOW | IDLE | BEGIN | operator-goto: driving to 'critic-holding-item-check'
+2026-10-23T12:58:07.710Z | WORKFLOW | IDLE | SUCCESS | operator-goto 'critic-holding-item-check': anchored at new joints
+2026-10-23T12:58:11.773Z | WORKFLOW | IDLE | SKIP | idle: TEACH PAUSE — keyswitch in T1/T2, holding still
+2026-10-23T12:59:38.091Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | BEGIN | operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still
+2026-10-23T12:59:38.803Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | SUCCESS | waypoint 'critic-holding-item-check-waypoint' recorded from live pose
+2026-10-23T12:59:42.409Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | BEGIN | operator-record: saving current pose as 'critic-holding-item-check-waypoint' — return the keyswitch to AUTO and hold still
+2026-10-23T12:59:43.114Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | SUCCESS | waypoint 'critic-holding-item-check-waypoint' recorded from live pose
+2026-10-23T13:00:00.645Z | WORKFLOW | IDLE | BEGIN | operator-goto: driving to 'critic-holding-item-check'
+2026-10-23T13:00:00.645Z | SYSTEM | EXECUTOR:ARM_GATE | SUCCESS | operator-goto: ARM gate latched — GO tap taken as the operator's resume decision, motion permitted
+2026-10-23T13:00:04.263Z | WORKFLOW | IDLE | FAIL | operator-goto 'critic-holding-item-check': move did not complete (motion refused / plan failed / preempted) — anchor unchanged
+2026-10-23T13:00:04.265Z | IMAGE | fail_1792760404263110558_d415 | failure capture from d415 | <base64 omitted, 128248 chars; image saved under data/images>
+2026-10-23T13:00:05.873Z | SYSTEM | EXECUTOR:FAULT_RECOVER | FAIL | idle: controller fault (Fault(type=<FaultType.HARDWARE_UNAVAILABLE: 'hardware_unavailable'>, message='driver refused motion: in_error — Press RESET on the teach pendant to clear the latched alarm.', t_wall=1792760405.6610885)); halting gestures + recovering
+2026-10-23T13:00:05.877Z | IMAGE | fail_1792760405873642197_d415 | failure capture from d415 | <base64 omitted, 127488 chars; image saved under data/images>
+2026-10-23T13:00:11.819Z | WORKFLOW | IDLE | SKIP | idle interrupted by user (Ctrl+C)
+2026-10-23T13:02:10.433Z | SYSTEM | CALIBRATION:OBJECT_CATALOG | SUCCESS | 8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json
+2026-10-23T13:02:10.434Z | SYSTEM | CAMERA_D415:ZENOH_SESSION | SUCCESS | Zenoh session open
+2026-10-23T13:02:10.437Z | SYSTEM | CALIBRATION:PREFLIGHT | BEGIN | probing D415 / MagTouch publishers (fail-fast)
+2026-10-23T13:02:10.569Z | SYSTEM | CALIBRATION:PREFLIGHT | SUCCESS | all required publishers / readers are live
+2026-10-23T13:02:10.570Z | SYSTEM | CAMERA_D415:FIRST_FRAME | BEGIN | waiting up to 10 s for first D415 RGB+depth frame on Zenoh
+2026-10-23T13:02:10.623Z | SYSTEM | CAMERA_D415:FIRST_FRAME | SUCCESS | first D415 frame 1280x720
+2026-10-23T13:02:10.623Z | SYSTEM | SAM3:STARTUP | BEGIN | connecting to grocery-perception-server + waiting for warmup
+2026-10-23T13:02:10.624Z | SYSTEM | SAM3:STARTUP | SUCCESS | perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}
+2026-10-23T13:02:11.874Z | SYSTEM | PLANNER:STARTUP | BEGIN | building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s
+2026-10-23T13:02:19.321Z | SYSTEM | PLANNER:STARTUP | SUCCESS | CuroboAdapter ready (voxels=on, IK backend=curobo)
+2026-10-23T13:02:19.323Z | SYSTEM | BRIDGE:CONNECT | BEGIN | opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)
+2026-10-23T13:02:35.803Z | SYSTEM | BRIDGE:CONNECT | SUCCESS | airo_fanuc driver up; joints [-86.9, -64.9, -29.5, -63.1, -38.2, 142.3] deg
+2026-10-23T13:02:35.815Z | SYSTEM | CALIBRATION:D415_INTRINSICS_AND_EXTRINSICS | SUCCESS | intrinsics + calibration loaded (1280x720)
+2026-10-23T13:02:35.816Z | SYSTEM | CALIBRATION:SEARCH_WAYPOINTS | SUCCESS | {'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}
+2026-10-23T13:02:35.816Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | BEGIN | opening + confirming the gripper before MagTouch calibration
+2026-10-23T13:02:36.649Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | SUCCESS | gripper confirmed fully open (attempt 1) — calibrating MagTouch baselines
+2026-10-23T13:02:36.650Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | BEGIN | starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)
+2026-10-23T13:02:39.040Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | SUCCESS | ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0
+2026-10-23T13:02:39.040Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | BEGIN | starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper confirmed open by the prelude — keep fingertip undisturbed)
+2026-10-23T13:02:44.046Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | FAIL | GripDetector calibration timed out (BLE reader not publishing?) — grasp stage will skip tactile verification
+2026-10-23T13:02:44.050Z | IMAGE | fail_1792760564046087272_d415 | failure capture from d415 | <base64 omitted, 129512 chars; image saved under data/images>
+2026-10-23T13:02:44.058Z | SYSTEM | CALIBRATION:GRASPGEN | SUCCESS | GraspGenX synthesis client open (server health is gated by the launcher)
+2026-10-23T13:02:44.079Z | SYSTEM | CALIBRATION:CRITIC | SUCCESS | VLM critic client up (single connection, both tasks)
+2026-10-23T13:02:45.065Z | SYSTEM | CALIBRATION:VISER | SUCCESS | viser on port 8080
+2026-10-23T13:02:45.066Z | SYSTEM | VOXELS:STARTUP | SUCCESS | voxel updater daemon started
+2026-10-23T13:02:45.871Z | SYSTEM | VOXELS:RESTORE | SUCCESS | voxel scene state restored from 151 s ago — startup scan skipped, demo continues with the previous scene
+2026-10-23T13:02:45.871Z | SYSTEM | CALIBRATION:BRINGUP | SUCCESS | initialisation complete
+2026-10-23T13:02:45.879Z | SYSTEM | CALIBRATION:WHEEL_SETUP | SUCCESS | wheel object detector ready (8 pickable icons)
+2026-10-23T13:02:45.890Z | SYSTEM | CALIBRATION:IDLE_BEHAVIOR | SUCCESS | idle behaviour up (spin-trigger=D415 attentive-watch (YOLO approach + static confirm))
+2026-10-23T13:02:45.891Z | SYSTEM | CALIBRATION:SCAN_WAYPOINT | SKIP | voxel state restored from the previous process — startup scan skipped
+2026-10-23T13:02:45.891Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:02:45.891Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:02:47.781Z | WORKFLOW | IDLE | BEGIN | tick #1: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.9, 0.8])
+2026-10-23T13:02:50.165Z | WORKFLOW | IDLE | BEGIN | tick #2: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, -9.0])
+2026-10-23T13:02:51.929Z | WORKFLOW | IDLE | BEGIN | tick #3: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.5, 2.3])
+2026-10-23T13:02:54.617Z | WORKFLOW | IDLE | BEGIN | tick #4: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.3, 8.5])
+2026-10-23T13:02:57.120Z | WORKFLOW | IDLE | BEGIN | tick #5: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.8, 0.0])
+2026-10-23T13:02:58.494Z | WORKFLOW | IDLE | BEGIN | tick #6: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.5, 0.0])
+2026-10-23T13:03:01.523Z | WORKFLOW | IDLE | BEGIN | tick #7: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.5, -1.8])
+2026-10-23T13:03:01.736Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:03:02.634Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:03:07.473Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:03:08.313Z | WORKFLOW | IDLE | BEGIN | tick #8: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.4, 0.0])
+2026-10-23T13:03:10.382Z | WORKFLOW | IDLE | BEGIN | tick #9: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.4, -1.6])
+2026-10-23T13:03:12.684Z | WORKFLOW | IDLE | BEGIN | tick #10: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.8, 0.0])
+2026-10-23T13:03:13.505Z | WORKFLOW | IDLE | BEGIN | operator-goto: driving to 'critic-holding-item-check-waypoint'
+2026-10-23T13:03:15.033Z | WORKFLOW | IDLE | SUCCESS | operator-goto 'critic-holding-item-check-waypoint': anchored at new joints
+2026-10-23T13:03:15.038Z | WORKFLOW | IDLE | BEGIN | tick #11: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.6, 3.6])
+2026-10-23T13:03:17.787Z | WORKFLOW | IDLE | BEGIN | tick #12: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 7.0, 0.0])
+2026-10-23T13:03:19.256Z | WORKFLOW | IDLE | BEGIN | operator-goto: driving to 'critic-holding-item-check'
+2026-10-23T13:03:21.894Z | WORKFLOW | IDLE | FAIL | operator-goto 'critic-holding-item-check': move did not complete (motion refused / plan failed / preempted) — anchor unchanged
+2026-10-23T13:03:21.899Z | IMAGE | fail_1792760601894093317_d415 | failure capture from d415 | <base64 omitted, 98904 chars; image saved under data/images>
+2026-10-23T13:03:21.899Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:03:22.379Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:03:34.380Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:03:34.685Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:03:35.448Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:03:47.449Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:03:47.673Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:03:48.556Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:04:00.563Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:04:00.859Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:04:01.722Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:04:13.730Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:04:14.027Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:04:14.871Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:04:26.875Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:04:27.816Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:04:28.860Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:04:30.988Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:04:34.104Z | WORKFLOW | IDLE | BEGIN | tick #13: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.6, 0.0])
+2026-10-23T13:04:35.977Z | WORKFLOW | IDLE | BEGIN | tick #14: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, 0.0])
+2026-10-23T13:04:38.162Z | WORKFLOW | IDLE | BEGIN | tick #15: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.5, 0.0])
+2026-10-23T13:04:40.430Z | WORKFLOW | IDLE | BEGIN | tick #16: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.0, 2.5])
+2026-10-23T13:04:42.333Z | WORKFLOW | IDLE | BEGIN | tick #17: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.0, 0.0])
+2026-10-23T13:04:44.116Z | WORKFLOW | IDLE | BEGIN | tick #18: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, -8.2])
+2026-10-23T13:04:46.713Z | WORKFLOW | IDLE | BEGIN | tick #19: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.8, 0.0])
+2026-10-23T13:04:48.936Z | WORKFLOW | IDLE | BEGIN | tick #20: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.9, 0.0])
+2026-10-23T13:04:50.821Z | WORKFLOW | IDLE | BEGIN | tick #21: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -7.0, 0.0])
+2026-10-23T13:04:53.579Z | WORKFLOW | IDLE | BEGIN | tick #22: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.9, 0.0])
+2026-10-23T13:04:54.118Z | WORKFLOW | IDLE | BEGIN | tick #23: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.9, 0.0])
+2026-10-23T13:04:55.797Z | WORKFLOW | IDLE | BEGIN | tick #24: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.8, 0.0])
+2026-10-23T13:04:57.272Z | WORKFLOW | IDLE | BEGIN | tick #25: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.7, 0.0])
+2026-10-23T13:04:59.896Z | WORKFLOW | IDLE | BEGIN | tick #26: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.3, 3.5])
+2026-10-23T13:05:02.473Z | WORKFLOW | IDLE | BEGIN | tick #27: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.6, 0.0])
+2026-10-23T13:05:04.298Z | WORKFLOW | IDLE | BEGIN | tick #28: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.7, 7.4])
+2026-10-23T13:05:06.446Z | WORKFLOW | IDLE | BEGIN | tick #29: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.1, 0.0])
+2026-10-23T13:05:09.444Z | WORKFLOW | IDLE | BEGIN | tick #30: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.5, 0.0])
+2026-10-23T13:05:10.607Z | WORKFLOW | IDLE | BEGIN | tick #31: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.4, -8.4])
+2026-10-23T13:05:12.218Z | WORKFLOW | IDLE | BEGIN | tick #32: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.6, 0.0])
+2026-10-23T13:05:14.106Z | WORKFLOW | IDLE | BEGIN | tick #33: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -1.8, -2.4])
+2026-10-23T13:05:15.962Z | WORKFLOW | IDLE | BEGIN | tick #34: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.3, 0.3])
+2026-10-23T13:05:17.243Z | WORKFLOW | IDLE | BEGIN | tick #35: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.4, -4.0])
+2026-10-23T13:05:18.562Z | WORKFLOW | IDLE | BEGIN | tick #36: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.6, -7.8])
+2026-10-23T13:05:20.275Z | WORKFLOW | IDLE | BEGIN | tick #37: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.9, 0.0])
+2026-10-23T13:05:22.065Z | WORKFLOW | IDLE | BEGIN | tick #38: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -7.0, 0.0])
+2026-10-23T13:05:23.493Z | WORKFLOW | IDLE | BEGIN | tick #39: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 7.0, 0.0])
+2026-10-23T13:05:26.376Z | WORKFLOW | IDLE | BEGIN | tick #40: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, 0.0])
+2026-10-23T13:05:28.733Z | WORKFLOW | IDLE | BEGIN | tick #41: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.3, 6.2])
+2026-10-23T13:05:31.274Z | WORKFLOW | IDLE | BEGIN | tick #42: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.4, 0.0])
+2026-10-23T13:05:32.659Z | WORKFLOW | IDLE | BEGIN | tick #43: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.2, 0.0])
+2026-10-23T13:05:34.844Z | WORKFLOW | IDLE | BEGIN | tick #44: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.9, 3.1])
+2026-10-23T13:05:37.404Z | WORKFLOW | IDLE | BEGIN | tick #45: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.6, 0.0])
+2026-10-23T13:05:39.780Z | WORKFLOW | IDLE | BEGIN | tick #46: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.6, 0.0])
+2026-10-23T13:05:41.725Z | WORKFLOW | IDLE | BEGIN | tick #47: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.1, 0.0])
+2026-10-23T13:05:43.798Z | WORKFLOW | IDLE | BEGIN | tick #48: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.6, 0.0])
+2026-10-23T13:05:46.640Z | WORKFLOW | IDLE | BEGIN | tick #49: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.4, 0.7])
+2026-10-23T13:05:47.547Z | WORKFLOW | IDLE | BEGIN | tick #50: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.7, 0.0])
+2026-10-23T13:05:50.555Z | WORKFLOW | IDLE | BEGIN | tick #51: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.4, 6.5])
+2026-10-23T13:05:53.391Z | WORKFLOW | IDLE | BEGIN | tick #52: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -7.0, 0.0])
+2026-10-23T13:05:55.962Z | WORKFLOW | IDLE | BEGIN | tick #53: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.6, 0.0])
+2026-10-23T13:05:57.230Z | WORKFLOW | IDLE | BEGIN | tick #54: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.9, 0.0])
+2026-10-23T13:05:59.888Z | WORKFLOW | IDLE | BEGIN | tick #55: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -1.9, 0.0])
+2026-10-23T13:06:01.443Z | WORKFLOW | IDLE | BEGIN | tick #56: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 2.5, 0.0])
+2026-10-23T13:06:02.731Z | WORKFLOW | IDLE | BEGIN | tick #57: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.9, 0.2])
+2026-10-23T13:06:04.268Z | WORKFLOW | IDLE | BEGIN | tick #58: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.9, -1.3])
+2026-10-23T13:06:06.125Z | WORKFLOW | IDLE | BEGIN | tick #59: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.0, 1.5])
+2026-10-23T13:06:08.922Z | WORKFLOW | IDLE | BEGIN | tick #60: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.6, 0.0])
+2026-10-23T13:06:09.136Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:06:09.946Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:06:21.948Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:06:22.241Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:06:23.132Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:06:29.060Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:06:29.746Z | WORKFLOW | IDLE | BEGIN | tick #61: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, 0.0])
+2026-10-23T13:06:31.740Z | WORKFLOW | IDLE | BEGIN | tick #62: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.7, 0.0])
+2026-10-23T13:06:33.096Z | WORKFLOW | IDLE | BEGIN | tick #63: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -1.3, -6.3])
+2026-10-23T13:06:35.923Z | WORKFLOW | IDLE | BEGIN | tick #64: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.2, 0.0])
+2026-10-23T13:06:37.252Z | WORKFLOW | IDLE | BEGIN | tick #65: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.0, -3.8])
+2026-10-23T13:06:39.290Z | WORKFLOW | IDLE | BEGIN | tick #66: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.5, 0.0])
+2026-10-23T13:06:41.501Z | WORKFLOW | IDLE | BEGIN | tick #67: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.9, 7.9])
+2026-10-23T13:06:43.440Z | WORKFLOW | IDLE | BEGIN | tick #68: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.5, 0.0])
+2026-10-23T13:06:46.144Z | WORKFLOW | IDLE | BEGIN | tick #69: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.4, -1.3])
+2026-10-23T13:06:48.177Z | WORKFLOW | IDLE | BEGIN | tick #70: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.6, 3.1])
+2026-10-23T13:06:49.609Z | WORKFLOW | IDLE | BEGIN | tick #71: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.4, 0.0])
+2026-10-23T13:06:51.522Z | WORKFLOW | IDLE | BEGIN | tick #72: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.9, 0.0])
+2026-10-23T13:06:53.587Z | WORKFLOW | IDLE | BEGIN | tick #73: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.6, -2.7])
+2026-10-23T13:06:55.848Z | WORKFLOW | IDLE | BEGIN | tick #74: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.2, -4.5])
+2026-10-23T13:06:57.434Z | WORKFLOW | IDLE | BEGIN | tick #75: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.2, 4.0])
+2026-10-23T13:07:00.315Z | WORKFLOW | IDLE | BEGIN | tick #76: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.4, -0.7])
+2026-10-23T13:07:02.144Z | WORKFLOW | IDLE | BEGIN | tick #77: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.9, 6.7])
+2026-10-23T13:07:03.567Z | WORKFLOW | IDLE | BEGIN | tick #78: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.7, 0.0])
+2026-10-23T13:07:04.412Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:07:05.086Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:07:07.223Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:07:08.169Z | WORKFLOW | IDLE | BEGIN | tick #79: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.6, 0.0])
+2026-10-23T13:07:10.536Z | WORKFLOW | IDLE | BEGIN | tick #80: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -2.3, 0.0])
+2026-10-23T13:07:10.740Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:07:11.300Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:07:23.301Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:07:24.053Z | WORKFLOW | IDLE | BEGIN | tick #81: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, 4.7])
+2026-10-23T13:07:25.692Z | WORKFLOW | IDLE | BEGIN | tick #82: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.9, 0.0])
+2026-10-23T13:07:27.603Z | WORKFLOW | IDLE | BEGIN | tick #83: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -7.0, 0.0])
+2026-10-23T13:07:30.370Z | WORKFLOW | IDLE | BEGIN | tick #84: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -0.6, 0.0])
+2026-10-23T13:07:33.043Z | WORKFLOW | IDLE | BEGIN | tick #85: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.8, 0.0])
+2026-10-23T13:07:35.221Z | WORKFLOW | IDLE | BEGIN | tick #86: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.0, 7.7])
+2026-10-23T13:07:38.257Z | WORKFLOW | IDLE | BEGIN | tick #87: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.7, -3.4])
+2026-10-23T13:07:40.095Z | WORKFLOW | IDLE | SKIP | idle interrupted by user (Ctrl+C)
+2026-10-23T13:08:45.274Z | SYSTEM | CALIBRATION:OBJECT_CATALOG | SUCCESS | 8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json
+2026-10-23T13:08:45.275Z | SYSTEM | CAMERA_D415:ZENOH_SESSION | SUCCESS | Zenoh session open
+2026-10-23T13:08:45.281Z | SYSTEM | CALIBRATION:PREFLIGHT | BEGIN | probing D415 / MagTouch publishers (fail-fast)
+2026-10-23T13:08:45.367Z | SYSTEM | CALIBRATION:PREFLIGHT | SUCCESS | all required publishers / readers are live
+2026-10-23T13:08:45.369Z | SYSTEM | CAMERA_D415:FIRST_FRAME | BEGIN | waiting up to 10 s for first D415 RGB+depth frame on Zenoh
+2026-10-23T13:08:45.421Z | SYSTEM | CAMERA_D415:FIRST_FRAME | SUCCESS | first D415 frame 1280x720
+2026-10-23T13:08:45.421Z | SYSTEM | SAM3:STARTUP | BEGIN | connecting to grocery-perception-server + waiting for warmup
+2026-10-23T13:08:45.423Z | SYSTEM | SAM3:STARTUP | SUCCESS | perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}
+2026-10-23T13:08:46.720Z | SYSTEM | PLANNER:STARTUP | BEGIN | building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s
+2026-10-23T13:08:53.928Z | SYSTEM | PLANNER:STARTUP | SUCCESS | CuroboAdapter ready (voxels=on, IK backend=curobo)
+2026-10-23T13:08:53.930Z | SYSTEM | BRIDGE:CONNECT | BEGIN | opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)
+2026-10-23T13:08:59.193Z | SYSTEM | BRIDGE:CONNECT | SUCCESS | airo_fanuc driver up; joints [-63.0, -66.1, -59.4, -72.1, -5.0, 161.9] deg
+2026-10-23T13:08:59.201Z | SYSTEM | CALIBRATION:D415_INTRINSICS_AND_EXTRINSICS | SUCCESS | intrinsics + calibration loaded (1280x720)
+2026-10-23T13:08:59.202Z | SYSTEM | CALIBRATION:SEARCH_WAYPOINTS | SUCCESS | {'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}
+2026-10-23T13:08:59.202Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | BEGIN | opening + confirming the gripper before MagTouch calibration
+2026-10-23T13:09:00.019Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | SUCCESS | gripper confirmed fully open (attempt 1) — calibrating MagTouch baselines
+2026-10-23T13:09:00.020Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | BEGIN | starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)
+2026-10-23T13:09:02.029Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | SUCCESS | ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0
+2026-10-23T13:09:02.030Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | BEGIN | starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper confirmed open by the prelude — keep fingertip undisturbed)
+2026-10-23T13:09:04.240Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | SUCCESS | GripDetector calibrated; threshold=3.00 sigma
+2026-10-23T13:09:04.243Z | SYSTEM | CALIBRATION:GRASPGEN | SUCCESS | GraspGenX synthesis client open (server health is gated by the launcher)
+2026-10-23T13:09:04.258Z | SYSTEM | CALIBRATION:CRITIC | SUCCESS | VLM critic client up (single connection, both tasks)
+2026-10-23T13:09:05.237Z | SYSTEM | CALIBRATION:VISER | SUCCESS | viser on port 8080
+2026-10-23T13:09:05.240Z | SYSTEM | VOXELS:STARTUP | SUCCESS | voxel updater daemon started
+2026-10-23T13:09:06.019Z | SYSTEM | VOXELS:RESTORE | SUCCESS | voxel scene state restored from 85 s ago — startup scan skipped, demo continues with the previous scene
+2026-10-23T13:09:06.020Z | SYSTEM | CALIBRATION:BRINGUP | SUCCESS | initialisation complete
+2026-10-23T13:09:06.034Z | SYSTEM | CALIBRATION:WHEEL_SETUP | SUCCESS | wheel object detector ready (8 pickable icons)
+2026-10-23T13:09:06.039Z | SYSTEM | CALIBRATION:IDLE_BEHAVIOR | SUCCESS | idle behaviour up (spin-trigger=D415 attentive-watch (YOLO approach + static confirm))
+2026-10-23T13:09:06.039Z | SYSTEM | CALIBRATION:SCAN_WAYPOINT | SKIP | voxel state restored from the previous process — startup scan skipped
+2026-10-23T13:09:06.040Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:09:06.040Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:09:06.854Z | WORKFLOW | IDLE | BEGIN | tick #1: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.2, 0.0])
+2026-10-23T13:09:06.974Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:09:07.494Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:09:19.502Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:09:19.616Z | WORKFLOW | IDLE | BEGIN | tick #2: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.8, 0.0])
+2026-10-23T13:09:19.723Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:09:20.196Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:09:28.821Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:09:28.924Z | WORKFLOW | IDLE | BEGIN | tick #3: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.7, -8.2])
+2026-10-23T13:09:29.965Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:09:30.472Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:09:42.479Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:09:42.781Z | WORKFLOW | IDLE | SUCCESS | operator wheel-lab requested — driving to the wheel for the interactive sector read
+2026-10-23T13:09:45.143Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:09:45.645Z | SYSTEM | CALIBRATION:WHEEL_LAB | BEGIN | wheel lab active — interactive sector read at the wheel viewpoint
+2026-10-23T13:13:21.372Z | SYSTEM | CALIBRATION:WHEEL_POINTER | SUCCESS | wheel world-up pointer disabled by operator
+2026-10-23T13:13:24.187Z | SYSTEM | CALIBRATION:WHEEL_POINTER | SUCCESS | wheel world-up pointer enabled by operator
+2026-10-23T13:13:25.034Z | SYSTEM | CALIBRATION:WHEEL_PLANE | SUCCESS | wheel plane hub disabled by operator
+2026-10-23T13:13:26.448Z | SYSTEM | CALIBRATION:WHEEL_PLANE | SUCCESS | wheel plane hub enabled by operator
+2026-10-23T13:14:23.971Z | SYSTEM | CALIBRATION:WHEEL_LAB | SUCCESS | wheel lab exited by operator
+2026-10-23T13:14:23.972Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:14:23.973Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:14:28.080Z | WORKFLOW | IDLE | SKIP | idle: TEACH PAUSE — keyswitch in T1/T2, holding still
+2026-10-23T13:14:49.032Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | BEGIN | operator-record: saving current pose as 'wheel' — return the keyswitch to AUTO and hold still
+2026-10-23T13:14:49.737Z | SYSTEM | EXECUTOR:RECORD_WAYPOINT | SUCCESS | waypoint 'wheel' recorded from live pose
+2026-10-23T13:15:10.781Z | WORKFLOW | IDLE | BEGIN | operator-goto: driving to 'idle'
+2026-10-23T13:15:10.781Z | SYSTEM | EXECUTOR:ARM_GATE | SUCCESS | operator-goto: ARM gate latched — GO tap taken as the operator's resume decision, motion permitted
+2026-10-23T13:15:14.164Z | WORKFLOW | IDLE | FAIL | operator-goto 'idle': move did not complete (motion refused / plan failed / preempted) — anchor unchanged
+2026-10-23T13:15:14.168Z | IMAGE | fail_1792761314164042377_d415 | failure capture from d415 | <base64 omitted, 130884 chars; image saved under data/images>
+2026-10-23T13:15:14.286Z | WORKFLOW | IDLE | BEGIN | tick #4: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.5, 0.0])
+2026-10-23T13:15:17.956Z | WORKFLOW | IDLE | SKIP | idle interrupted by user (Ctrl+C)
+2026-10-23T13:15:27.468Z | SYSTEM | CALIBRATION:OBJECT_CATALOG | SUCCESS | 8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json
+2026-10-23T13:15:27.469Z | SYSTEM | CAMERA_D415:ZENOH_SESSION | SUCCESS | Zenoh session open
+2026-10-23T13:15:27.472Z | SYSTEM | CALIBRATION:PREFLIGHT | BEGIN | probing D415 / MagTouch publishers (fail-fast)
+2026-10-23T13:15:27.579Z | SYSTEM | CALIBRATION:PREFLIGHT | SUCCESS | all required publishers / readers are live
+2026-10-23T13:15:27.581Z | SYSTEM | CAMERA_D415:FIRST_FRAME | BEGIN | waiting up to 10 s for first D415 RGB+depth frame on Zenoh
+2026-10-23T13:15:27.633Z | SYSTEM | CAMERA_D415:FIRST_FRAME | SUCCESS | first D415 frame 1280x720
+2026-10-23T13:15:27.633Z | SYSTEM | SAM3:STARTUP | BEGIN | connecting to grocery-perception-server + waiting for warmup
+2026-10-23T13:15:27.634Z | SYSTEM | SAM3:STARTUP | SUCCESS | perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}
+2026-10-23T13:15:28.930Z | SYSTEM | PLANNER:STARTUP | BEGIN | building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s
+2026-10-23T13:15:36.683Z | SYSTEM | PLANNER:STARTUP | SUCCESS | CuroboAdapter ready (voxels=on, IK backend=curobo)
+2026-10-23T13:15:36.687Z | SYSTEM | BRIDGE:CONNECT | BEGIN | opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)
+2026-10-23T13:15:53.211Z | SYSTEM | BRIDGE:CONNECT | SUCCESS | airo_fanuc driver up; joints [-67.7, -18.3, -23.6, -78.2, -26.1, 173.3] deg
+2026-10-23T13:15:53.224Z | SYSTEM | CALIBRATION:D415_INTRINSICS_AND_EXTRINSICS | SUCCESS | intrinsics + calibration loaded (1280x720)
+2026-10-23T13:15:53.226Z | SYSTEM | CALIBRATION:SEARCH_WAYPOINTS | SUCCESS | {'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}
+2026-10-23T13:15:53.226Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | BEGIN | opening + confirming the gripper before MagTouch calibration
+2026-10-23T13:15:54.059Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | SUCCESS | gripper confirmed fully open (attempt 1) — calibrating MagTouch baselines
+2026-10-23T13:15:54.060Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | BEGIN | starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)
+2026-10-23T13:15:55.781Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | SUCCESS | ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0
+2026-10-23T13:15:55.781Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | BEGIN | starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper confirmed open by the prelude — keep fingertip undisturbed)
+2026-10-23T13:15:58.081Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | SUCCESS | GripDetector calibrated; threshold=3.00 sigma
+2026-10-23T13:15:58.083Z | SYSTEM | CALIBRATION:GRASPGEN | SUCCESS | GraspGenX synthesis client open (server health is gated by the launcher)
+2026-10-23T13:15:58.100Z | SYSTEM | CALIBRATION:CRITIC | SUCCESS | VLM critic client up (single connection, both tasks)
+2026-10-23T13:15:58.892Z | SYSTEM | CALIBRATION:VISER | SUCCESS | viser on port 8080
+2026-10-23T13:15:58.894Z | SYSTEM | VOXELS:STARTUP | SUCCESS | voxel updater daemon started
+2026-10-23T13:15:59.938Z | SYSTEM | VOXELS:RESTORE | SUCCESS | voxel scene state restored from 39 s ago — startup scan skipped, demo continues with the previous scene
+2026-10-23T13:15:59.941Z | SYSTEM | CALIBRATION:BRINGUP | SUCCESS | initialisation complete
+2026-10-23T13:15:59.951Z | SYSTEM | CALIBRATION:WHEEL_SETUP | SUCCESS | wheel object detector ready (8 pickable icons)
+2026-10-23T13:15:59.958Z | SYSTEM | CALIBRATION:IDLE_BEHAVIOR | SUCCESS | idle behaviour up (spin-trigger=D415 attentive-watch (YOLO approach + static confirm))
+2026-10-23T13:15:59.958Z | SYSTEM | CALIBRATION:SCAN_WAYPOINT | SKIP | voxel state restored from the previous process — startup scan skipped
+2026-10-23T13:15:59.959Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:15:59.959Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:16:02.955Z | WORKFLOW | IDLE | BEGIN | tick #1: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.3, 0.0])
+2026-10-23T13:16:03.171Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:16:03.916Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:16:15.924Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:16:16.141Z | WORKFLOW | IDLE | SUCCESS | operator wheel-lab requested — driving to the wheel for the interactive sector read
+2026-10-23T13:16:18.781Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:16:19.283Z | SYSTEM | CALIBRATION:WHEEL_LAB | BEGIN | wheel lab active — interactive sector read at the wheel viewpoint
+2026-10-23T13:22:50.242Z | SYSTEM | CALIBRATION:WHEEL_LAB | SUCCESS | wheel lab exited by operator
+2026-10-23T13:23:56.813Z | SYSTEM | CALIBRATION:OBJECT_CATALOG | SUCCESS | 8 graspable objects from /home/louadria/demos/fti-2026-main/configs/objects.json
+2026-10-23T13:23:56.814Z | SYSTEM | CAMERA_D415:ZENOH_SESSION | SUCCESS | Zenoh session open
+2026-10-23T13:23:56.817Z | SYSTEM | CALIBRATION:PREFLIGHT | BEGIN | probing D415 / MagTouch publishers (fail-fast)
+2026-10-23T13:23:56.904Z | SYSTEM | CALIBRATION:PREFLIGHT | SUCCESS | all required publishers / readers are live
+2026-10-23T13:23:56.905Z | SYSTEM | CAMERA_D415:FIRST_FRAME | BEGIN | waiting up to 10 s for first D415 RGB+depth frame on Zenoh
+2026-10-23T13:23:56.957Z | SYSTEM | CAMERA_D415:FIRST_FRAME | SUCCESS | first D415 frame 1280x720
+2026-10-23T13:23:56.957Z | SYSTEM | SAM3:STARTUP | BEGIN | connecting to grocery-perception-server + waiting for warmup
+2026-10-23T13:23:56.959Z | SYSTEM | SAM3:STARTUP | SUCCESS | perception server ready {'status': 'ready', 'device': 'cuda:1', 'models': {'sam3': True, 'molmo': True, 'yolo': True, 'face': True}}
+2026-10-23T13:23:58.242Z | SYSTEM | PLANNER:STARTUP | BEGIN | building CuroboAdapter (voxels=on); first build warms CUDA graphs — may take 10-20 s
+2026-10-23T13:24:06.020Z | SYSTEM | PLANNER:STARTUP | SUCCESS | CuroboAdapter ready (voxels=on, IK backend=curobo)
+2026-10-23T13:24:06.023Z | SYSTEM | BRIDGE:CONNECT | BEGIN | opening airo_fanuc driver at 192.168.1.100 (controller must be in AUTO)
+2026-10-23T13:24:11.227Z | SYSTEM | BRIDGE:CONNECT | SUCCESS | airo_fanuc driver up; joints [-67.7, -18.3, -23.6, -78.2, -26.1, 173.3] deg
+2026-10-23T13:24:11.235Z | SYSTEM | CALIBRATION:D415_INTRINSICS_AND_EXTRINSICS | SUCCESS | intrinsics + calibration loaded (1280x720)
+2026-10-23T13:24:11.237Z | SYSTEM | CALIBRATION:SEARCH_WAYPOINTS | SUCCESS | {'water bottle': ('right-shelve',), 'coffee mug': ('right-shelve',), 'pen': ('left-shelve',), 'notebook': ('right-shelve',), 'ball': ('left-shelve',), 'umbrella': ('center',), 'saddle cover': ('left-shelve',), 't-shirt': ('right-bar', 'left-bar')}
+2026-10-23T13:24:11.237Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | BEGIN | opening + confirming the gripper before MagTouch calibration
+2026-10-23T13:24:12.095Z | SYSTEM | CALIBRATION:TACTILE_PRELUDE | SUCCESS | gripper confirmed fully open (attempt 1) — calibrating MagTouch baselines
+2026-10-23T13:24:12.095Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | BEGIN | starting ReleaseDetector + calibrating against MagTouchRaw0 (≤5s)
+2026-10-23T13:24:14.191Z | SYSTEM | CALIBRATION:TACTILE_RELEASE | SUCCESS | ReleaseDetector calibrated; per-item thresholds for 5 items, default=20.0
+2026-10-23T13:24:14.192Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | BEGIN | starting GripDetector + calibrating against MagTouchRaw0 (≤5s; gripper confirmed open by the prelude — keep fingertip undisturbed)
+2026-10-23T13:24:17.433Z | SYSTEM | CALIBRATION:TACTILE_GRASP_DETECT | SUCCESS | GripDetector calibrated; threshold=3.00 sigma
+2026-10-23T13:24:17.435Z | SYSTEM | CALIBRATION:GRASPGEN | SUCCESS | GraspGenX synthesis client open (server health is gated by the launcher)
+2026-10-23T13:24:17.452Z | SYSTEM | CALIBRATION:CRITIC | SUCCESS | VLM critic client up (single connection, both tasks)
+2026-10-23T13:24:18.450Z | SYSTEM | CALIBRATION:VISER | SUCCESS | viser on port 8080
+2026-10-23T13:24:18.451Z | SYSTEM | VOXELS:STARTUP | SUCCESS | voxel updater daemon started
+2026-10-23T13:24:19.226Z | SYSTEM | VOXELS:RESTORE | SUCCESS | voxel scene state restored from 88 s ago — startup scan skipped, demo continues with the previous scene
+2026-10-23T13:24:19.226Z | SYSTEM | CALIBRATION:BRINGUP | SUCCESS | initialisation complete
+2026-10-23T13:24:19.236Z | SYSTEM | CALIBRATION:WHEEL_SETUP | SUCCESS | wheel object detector ready (8 pickable icons)
+2026-10-23T13:24:19.243Z | SYSTEM | CALIBRATION:IDLE_BEHAVIOR | SUCCESS | idle behaviour up (spin-trigger=D415 attentive-watch (YOLO approach + static confirm))
+2026-10-23T13:24:19.243Z | SYSTEM | CALIBRATION:SCAN_WAYPOINT | SKIP | voxel state restored from the previous process — startup scan skipped
+2026-10-23T13:24:19.243Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:24:19.244Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:24:22.247Z | WORKFLOW | IDLE | BEGIN | tick #1: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, 0.5, 0.0])
+2026-10-23T13:24:22.463Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:24:23.135Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:24:35.138Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:24:35.354Z | WORKFLOW | IDLE | SUCCESS | operator wheel-lab requested — driving to the wheel for the interactive sector read
+2026-10-23T13:24:38.010Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:24:38.517Z | SYSTEM | CALIBRATION:WHEEL_LAB | BEGIN | wheel lab active — interactive sector read at the wheel viewpoint
+2026-10-23T13:25:02.720Z | SYSTEM | CALIBRATION:WHEEL_LAB | SUCCESS | wheel lab exited by operator
+2026-10-23T13:25:02.720Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:02.721Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:25:05.886Z | WORKFLOW | IDLE | BEGIN | tick #2: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -1.7, 0.0])
+2026-10-23T13:25:06.003Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:25:06.479Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:25:12.405Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=105.6px peak=186.0px/s frames=37)
+2026-10-23T13:25:12.959Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T13:25:15.420Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:25:16.165Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T13:25:16.857Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'notebook' → grasp 'notebook'
+2026-10-23T13:25:21.861Z | WORKFLOW | CYCLE | BEGIN | cycle 2 starting
+2026-10-23T13:25:21.862Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:21.872Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='notebook'
+2026-10-23T13:25:21.872Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'blue spiral notebook'
+2026-10-23T13:25:21.872Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:25.332Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+2026-10-23T13:25:25.633Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:26.381Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:26.419Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 24 raw detections → 4 cluster(s); 4 survived vote≥2 [votes=6,6,6,6]
+2026-10-23T13:25:26.507Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+2026-10-23T13:25:26.508Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 4 representative(s) at 'right-shelve'
+2026-10-23T13:25:26.539Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#1(d=88.4cm,score=0.91), #3(d=88.4cm,score=0.87) → anchor [0.968, 0.396, 1.665] m
+2026-10-23T13:25:26.541Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T13:25:26.542Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:25:26.565Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+2026-10-23T13:25:26.565Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue spiral notebook. Single point.'
+2026-10-23T13:25:27.597Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.03 s; selected (308.5, 367.9)
+2026-10-23T13:25:27.597Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'notebook' (body_prompt='blue spiral notebook')
+2026-10-23T13:25:27.730Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.898 region=19720px body=19720px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (4 body / 0 region cand)
+2026-10-23T13:25:27.731Z | WORKFLOW | SYNTHESISE | BEGIN | GraspGenX synthesis (segmented depth → reachable world-tcp grasps)
+2026-10-23T13:25:29.928Z | WORKFLOW | SYNTHESISE | SUCCESS | graspgen goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:25:29.928Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:25:29.975Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:25:29.976Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:25:29.976Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (SDF+centering retract, λ=1.00)
+2026-10-23T13:25:34.285Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:25:37.740Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=2)
+2026-10-23T13:25:40.551Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T13:25:44.618Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('notebook') size=(0.03, 0.2, 0.15) offset=(0.0, 0.0, 0.0)
+2026-10-23T13:25:44.636Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=2)
+2026-10-23T13:25:44.638Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=NARROW (POSITION 150, ~35 mm) [per-object override]; chose primary (goalset_idx=2, width=85.0 mm)
+2026-10-23T13:25:47.940Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+2026-10-23T13:25:54.060Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5b → via 'critic-holding-item-check-waypoint': trajectory complete
+2026-10-23T13:25:54.060Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' passing 'critic-holding-item-check-waypoint' for critic verify
+2026-10-23T13:25:57.726Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T13:26:00.242Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'notebook' (no alert in 2.5s) → handover
+2026-10-23T13:26:00.242Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:26:00.243Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T13:26:04.685Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T13:26:04.686Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T13:26:04.686Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T13:26:05.901Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T13:26:05.902Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T13:26:05.905Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T13:26:06.417Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T13:26:07.503Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-left via torso (cos=0.63)
+2026-10-23T13:26:08.174Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.19, -1.56, 1.43]
+2026-10-23T13:26:15.237Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+2026-10-23T13:26:15.237Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+2026-10-23T13:26:15.238Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T13:26:17.984Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T13:26:18.986Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T13:26:18.988Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T13:26:24.345Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T13:26:28.436Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T13:26:28.437Z | WORKFLOW | CYCLE | SUCCESS | cycle 2 complete
+2026-10-23T13:26:28.439Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:26:28.439Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:26:31.721Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:26:32.161Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:26:44.168Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:26:44.400Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:26:45.276Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:26:57.279Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:26:58.521Z | WORKFLOW | IDLE | BEGIN | tick #3: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.8, 0.0])
+2026-10-23T13:27:00.931Z | WORKFLOW | IDLE | BEGIN | tick #4: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.7, 0.0])
+2026-10-23T13:27:03.296Z | WORKFLOW | IDLE | BEGIN | tick #5: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.6, -2.8])
+2026-10-23T13:27:05.176Z | WORKFLOW | IDLE | BEGIN | tick #6: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.6, 0.0])
+2026-10-23T13:27:07.793Z | WORKFLOW | IDLE | BEGIN | tick #7: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.9, 8.3])
+2026-10-23T13:27:10.649Z | WORKFLOW | IDLE | BEGIN | tick #8: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, 0.0])
+2026-10-23T13:27:12.595Z | WORKFLOW | IDLE | BEGIN | tick #9: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -2.7, 0.0])
+2026-10-23T13:27:15.586Z | WORKFLOW | IDLE | BEGIN | tick #10: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.2, 0.0])
+2026-10-23T13:27:17.117Z | WORKFLOW | IDLE | BEGIN | tick #11: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.0, 0.0])
+2026-10-23T13:27:18.776Z | WORKFLOW | IDLE | BEGIN | tick #12: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.2, 5.7])
+2026-10-23T13:27:20.188Z | WORKFLOW | IDLE | BEGIN | tick #13: kind=gaze (Δq_deg=[-8.0, 0.0, 0.0, 0.0, -3.6, 0.0])
+2026-10-23T13:27:20.555Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:27:21.655Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:27:33.661Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:27:33.881Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:27:34.779Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:27:46.781Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:27:47.019Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:27:47.951Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:27:59.953Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:28:00.188Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:28:00.898Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:28:03.333Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=49.6px peak=83.2px/s frames=36)
+2026-10-23T13:28:03.831Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T13:28:06.243Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:28:07.206Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T13:28:08.095Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'coffee mug' → grasp 'coffee mug'
+2026-10-23T13:28:09.719Z | WORKFLOW | CYCLE | BEGIN | cycle 3 starting
+2026-10-23T13:28:09.720Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:28:09.806Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='coffee mug'
+2026-10-23T13:28:09.807Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'white coffee cup with blue grip and lid'
+2026-10-23T13:28:09.807Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:28:13.275Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+2026-10-23T13:28:13.577Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:28:14.334Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:28:14.372Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 30 raw detections → 5 cluster(s); 5 survived vote≥2 [votes=6,6,6,6,6]
+2026-10-23T13:28:14.468Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+2026-10-23T13:28:14.468Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 5 representative(s) at 'right-shelve'
+2026-10-23T13:28:14.496Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#2(d=74.6cm,score=0.93), #3(d=81.5cm,score=0.92) → anchor [0.96, 0.135, 1.632] m
+2026-10-23T13:28:14.497Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T13:28:14.499Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:28:14.519Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+2026-10-23T13:28:14.520Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost coffee cup with blue grip and lid. Single point.'
+2026-10-23T13:28:15.717Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.20 s; selected (633.6, 399.6)
+2026-10-23T13:28:15.717Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'coffee mug' (body_prompt='white coffee cup with blue grip and lid')
+2026-10-23T13:28:15.857Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.914 region=16256px body=16256px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (5 body / 0 region cand)
+2026-10-23T13:28:15.861Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T13:28:15.985Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:28:15.986Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:28:16.008Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:28:16.008Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:28:16.008Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T13:28:16.111Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | live target carve ACTIVE (22 cells; environment stays live)
+2026-10-23T13:28:17.947Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:28:20.969Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+2026-10-23T13:28:23.965Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=2): gripper close complete
+2026-10-23T13:28:28.072Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('coffee mug') size=(0.06, 0.18, 0.06) offset=(0.0, 0.0, 0.0)
+2026-10-23T13:28:28.110Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=13)
+2026-10-23T13:28:28.113Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm) [per-object override]; chose primary (goalset_idx=13, width=85.0 mm)
+2026-10-23T13:28:30.764Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+2026-10-23T13:28:36.915Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5b → via 'critic-holding-item-check-waypoint': trajectory complete
+2026-10-23T13:28:36.915Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' passing 'critic-holding-item-check-waypoint' for critic verify
+2026-10-23T13:28:40.597Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T13:28:43.112Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'coffee mug' (no alert in 2.5s) → handover
+2026-10-23T13:28:43.112Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:28:43.113Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T13:28:47.516Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T13:28:47.517Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T13:28:47.519Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T13:28:48.699Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T13:28:48.699Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T13:28:48.701Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T13:28:53.720Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: trajectory complete
+2026-10-23T13:28:58.678Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan center: trajectory complete
+2026-10-23T13:29:01.873Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan right: preempted on match
+2026-10-23T13:29:03.695Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-right (best cos=0.67, threshold 0.40)
+2026-10-23T13:29:03.695Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-right match didn't lock — resuming sweep
+2026-10-23T13:29:04.237Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan center: preempted on match
+2026-10-23T13:29:06.097Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no spinner match at scan-center (best cos=0.68, threshold 0.40)
+2026-10-23T13:29:06.098Z | SYSTEM | EXECUTOR:PRESENT | SKIP | scan-center match didn't lock — resuming sweep
+2026-10-23T13:29:06.098Z | SYSTEM | EXECUTOR:PRESENT | SKIP | spinner not re-identified during sweep (best face cos=0.66, threshold 0.40) — closest-person fallback
+2026-10-23T13:29:07.596Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → return to handover center: trajectory complete
+2026-10-23T13:29:10.462Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no person seen — retreating to the handover-fallback waypoint
+2026-10-23T13:29:10.462Z | SYSTEM | EXECUTOR:PRESENT | FALLBACK | no recipient found — retreating to 'handover-fallback' to await pickup
+2026-10-23T13:29:13.077Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → handover-fallback 'handover-fallback': trajectory complete
+2026-10-23T13:29:13.077Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T13:29:22.831Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T13:29:23.832Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T13:29:23.850Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T13:29:26.871Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T13:29:31.389Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T13:29:31.487Z | WORKFLOW | CYCLE | SUCCESS | cycle 3 complete
+2026-10-23T13:29:31.491Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:31.492Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:29:34.840Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:29:35.311Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:29:39.218Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=55.3px peak=78.7px/s frames=57)
+2026-10-23T13:29:39.730Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T13:29:42.181Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:29:43.082Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T13:29:43.924Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'water bottle' → grasp 'water bottle'
+2026-10-23T13:29:44.929Z | WORKFLOW | CYCLE | BEGIN | cycle 4 starting
+2026-10-23T13:29:44.930Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:44.934Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='water bottle'
+2026-10-23T13:29:44.936Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-shelve' (#0) — looking for 'blue white cylindrical bottle'
+2026-10-23T13:29:44.939Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:48.398Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-shelve': trajectory complete
+2026-10-23T13:29:48.699Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:49.540Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:49.645Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 51 raw detections → 9 cluster(s); 9 survived vote≥2 [votes=6,6,6,6,6,6,6,6,3]
+2026-10-23T13:29:49.656Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-shelve)) — grasp-area transits slowed to the validated envelope
+2026-10-23T13:29:49.656Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 9 representative(s) at 'right-shelve'
+2026-10-23T13:29:49.684Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#3(d=75.0cm,score=0.88), #4(d=75.2cm,score=0.88) → anchor [0.943, -0.253, 1.659] m
+2026-10-23T13:29:49.685Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T13:29:49.687Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:49.768Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.352, -0.089, 1.732] m (image 1280×720)
+2026-10-23T13:29:49.768Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+2026-10-23T13:29:50.897Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.13 s; selected (1167.4, 399.6)
+2026-10-23T13:29:50.897Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+2026-10-23T13:29:51.035Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.855 region=28949px body=28949px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (8 body / 0 region cand)
+2026-10-23T13:29:51.035Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T13:29:51.241Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:29:51.241Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:29:51.254Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:29:51.255Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:29:51.255Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T13:29:51.827Z | SYSTEM | PLANNER:GRASP_PLAN | FAIL | failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset
+2026-10-23T13:29:51.831Z | IMAGE | fail_1792762191827150628_d415 | failure capture from d415 | <base64 omitted, 128276 chars; image saved under data/images>
+2026-10-23T13:29:51.833Z | WORKFLOW | EXECUTE_GRASP | FAIL | failed at plan_grasp: plan_grasp failed at grasp: grasp/lift IK pre-filter rejected entire goalset
+2026-10-23T13:29:51.835Z | IMAGE | fail_1792762191833059786_d415 | failure capture from d415 | <base64 omitted, 128276 chars; image saved under data/images>
+2026-10-23T13:29:51.836Z | WORKFLOW | CLOSEUP_RETRY | BEGIN | retry 1/5 (cause=grasp:grasp, remaining=fan-generate)
+2026-10-23T13:29:51.836Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:51.839Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | downward retry viewpoint (steepest-first) tiers [18.6, 13.6, 8.6]° over 3×3 (distance × azimuth) aimed down at the object (d0=0.73 m, pitch0=14°, view_fan override ['azimuth_deg', 'distance_offsets_m', 'lookdown_deg'])
+2026-10-23T13:29:52.490Z | SYSTEM | PLANNER:PLAN_POSE | SUCCESS | close-up goalset plan ok (27 candidates, dt=0.649 s)
+2026-10-23T13:29:52.490Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:55.358Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 5 → close-up viewpoint (goalset): trajectory complete
+2026-10-23T13:29:55.660Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:29:55.682Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | picked candidate #2/27 (27 after filter); look-down=19°; tcp=[0.505, -0.188, 1.741] m, camera=[0.413, -0.118, 1.843] m
+2026-10-23T13:29:55.682Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+2026-10-23T13:29:56.855Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.17 s; selected (761.6, 442.8)
+2026-10-23T13:29:56.856Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+2026-10-23T13:29:56.996Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.914 region=32367px body=32367px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (6 body / 0 region cand)
+2026-10-23T13:29:56.996Z | WORKFLOW | CLOSEUP_RETRY | SUCCESS | retry 1/5 reached new viewpoint
+2026-10-23T13:29:56.996Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T13:29:57.294Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:29:57.294Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:29:57.315Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:29:57.316Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:29:57.317Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T13:30:08.747Z | SYSTEM | PLANNER:GRASP_PLAN | FAIL | failed at plan_grasp: plan_grasp failed at lift: Chained-IK plan_grasp: all 9 ranked candidates failed at lift — last: #5: lift — chained-IK branch flip at knot 2/7: \|Δq\|.max=5.73° > 5.00° (distance=50 mm)
+2026-10-23T13:30:08.754Z | IMAGE | fail_1792762208747871493_d415 | failure capture from d415 | <base64 omitted, 134944 chars; image saved under data/images>
+2026-10-23T13:30:08.759Z | WORKFLOW | EXECUTE_GRASP | FAIL | failed at plan_grasp: plan_grasp failed at lift: Chained-IK plan_grasp: all 9 ranked candidates failed at lift — last: #5: lift — chained-IK branch flip at knot 2/7: \|Δq\|.max=5.73° > 5.00° (distance=50 mm)
+2026-10-23T13:30:08.762Z | IMAGE | fail_1792762208759799231_d415 | failure capture from d415 | <base64 omitted, 134944 chars; image saved under data/images>
+2026-10-23T13:30:08.767Z | WORKFLOW | CLOSEUP_RETRY | BEGIN | retry 2/5 (cause=grasp:lift, remaining=26)
+2026-10-23T13:30:08.768Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:30:08.771Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | retry attempt 2: planning to single overridden close-up candidate (#20)
+2026-10-23T13:30:09.467Z | SYSTEM | PLANNER:PLAN_POSE | SUCCESS | close-up goalset plan ok (1 candidates, dt=0.695 s)
+2026-10-23T13:30:09.468Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:30:15.672Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 5 → close-up viewpoint (goalset): trajectory complete
+2026-10-23T13:30:15.974Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:30:15.995Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | picked candidate #21/26 (1 after filter); look-down=9°; tcp=[0.552, -0.477, 1.656] m, camera=[0.428, -0.5, 1.745] m
+2026-10-23T13:30:15.995Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost blue and white cylindrical bottle. Single point.'
+2026-10-23T13:30:17.103Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.11 s; selected (761.6, 435.6)
+2026-10-23T13:30:17.104Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'water bottle' (body_prompt='blue white cylindrical bottle')
+2026-10-23T13:30:17.254Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.809 region=38913px body=38913px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (8 body / 0 region cand)
+2026-10-23T13:30:17.254Z | WORKFLOW | CLOSEUP_RETRY | SUCCESS | retry 2/5 reached new viewpoint
+2026-10-23T13:30:17.255Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T13:30:17.541Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:30:17.543Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:30:17.561Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:30:17.561Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:30:17.561Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+2026-10-23T13:30:19.442Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:30:21.167Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+2026-10-23T13:30:24.322Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T13:30:28.362Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('water bottle') size=(0.06, 0.25, 0.06) offset=(0.0, -0.05, 0.0)
+2026-10-23T13:30:28.364Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=13)
+2026-10-23T13:30:28.365Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm); chose primary (goalset_idx=13, width=85.0 mm)
+2026-10-23T13:30:32.519Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-shelve': trajectory complete
+2026-10-23T13:30:38.641Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5b → via 'critic-holding-item-check-waypoint': trajectory complete
+2026-10-23T13:30:38.641Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-shelve' passing 'critic-holding-item-check-waypoint' for critic verify
+2026-10-23T13:30:42.297Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T13:30:44.805Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'water bottle' (no alert in 2.5s) → handover
+2026-10-23T13:30:44.806Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:30:44.807Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T13:30:49.218Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T13:30:49.219Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T13:30:49.220Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T13:30:50.393Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T13:30:50.393Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T13:30:50.395Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T13:30:51.124Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T13:30:52.105Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-left via torso (cos=0.54)
+2026-10-23T13:30:56.910Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no reachable present pose (gap-escalation exhausted)
+2026-10-23T13:30:56.910Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T13:31:39.357Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T13:31:40.358Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T13:31:40.419Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T13:31:41.523Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T13:31:45.743Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T13:31:45.748Z | WORKFLOW | CYCLE | SUCCESS | cycle 4 complete
+2026-10-23T13:31:45.751Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:31:45.751Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:31:49.053Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:31:49.531Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:31:52.202Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:31:53.375Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:31:53.862Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:31:59.804Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:31:59.928Z | WORKFLOW | IDLE | BEGIN | tick #14: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.0, 0.0])
+2026-10-23T13:32:02.599Z | WORKFLOW | IDLE | BEGIN | tick #15: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 6.7, 0.0])
+2026-10-23T13:32:04.898Z | WORKFLOW | IDLE | BEGIN | tick #16: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -6.8, 0.0])
+2026-10-23T13:32:07.849Z | WORKFLOW | IDLE | BEGIN | tick #17: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.8, -1.7])
+2026-10-23T13:32:08.363Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:32:09.098Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:32:17.201Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:32:18.100Z | WORKFLOW | IDLE | BEGIN | tick #18: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.0, 0.0])
+2026-10-23T13:32:20.311Z | WORKFLOW | IDLE | BEGIN | tick #19: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.9, -1.1])
+2026-10-23T13:32:21.918Z | WORKFLOW | IDLE | BEGIN | tick #20: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -4.1, 0.0])
+2026-10-23T13:32:23.988Z | WORKFLOW | IDLE | BEGIN | tick #21: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.6, 0.0])
+2026-10-23T13:32:26.590Z | WORKFLOW | IDLE | BEGIN | tick #22: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.4, 2.2])
+2026-10-23T13:32:27.881Z | WORKFLOW | IDLE | BEGIN | tick #23: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, 4.1, 0.0])
+2026-10-23T13:32:29.419Z | WORKFLOW | IDLE | BEGIN | tick #24: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 3.9, 3.4])
+2026-10-23T13:32:31.236Z | WORKFLOW | IDLE | BEGIN | tick #25: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 0.1, -3.3])
+2026-10-23T13:32:33.474Z | WORKFLOW | IDLE | BEGIN | tick #26: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -2.5, 4.8])
+2026-10-23T13:32:34.126Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:32:34.865Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:32:38.362Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=34.3px peak=74.0px/s frames=43)
+2026-10-23T13:32:38.896Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T13:32:41.262Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:32:42.034Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T13:32:42.793Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 't-shirt' → grasp 't-shirt'
+2026-10-23T13:32:43.797Z | WORKFLOW | CYCLE | BEGIN | cycle 5 starting
+2026-10-23T13:32:43.797Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:32:43.862Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='t-shirt'
+2026-10-23T13:32:43.864Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'right-bar' (#0) — looking for 'clothes hanger'
+2026-10-23T13:32:43.864Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:32:47.317Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'right-bar': trajectory complete
+2026-10-23T13:32:47.619Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:32:48.391Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:32:48.440Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 46 raw detections → 9 cluster(s); 8 survived vote≥2 [votes=6,6,6,6,6,6,3,6]
+2026-10-23T13:32:48.533Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (right-bar)) — grasp-area transits slowed to the validated envelope
+2026-10-23T13:32:48.533Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 8 representative(s) at 'right-bar'
+2026-10-23T13:32:48.567Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#2(d=68.2cm,score=0.95), #1(d=69.1cm,score=0.95) → anchor [1.003, -0.146, 1.168] m
+2026-10-23T13:32:48.568Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T13:32:48.570Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:32:48.631Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.451, -0.089, 1.253] m (image 1280×720)
+2026-10-23T13:32:48.631Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost/central wooden or plastic shirt hanger. Single point.'
+2026-10-23T13:32:49.827Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.19 s; selected (761.6, 255.6)
+2026-10-23T13:32:49.828Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 't-shirt' (body_prompt='clothes hanger')
+2026-10-23T13:32:49.965Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.949 region=6670px body=6670px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (8 body / 0 region cand)
+2026-10-23T13:32:49.966Z | WORKFLOW | SYNTHESISE | BEGIN | GraspGenX synthesis (segmented depth → reachable world-tcp grasps)
+2026-10-23T13:32:51.639Z | WORKFLOW | SYNTHESISE | SUCCESS | graspgen goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:32:51.639Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:32:51.662Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:32:51.662Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:32:51.662Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z + 30 mm diagonal pull) + 50 mm (SDF+centering retract, λ=1.00)
+2026-10-23T13:32:56.003Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:32:59.214Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=1)
+2026-10-23T13:33:02.329Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T13:33:04.566Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('t-shirt') size=(0.03, 0.1, 0.1) offset=(0.0, -0.1, 0.0)
+2026-10-23T13:33:04.595Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=10)
+2026-10-23T13:33:04.595Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=MID (POSITION 75, ~60 mm) [per-object override]; chose primary (goalset_idx=10, width=85.0 mm)
+2026-10-23T13:33:07.807Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'right-bar': trajectory complete
+2026-10-23T13:33:13.839Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5b → via 'critic-holding-item-check-waypoint': trajectory complete
+2026-10-23T13:33:13.839Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'right-bar' passing 'critic-holding-item-check-waypoint' for critic verify
+2026-10-23T13:33:17.519Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T13:33:20.028Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 't-shirt' (no alert in 2.5s) → handover
+2026-10-23T13:33:20.028Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:33:20.028Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T13:33:24.432Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T13:33:24.432Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T13:33:24.433Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T13:33:25.647Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T13:33:25.648Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+2026-10-23T13:33:25.654Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T13:33:26.391Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T13:33:27.494Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-left via torso (cos=0.59)
+2026-10-23T13:33:28.281Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.24, -1.32, 1.43]
+2026-10-23T13:33:35.240Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+2026-10-23T13:33:35.241Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+2026-10-23T13:33:35.241Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T13:34:01.235Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T13:34:02.236Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T13:34:02.240Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T13:34:07.552Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T13:34:11.886Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T13:34:11.929Z | WORKFLOW | CYCLE | SUCCESS | cycle 5 complete
+2026-10-23T13:34:11.931Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:11.932Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:34:15.275Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:34:15.722Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:34:27.730Z | WORKFLOW | IDLE | SKIP | no spin within 12s; resuming idle
+2026-10-23T13:34:27.970Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:34:28.927Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:34:32.392Z | WORKFLOW | IDLE | SUCCESS | wheel spin CONFIRMED on D415 (net_disp=36.1px peak=63.3px/s frames=50)
+2026-10-23T13:34:33.828Z | SYSTEM | CAMERA_D415:SPINNER_ID | SUCCESS | captured spinner face (5 embeddings, spinner-associated)
+2026-10-23T13:34:36.243Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+2026-10-23T13:34:37.052Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+2026-10-23T13:34:37.813Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'umbrella' → grasp 'umbrella'
+2026-10-23T13:34:38.817Z | WORKFLOW | CYCLE | BEGIN | cycle 6 starting
+2026-10-23T13:34:38.817Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:38.819Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='umbrella'
+2026-10-23T13:34:38.820Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'center' (#0) — looking for 'black cylindrical item'
+2026-10-23T13:34:38.820Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:43.561Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'center': trajectory complete
+2026-10-23T13:34:43.862Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:44.523Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:44.534Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 18 raw detections → 3 cluster(s); 3 survived vote≥2 [votes=6,6,6]
+2026-10-23T13:34:44.621Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (center)) — grasp-area transits slowed to the validated envelope
+2026-10-23T13:34:44.621Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 3 representative(s) at 'center'
+2026-10-23T13:34:44.639Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#3(d=75.9cm,score=0.88), #2(d=76.3cm,score=0.88) → anchor [0.807, 0.69, 1.198] m
+2026-10-23T13:34:44.641Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+2026-10-23T13:34:44.646Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:34:44.687Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.347, 0.296, 1.321] m (image 1280×720)
+2026-10-23T13:34:44.688Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the black cylindrical item closest to the camera. Single point.'
+2026-10-23T13:34:45.792Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.10 s; selected (876.8, 469.4)
+2026-10-23T13:34:45.792Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'umbrella' (body_prompt='black cylindrical item')
+2026-10-23T13:34:45.906Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.855 region=27344px body=27344px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (3 body / 0 region cand)
+2026-10-23T13:34:45.906Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+2026-10-23T13:34:46.089Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+2026-10-23T13:34:46.089Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+2026-10-23T13:34:46.100Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+2026-10-23T13:34:46.101Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+2026-10-23T13:34:46.101Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=90.0 mm (world+Z) + 250 mm (−approach retract)
+2026-10-23T13:34:48.287Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:34:51.948Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=0)
+2026-10-23T13:34:55.347Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+2026-10-23T13:35:00.735Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('umbrella') size=(0.06, 0.3, 0.06) offset=(0.0, 0.0, 0.0)
+2026-10-23T13:35:00.760Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=4)
+2026-10-23T13:35:00.760Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=FULL (POSITION 0, ~85 mm); chose primary (goalset_idx=4, width=85.0 mm)
+2026-10-23T13:35:03.578Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5a → pre-check retreat to view 'center': trajectory complete
+2026-10-23T13:35:11.580Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5b → via 'critic-holding-item-check-waypoint': trajectory complete
+2026-10-23T13:35:11.581Z | WORKFLOW | ITEM_CHECK | BEGIN | carrying item to check waypoint 'critic-holding-item-check' via view 'center' passing 'critic-holding-item-check-waypoint' for critic verify
+2026-10-23T13:35:15.315Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 11.5 → 'critic-holding-item-check': trajectory complete
+2026-10-23T13:35:17.828Z | WORKFLOW | ITEM_CHECK | SUCCESS | critic: holding 'black object' (no alert in 2.5s) → handover
+2026-10-23T13:35:17.828Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:35:17.829Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+2026-10-23T13:35:22.236Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+2026-10-23T13:35:22.236Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.1, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+2026-10-23T13:35:22.236Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+2026-10-23T13:35:23.420Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+2026-10-23T13:35:23.421Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.3, -85.2, 16.1, 173.4] deg
+2026-10-23T13:35:23.423Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | scanning for the wheel-spinner (gallery 5 shots, budget 15s)
+2026-10-23T13:35:24.292Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → scan left: preempted on match
+2026-10-23T13:35:25.429Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | spinner re-identified at scan-left via torso (cos=0.49)
+2026-10-23T13:35:26.020Z | SYSTEM | EXECUTOR:PRESENT | BEGIN | presenting toward person at [0.32, -0.63, 1.42]
+2026-10-23T13:35:30.221Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → present: trajectory complete
+2026-10-23T13:35:30.222Z | SYSTEM | EXECUTOR:PRESENT | SUCCESS | presented toward person
+2026-10-23T13:35:30.223Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+2026-10-23T13:35:38.756Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (tug)
+2026-10-23T13:35:39.757Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=tug)
+2026-10-23T13:35:39.841Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+2026-10-23T13:35:42.967Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+2026-10-23T13:35:48.037Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+2026-10-23T13:35:48.134Z | WORKFLOW | CYCLE | SUCCESS | cycle 6 complete
+2026-10-23T13:35:48.135Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:35:48.136Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+2026-10-23T13:35:54.741Z | WORKFLOW | IDLE | BEGIN | tick #27: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, -3.1, 4.4])
+2026-10-23T13:35:54.856Z | WORKFLOW | IDLE | BEGIN | person at the wheel — holding still to watch for a spin
+2026-10-23T13:35:55.294Z | WORKFLOW | IDLE | BEGIN | attentive watch: holding still, watching the wheel for a spin
+2026-10-23T13:36:05.523Z | WORKFLOW | IDLE | SKIP | person left the wheel without spinning; resuming idle
+2026-10-23T13:36:05.639Z | WORKFLOW | IDLE | BEGIN | tick #28: kind=breath (Δq_deg=[0.0, 0.0, 0.0, 0.0, -5.1, 0.0])
+2026-10-23T13:36:07.491Z | SYSTEM | VOXELS:RESCAN | BEGIN | operator re-scan: clearing voxel map + re-running the scene scan (~1-2 min)
+2026-10-23T13:36:07.492Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+2026-10-23T13:36:07.792Z | SYSTEM | VOXELS:RESCAN | BEGIN | re-scan pre-step: driving to the recorded idle joints (known-feasible scan start)
+2026-10-23T13:36:08.542Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | re-scan → idle joints: trajectory complete
+2026-10-23T13:36:08.543Z | WORKFLOW | SCENE_SCAN | BEGIN | move to scan-pose [172.5, -51.7, 21.2, -174.3, 108.4, 0.3] deg
+2026-10-23T13:36:18.239Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 1a → scan-pose: trajectory complete
+2026-10-23T13:36:18.239Z | WORKFLOW | SCENE_SCAN | SUCCESS | arrived at scan-pose; joints [172.4, -51.7, 21.2, -174.3, 108.4, 0.3] deg
+2026-10-23T13:36:18.240Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+2026-10-23T13:36:18.240Z | WORKFLOW | SCENE_SCAN | BEGIN | rotate J1 by -345.0 deg (clockwise) over 40.0 s (peak ~16.2 deg/s); no planner

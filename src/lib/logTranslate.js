@@ -68,6 +68,7 @@ export function translateFault(detail) {
   }
   if (/KeyboardInterrupt|operator/i.test(d)) return 'An operator stopped the order.'
   if (/handover motion failed/i.test(d)) return 'The arm could not find a clear path to the handover desk.'
+  if (/gripper_open|gripper open failed|open failed/i.test(d)) return 'The gripper would not open to release the item.'
   if (/gripper closed/i.test(d)) return 'The gripper closed on nothing, so no item is being held.'
   return null
 }
@@ -76,7 +77,8 @@ const num = (m, i = 1) => (m ? parseFloat(m[i]) : null)
 
 /** One-line raw log text (what an engineer would grep for). */
 export function rawText(msg) {
-  const comp = msg.component ? msg.component + (msg.action ? ':' + msg.action : '') : msg.type
+  // `origin` is the robot's own name for the line when the relay renamed it (the bar's BARISTA:ARM_MOVE …)
+  const comp = msg.origin || (msg.component ? msg.component + (msg.action ? ':' + msg.action : '') : msg.type)
   const status = msg.status ? ' ' + msg.status : msg.outcome ? ' ' + msg.outcome : ''
   const detail = msg.detail || msg.text || msg.raw || msg.objectName || ''
   const line = `${comp}${status} ${detail}`.trim()
@@ -102,11 +104,20 @@ export function translateEvent(msg, ctx = {}) {
     return { plain: 'The planner rejected a path because it would collide with something.', tone: 'warn' }
   }
   if (type === 'gripper') {
-    if (!msg.success) return { plain: 'The gripper did not respond as expected.', tone: 'fail' }
+    if (!msg.success) {
+      const m = msg.message || ''
+      return { plain: /failed to open/i.test(m) ? 'The gripper would not open.' : /failed to close/i.test(m) ? 'The gripper would not close.' : 'The gripper did not respond as expected.', tone: 'fail' }
+    }
     return { plain: /open/i.test(msg.message || '') ? 'Gripper opened.' : 'Gripper closed.', tone: 'ok' }
   }
   if (type === 'system_fault') {
+    if (msg.plain) return { plain: msg.plain, tone: msg.severity === 'red' ? 'fail' : 'warn' }
     return { plain: translateFault(msg.detail) || 'The arm controller reported a fault. Recovering on its own.', tone: 'warn' }
+  }
+  if (type === 'handover') {
+    return msg.person === false
+      ? { plain: 'No one was at the handover desk, so I am waiting at the fallback spot for someone to take the item.', tone: 'warn' }
+      : { plain: 'Holding the item out to the customer.', tone: 'ok' }
   }
   if (type === 'fault_recovery') return { plain: 'The fault cleared. Continuing.', tone: 'ok' }
   if (type !== 'phase') return null
@@ -164,6 +175,12 @@ export function translateEvent(msg, ctx = {}) {
       }
       return null
     }
+    case 'ITEM_CHECK': {
+      // the judge's own verdict arrives as a separate event; only the start and a failure are worth a row here
+      if (status === 'BEGIN') return { plain: `Carrying ${item} to the spot where the AI Judge can check my grip.`, tone: 'ok' }
+      if (status === 'FAIL') return { plain: 'The AI Judge could not confirm that I am holding the item.', tone: 'warn' }
+      return null
+    }
     case 'HANDOVER_TRANSIT': return status === 'BEGIN' ? { plain: `Carrying ${item} towards the handover desk.`, tone: 'ok' } : null
     case 'HANDOVER_MOVE': {
       if (status === 'SUCCESS') return { plain: 'At the handover position.', tone: 'ok' }
@@ -171,7 +188,7 @@ export function translateEvent(msg, ctx = {}) {
       return null
     }
     case 'HANDOVER_RELEASE': {
-      if (status === 'SUCCESS') return { plain: 'Handed over to the customer.', tone: 'ok' }
+      if (status === 'SUCCESS') return { plain: /release_reason=tug/.test(detail) ? 'The customer took the item: the gripper opened when it was pulled.' : 'Handed over to the customer.', tone: 'ok' }
       if (status === 'FAIL') return { plain: translateFault(detail) || 'The handover did not complete.', tone: 'fail' }
       return null
     }

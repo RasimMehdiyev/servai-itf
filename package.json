@@ -6,8 +6,20 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "replay": "node scripts/dev-replay.cjs",
-    "test:replay": "node scripts/test-live-replay.mjs"
+    "relay": "node scripts/start-relay.cjs grocery",
+    "relay:bar": "node scripts/start-relay.cjs bar",
+    "replay": "node scripts/dev-replay.cjs grocery",
+    "replay:bar": "node scripts/dev-replay.cjs bar",
+    "test:replay": "node scripts/test-live-replay.mjs",
+    "test:bar": "node scripts/test-bar-replay.mjs",
+    "test:bar-live": "node scripts/test-bar-live.mjs",
+    "test:rawlog": "node scripts/test-raw-log.mjs",
+    "test:critic": "node scripts/test-grocery-critic.mjs",
+    "test:tries": "node scripts/test-tries.mjs",
+    "backfill:details": "node scripts/backfill-run-details.cjs",
+    "test:grocery-live": "node scripts/test-grocery-live.mjs",
+    "test:isolation": "node scripts/test-robot-isolation.mjs",
+    "test:rag": "py scripts/test-rag-robots.py"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

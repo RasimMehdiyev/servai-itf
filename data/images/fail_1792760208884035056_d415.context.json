@@ -1,0 +1,27 @@
+{
+  "imageId": "fail_1792760208884035056_d415",
+  "imageReceivedAt": "2026-10-23T12:56:48.791Z",
+  "windowFrom": "2026-10-23T12:56:18.791Z",
+  "windowTo": "2026-10-23T12:56:53.791Z",
+  "caption": "Hardware fault: idle: controller fault (Fault(type=<FaultType.INTERNAL: 'int",
+  "events": [
+    {
+      "serverTs": "2026-10-23T12:56:48.753Z",
+      "type": "system_fault",
+      "component": null,
+      "action": null,
+      "status": "FAIL",
+      "detail": "idle: controller fault (Fault(type=<FaultType.INTERNAL: 'internal'>, message='motion rejected (fault_reason=none)', t_wall=1792760197.569984)); halting gestures + recovering",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T12:56:48.785Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

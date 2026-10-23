@@ -8,6 +8,7 @@ import OrdersList from '../components/OrdersList'
 import FailureRadar from '../components/FailureRadar'
 import ChatPanel from '../components/ChatPanel'
 import ConnectionIndicator from '../../../components/ui/ConnectionIndicator'
+import RobotSwitcher from '../../../components/layout/RobotSwitcher'
 
 // Calendar days are local: the heatmap buckets orders by the operator's clock.
 function fmtDay(d) {
@@ -69,7 +70,7 @@ export default function HistoryScreen() {
   const topLeft = (
     <>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--text-secondary)" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span className="topbar-title">ROBI</span>
+      <RobotSwitcher />
     </>
   )
 

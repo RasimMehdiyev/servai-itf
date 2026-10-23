@@ -9,46 +9,28 @@
 import { PIPELINE, stepTitleForComponent } from '../services/messageMapper'
 import { friendlyWaypoint, translateFault } from './logTranslate'
 import { contextSentence, etaSeconds, typicalStepSeconds, itemStats } from './orderStats'
+import { spentSeconds } from './stageTime'
+import { deriveBarSteps, deriveBarNowServing } from '../robots/bar/view'
+import { fmtDuration } from './format'
+import { criticView, judgeNote, JUDGE_NAME } from './critic'
+import { describeAttempts } from './attempts'
 
-export function fmtDuration(totalSec) {
-  const s = Math.max(0, Math.round(totalSec || 0))
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const r = s % 60
-  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`
-  if (m > 0) return r > 0 ? `${m}m ${r}s` : `${m}m`
-  return `${r}s`
-}
+export { fmtDuration }
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s)
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`
 
 // ── Steps ───────────────────────────────────────────────────────────────────
 
-const WHY = {
+export const WHY = {
   searching: 'I sweep each shelf with the camera until the requested item is detected. When every place on the route is empty, the search ends and I ask for help.',
   anchor_select: 'Several detections can match the name. I pick the one with the highest match score.',
   closeup_move: 'The arm moves to a close-up viewpoint so the grasp can be measured accurately. Each blocked grasp sends it to a new viewpoint.',
   analyzing: 'I outline the item, then read its distance from the depth camera to choose where to grip.',
   grasping: 'Before the gripper moves, the planner checks the path against everything it can see. A path that would touch a neighbouring item is rejected and another grasp is tried.',
-  transit: 'The arm carries the item along a planned path to the handover desk.',
+  transit: `The arm carries the item to a spot where the ${JUDGE_NAME} (a side camera and an AI model) checks that it is really in the gripper, then along a planned path to the handover desk. If the ${JUDGE_NAME} saw the item slip, I would stop and ask for help.`,
   release: 'The gripper opens once the customer has taken the item.',
   returning: 'The arm goes back to its home position, ready for the next order.',
-}
-
-function spentSeconds(liveData, key, nowMs) {
-  const info = liveData._stageInfo?.[key]
-  if (!info) return null
-  let ms = info.spent || 0
-  const cur = liveData._stageCursor
-  if (cur && cur.key === key && !liveData._cycleComplete) {
-    const le = liveData._lastEvent
-    const lastEventNow = le ? le.ts + Math.max(0, nowMs - le.seen) : cur.ts
-    ms += Math.max(0, lastEventNow - cur.ts)
-  } else if (cur && cur.key === key && liveData._cycleComplete && liveData._lastEvent) {
-    ms += Math.max(0, liveData._lastEvent.ts - cur.ts)
-  }
-  return Math.round(ms / 1000)
 }
 
 function scoreRange(list) {
@@ -56,6 +38,18 @@ function scoreRange(list) {
   const v = list.map(r => r.score)
   const lo = Math.min(...v), hi = Math.max(...v)
   return lo === hi ? lo.toFixed(2) : `${lo.toFixed(2)} – ${hi.toFixed(2)}`
+}
+
+// How the handover went, in a sentence (live and saved orders share it)
+export function handoverText(h, item, done) {
+  const noOne = h.person === false
+  if (h.releaseReason === 'tug') {
+    return noOne
+      ? `No one was at the desk, so I waited at the fallback spot until someone took the ${item} out of the gripper.`
+      : `The customer took the ${item} out of the gripper.`
+  }
+  if (noOne) return `No one was at the desk, so I am holding the ${item} at the fallback spot until someone takes it.`
+  return done ? `Handed the ${item} over.` : `Holding the ${item} out to the customer.`
 }
 
 function stepDetail(key, state, liveData) {
@@ -102,6 +96,13 @@ function stepDetail(key, state, liveData) {
       if (done) out.summary = ev.tries.length === 1 ? 'Gripped on the first try.' : `Gripped on try ${done.n} after ${plural(blocked, 'blocked try', 'blocked tries')}.`
       else if (running) out.summary = blocked ? `Try ${running.n} is planning a path. ${plural(blocked, 'try was', 'tries were')} blocked.` : 'Reaching for the item…'
       else if (blocked) out.summary = `${plural(blocked, 'try was', 'tries were')} blocked.`
+      // the relay's account of each try, in plain words (when it has one): replaces the numbered table
+      const told = describeAttempts(liveData._runDetails, liveData._itemName)
+      if (told && (told.rows.length > 1 || told.failedSoFar)) {
+        out.tries = told
+        out.summary = told.summary || out.summary
+        out.attempts = null
+      }
       if (ev.width != null) out.metrics.push({ k: 'Grip', v: `${ev.width} mm` })
       if (ev.tries.length) out.metrics.push({ k: 'Tries', v: String(ev.tries.length) })
       if (ev.collisions) out.metrics.push({ k: 'Collisions', v: String(ev.collisions) })
@@ -121,7 +122,8 @@ function stepDetail(key, state, liveData) {
       out.summary = ev.handoverBlocked ? 'No clear path to the handover desk.' : 'Moving to the handover desk.'
       break
     case 'release':
-      out.summary = 'Handing the item over.'
+      if (state === 'fail' && liveData._armFault) out.summary = 'The gripper would not open: the arm’s controller had a fault.'
+      else out.summary = handoverText(ev, item, state === 'done')
       break
     case 'returning':
       out.summary = 'Returning to the home position.'
@@ -137,11 +139,13 @@ function stepDetail(key, state, liveData) {
  */
 export function deriveSteps(liveData, history, nowMs = Date.now()) {
   if (!liveData) return []
+  if (liveData._robot === 'bar') return deriveBarSteps(liveData, history, nowMs)
   if (liveData._isAnomaly) return []
   const hasInfo = !!liveData._stageInfo
   if (!hasInfo) return legacySteps(liveData.steps || [])
 
   const typical = typicalStepSeconds(history)
+  const judge = criticView(liveData)
   const complete = !!liveData._cycleComplete
   const cardState = liveData._cardState
   const cycleFailed = complete && cardState === 'red'
@@ -180,16 +184,18 @@ export function deriveSteps(liveData, history, nowMs = Date.now()) {
       summary: d.summary || (state === 'pending' ? '' : description || ''),
       metrics: d.metrics,
       attempts: d.attempts,
+      tries: d.tries || null,
       secs,
       dur: secs == null ? '' : state === 'active' || state === 'activeWarn' ? `${fmtDuration(secs)} so far` : fmtDuration(secs),
       typ: typ == null ? '' : typ < 1 ? 'typical under 1s' : `typical ${fmtDuration(typ)}`,
       slow: typ != null && secs != null && secs > Math.max(typ * 1.5, typ + 5),
-      why: WHY[p.key] || '',
+      why: (state === 'fail' && p.key === 'release' && liveData._armFault ? `${liveData._armFault.plain} ` : '') + (WHY[p.key] || ''),
       raw,
       timestamp: liveData.steps?.find(s => s.title === p.title)?.timestamp || '',
-      badge: state === 'activeWarn' && p.key === 'searching' ? 'Looking elsewhere' : '',
-      openDefault: state === 'fail' || state === 'activeWarn',
+      badge: state === 'activeWarn' && p.key === 'searching' ? 'Looking elsewhere' : (state === 'activeWarn' && p.key === 'grasping' && d.tries ? 'Trying again' : ''),
+      openDefault: state === 'fail' || state === 'activeWarn' || !!d.tries,
       alert: liveData.steps?.find(s => s.title === p.title)?.alert || null,
+      judge: state === 'pending' ? null : judgeNote(judge, p.key, 'grocery'),
     })
   })
   return rows
@@ -224,7 +230,7 @@ const NEXT_BY_STAGE = {
   anchor_select: 'Next: move to a close-up viewpoint.',
   closeup_move: 'Next: measure the grasp point and the distance.',
   analyzing: 'Next: pick the item up.',
-  grasping: 'Next: carry the item to the handover desk.',
+  grasping: `Next: carry the item past the ${JUDGE_NAME}, then to the handover desk.`,
   transit: 'Next: hand over to the customer, then return home.',
   release: 'Next: return to the home position.',
   returning: 'Almost done: going back to the home position.',
@@ -232,7 +238,7 @@ const NEXT_BY_STAGE = {
 
 // What the robot is doing, in a sentence, per step. The mapper's explanation text
 // only changes on some events, so on a healthy order this stays in step with the bar.
-function greenHeadline(stageKey, item, ev) {
+function greenHeadline(stageKey, item, ev, judging = false) {
   const place = ev?.places?.length ? friendlyWaypoint(ev.places[ev.places.length - 1].wp) : ''
   switch (stageKey) {
     case 'searching': return place ? `Looking for the ${item} on the ${place}.` : `Looking for the ${item} on the shelves.`
@@ -240,7 +246,9 @@ function greenHeadline(stageKey, item, ev) {
     case 'closeup_move': return `Moving in for a closer look at the ${item}.`
     case 'analyzing': return `Measuring where to grip the ${item}.`
     case 'grasping': return `Reaching for the ${item}.`
-    case 'transit': return `Picked up the ${item}. Bringing it to the handover desk.`
+    case 'transit': return judging
+      ? `Picked up the ${item}. The ${JUDGE_NAME} is checking that I am really holding it.`
+      : `Picked up the ${item}. Bringing it to the handover desk.`
     case 'release': return `Handing the ${item} over.`
     case 'returning': return 'Handed over. Returning to the home position.'
     default: return ''
@@ -280,6 +288,7 @@ export function resolveStages(liveData) {
 }
 
 function failureKind(liveData, stage) {
+  if (liveData._armFault) return 'arm'
   const ev = liveData._ev
   const text = (liveData.explanationText || '').toLowerCase()
   if (stage === 'searching' || /find|not found|exhausted/.test(text)) return 'search'
@@ -290,6 +299,13 @@ function failureKind(liveData, stage) {
 }
 
 function evidenceRows(liveData, state, kind) {
+  if (kind === 'arm' && liveData._armFault) {
+    const f = liveData._armFault
+    const rows = [{ label: 'Arm controller', value: 'Fault', note: f.plain }]
+    if ((liveData._cycleFailures || []).some(x => x.component === 'GRIPPER')) rows.push({ label: 'Gripper', value: 'Did not open', note: 'it was asked to release the item' })
+    if (f.count > 1) rows.push({ label: 'Recovery', value: 'Failed', note: `${f.count} fault reports; restarting the arm automatically did not work` })
+    return rows
+  }
   const ev = liveData._ev
   if (!ev) return []
   const rows = []
@@ -328,6 +344,7 @@ function evidenceRows(liveData, state, kind) {
 }
 
 export function deriveNowServing(liveData, history, nowMs = Date.now()) {
+  if (liveData?._robot === 'bar') return deriveBarNowServing(liveData, history, nowMs)
   const item = liveData?._itemName
   const startedAt = liveData?._cycleStartedAt
   const elapsedSec = startedAt ? Math.max(0, (nowMs - startedAt) / 1000) : 0
@@ -356,7 +373,8 @@ export function deriveNowServing(liveData, history, nowMs = Date.now()) {
   const blocked = ev ? ev.tries.filter(t => t.result === 'blocked').length : 0
   const an = /^[aeiou]/i.test(item || '') ? 'an' : 'a'
   let headline = liveData?.explanationText || ''
-  if (isActive && cardState === 'green') headline = greenHeadline(stageKey, item, ev) || headline
+  const judging = liveData?._critic?.phase === 'critic-item-checking-phase'
+  if (isActive && cardState === 'green') headline = greenHeadline(stageKey, item, ev, judging) || headline
   if (isActive && cardState === 'orange' && stageKey === 'grasping' && blocked > 0) {
     headline = `The arm can’t find a clear path to the ${item} yet. Trying another grasp.`
   }
@@ -368,11 +386,17 @@ export function deriveNowServing(liveData, history, nowMs = Date.now()) {
       grasp: `I couldn’t find a clear path to the ${item}.`,
       handover: `I couldn’t get the ${item} to the handover desk.`,
       depth: `I couldn’t measure the distance to the ${item}.`,
+      arm: `I couldn’t finish the ${item}: the arm’s controller reported a fault${(liveData?._cycleFailures || []).some(x => x.component === 'GRIPPER') ? ', so the gripper would not open' : ''}.`,
       other: translateFault(liveData?.explanationText) || 'Something went wrong. The robot needs help.',
     }[kind]
   }
 
-  const evidence = evidenceRows(liveData || {}, cardState === 'red' ? 'red' : cardState, kind)
+  let evidence = evidenceRows(liveData || {}, cardState === 'red' ? 'red' : cardState, kind)
+  const told = describeAttempts(liveData?._runDetails, item)
+  if (isActive && told?.headline) {
+    headline = told.headline
+    evidence = told.evidence
+  }
 
   // Next / if it goes wrong
   let next = NEXT_BY_STAGE[stageKey] || ''
@@ -384,6 +408,7 @@ export function deriveNowServing(liveData, history, nowMs = Date.now()) {
       grasp: `Check what is next to the ${item}: a neighbouring item may be in the way.`,
       handover: 'Check that the handover desk is clear.',
       depth: `Check for glare or a shiny surface on the ${item}.`,
+      arm: `Check the arm: are the drives powered, and is an alarm showing on the teach pendant? Then restart the arm.${stageKey === 'release' ? ` The ${item} may still be in the gripper.` : ''}`,
       other: 'Please come over and look at the robot.',
     }[kind]
     ifWrong = 'The order stays open until you choose.'
@@ -428,7 +453,7 @@ export function deriveNowServing(liveData, history, nowMs = Date.now()) {
     where: stepTitleForComponent(f.component) || (f.component === 'GRIPPER' ? 'Picking up' : f.component === 'CYCLE' ? 'Order' : ''),
   }))
 
-  return { isActive, waiting, cardState, seg, phaseLabel, headline, evidence, next, ifWrong, context, eta, issues, kind }
+  return { isActive, waiting, cardState, seg, phaseLabel, headline, evidence, next, ifWrong, context, eta, issues, kind, judge: criticView(liveData) }
 }
 
 // ── Technical details ───────────────────────────────────────────────────────

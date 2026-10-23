@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import { DataSourceProvider } from './context/DataSourceContext'
+import { RobotProvider } from './robots/RobotContext'
 import LiveScreen from './features/live/pages/LiveScreen'
 import HistoryScreen from './features/history/pages/HistoryScreen'
 import DayDetailsScreen from './features/day-details/pages/DayDetailsScreen'
@@ -26,6 +27,7 @@ function SettingsStub() {
 
 export default function App() {
   return (
+    <RobotProvider>
     <DataSourceProvider>
       <AppShell>
         <Routes>
@@ -39,5 +41,6 @@ export default function App() {
         </Routes>
       </AppShell>
     </DataSourceProvider>
+    </RobotProvider>
   )
 }

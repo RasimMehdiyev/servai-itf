@@ -1,0 +1,45 @@
+{
+  "imageId": "fail_1792761314164042377_d415",
+  "imageReceivedAt": "2026-10-23T13:15:14.067Z",
+  "windowFrom": "2026-10-23T13:14:44.067Z",
+  "windowTo": "2026-10-23T13:15:19.067Z",
+  "caption": "",
+  "events": [
+    {
+      "serverTs": "2026-10-23T13:14:48.901Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "BEGIN",
+      "detail": "operator-record: saving current pose as 'wheel' — return the keyswitch to AUTO and hold still",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:14:49.606Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "RECORD_WAYPOINT",
+      "status": "SUCCESS",
+      "detail": "waypoint 'wheel' recorded from live pose",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:15:10.651Z",
+      "type": "system_event",
+      "component": "EXECUTOR",
+      "action": "ARM_GATE",
+      "status": "SUCCESS",
+      "detail": "operator-goto: ARM gate latched — GO tap taken as the operator's resume decision, motion permitted",
+      "cycleNum": null
+    },
+    {
+      "serverTs": "2026-10-23T13:15:14.059Z",
+      "type": "image",
+      "component": null,
+      "action": null,
+      "status": null,
+      "detail": null,
+      "cycleNum": null
+    }
+  ]
+}

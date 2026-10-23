@@ -96,7 +96,7 @@ export function typicalStepSeconds(orders) {
     if (!isDelivered(o)) continue
     const seen = {}
     for (const s of o.steps || []) {
-      const key = PHASE_TO_STEP[s.phase]
+      const key = PHASE_TO_STEP[s.phase] || s.phase
       if (!key) continue
       // A step that repeats in one order (grasp retries) counts once, summed.
       seen[key] = (seen[key] || 0) + (s.duration_seconds || 0)

@@ -3,6 +3,7 @@ import Card from '../../../components/ui/Card'
 import { useDataSource } from '../../../context/DataSourceContext'
 import { clock } from '../../../lib/logTranslate'
 import { deriveLog } from '../../../lib/liveView'
+import { JudgeTag } from '../../../components/ui/SmartJudge'
 
 const STATUS_CLS = {
   ok:      { dot: 'bg-[var(--success)]', text: 'text-[var(--success-text)]', bg: 'bg-[var(--success-bg)]' },
@@ -95,7 +96,10 @@ export default function TechnicalDetails({ params, suggestion }) {
                     {clock(l.ts)}
                   </span>
                   <span className="text-[12px] leading-relaxed font-mono text-[var(--text-secondary)] break-words">{l.raw}</span>
-                  <span className="text-[clamp(13px,1.5vw,14px)] leading-snug text-[var(--text-primary)]">{l.plain}</span>
+                  <span className="text-[clamp(13px,1.5vw,14px)] leading-snug text-[var(--text-primary)]">
+                    {l.source === 'judge' && <JudgeTag className="mr-1.5 align-middle" label="Judge" />}
+                    {l.plain}
+                  </span>
                 </div>
               ))}
             </div>

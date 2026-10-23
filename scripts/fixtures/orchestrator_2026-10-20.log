@@ -1,0 +1,85 @@
+[orchestrator] 2026-10-20T12:20:12.983Z | WORKFLOW | IDLE | BEGIN | tick #36: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 5.9, -7.7])
+[orchestrator] 2026-10-20 14:20:13.038 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 0.58s move, 0.003s think (24 samples) [hits 37/37]
+[operator-panel] 10.10.135.116 - - [20/Oct/2026 14:20:13] "GET /api/health HTTP/1.1" 200 -
+[operator-panel] 10.10.135.116 - - [20/Oct/2026 14:20:14] "GET /api/motion_tuning HTTP/1.1" 200 -
+[cockpit] INFO     | grocery_bot.cockpit.gamepad:_press:568 | cockpit gamepad: force_spin armed (press ✕ again to confirm)
+[cockpit] INFO     | grocery_bot.cockpit.gamepad:_press:579 | cockpit gamepad: force spin
+[orchestrator] 2026-10-20T12:20:14.749Z | WORKFLOW | IDLE | SUCCESS | wheel-spin event consumed; payload keys=['cos_sim', 'motion_peak', 'timestamp_ns']
+[orchestrator] 2026-10-20 14:20:14.799 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 1.55s move, 0.003s think (63 samples) [hits 38/38]
+[operator-panel] 10.10.135.116 - - [20/Oct/2026 14:20:15] "GET /api/spin_watch HTTP/1.1" 200 -
+[orchestrator] 2026-10-20T12:20:16.605Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | observe-wheel: trajectory complete
+[orchestrator] 2026-10-20T12:20:17.387Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | BEGIN | reading winning sector (Molmo VQA on SAM3 wedge crops)
+[perception-server] /home/louadria/demos/fti-2026-main/.venv/lib/python3.12/site-packages/bitsandbytes/backends/cuda/ops.py:468: FutureWarning: _check_is_size will be removed in a future PyTorch release along with guard_size_oblivious.     Use _check(i >= 0) instead.
+[perception-server]   torch._check_is_size(blocksize)
+[orchestrator] 2026-10-20T12:20:18.042Z | SYSTEM | CALIBRATION:WHEEL_SECTOR | SUCCESS | sector = 'pen' → grasp 'pen'
+[orchestrator] 2026-10-20T12:20:18.044Z | WORKFLOW | CYCLE | BEGIN | cycle 1 starting
+[orchestrator] 2026-10-20T12:20:18.044Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-20T12:20:18.046Z | WORKFLOW | PROMPT | SUCCESS | override prompt: object='pen'
+[orchestrator] 2026-10-20T12:20:18.047Z | WORKFLOW | SEARCH_DETECT | BEGIN | waypoint 'left-shelve' (#0) — looking for 'white pen'
+[orchestrator] 2026-10-20T12:20:18.047Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-20 14:20:18.051 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 5.88s move, 0.004s think (236 samples) [hits 40/40]
+[orchestrator] 2026-10-20T12:20:24.758Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | search → 'left-shelve': trajectory complete
+[orchestrator] 2026-10-20T12:20:25.060Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-20T12:20:26.491Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[camera-gst-streamer] 2026-10-20 14:20:27.384 | WARNING  | __main__:start:488 - gst streamer: FPS: 13.39 / 15.00 (too slow)
+[orchestrator] 2026-10-20T12:20:27.844Z | WORKFLOW | SEARCH_DETECT | SUCCESS | 6 frames, 222 raw detections → 49 cluster(s); 42 survived vote≥2 [votes=6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,4,5,3,6,4,6,6,6,6,6,6,6,3,6,4,4,2,6,3,2,6,3,2,3]
+[orchestrator] 2026-10-20T12:20:27.918Z | SYSTEM | PLANNER:MOTION_TUNING | SUCCESS | LERP envelope ceiling → 1× (at shelf (left-shelve)) — grasp-area transits slowed to the validated envelope
+[orchestrator] 2026-10-20T12:20:27.918Z | WORKFLOW | ANCHOR_SELECT | BEGIN | mode='closest-2', 42 representative(s) at 'left-shelve'
+[orchestrator] 2026-10-20T12:20:28.038Z | WORKFLOW | ANCHOR_SELECT | SUCCESS | selected=#6(d=72.2cm,score=0.88), #1(d=72.5cm,score=0.92) → anchor [0.134, 0.928, 1.617] m
+[orchestrator] 2026-10-20T12:20:28.038Z | WORKFLOW | CLOSEUP_MOVE | BEGIN | grasp view in place at the search waypoint (no close-up move)
+[orchestrator] 2026-10-20T12:20:28.039Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-20T12:20:28.060Z | WORKFLOW | CLOSEUP_MOVE | SUCCESS | tcp=[0.142, 0.354, 1.751] m (image 1280×720)
+[orchestrator] 2026-10-20T12:20:28.061Z | WORKFLOW | CLOSEUP_MOLMO | BEGIN | prompt='Point to the frontmost white cylindrical pen. Single point.'
+[orchestrator] 2026-10-20T12:20:29.103Z | WORKFLOW | CLOSEUP_MOLMO | SUCCESS | 1 point(s) in 1.04 s; selected (672.0, 522.0)
+[orchestrator] 2026-10-20T12:20:29.104Z | WORKFLOW | CLOSEUP_REFINE | BEGIN | SAM3 at close-up for 'pen' (body_prompt='white pen')
+[orchestrator] 2026-10-20T12:20:29.386Z | WORKFLOW | CLOSEUP_REFINE | SUCCESS | score=0.828 region=2393px body=2393px feature_used=False region_fell_back=False contains_click=True nearest_fallback=False (43 body / 0 region cand)
+[orchestrator] 2026-10-20T12:20:29.386Z | WORKFLOW | SYNTHESISE | BEGIN | front-approach targeting (declared symmetric primitive → aimed world-tcp poses)
+[orchestrator] 2026-10-20T12:20:29.455Z | WORKFLOW | SYNTHESISE | SUCCESS | front_approach goalset=20/20 reachable; headline.accepted=True width=85.0 mm reason=ok
+[orchestrator] 2026-10-20T12:20:29.455Z | WORKFLOW | VISUALISE | BEGIN | rerun overlay + (optional) reachability probe
+[orchestrator] 2026-10-20T12:20:29.478Z | WORKFLOW | VISUALISE | SUCCESS | rerun overlay logged; no reachability probe
+[orchestrator] 2026-10-20T12:20:29.478Z | WORKFLOW | RECENTER | BEGIN | lateral re-centre at approach for 'pen'
+[orchestrator] 2026-10-20T12:20:29.478Z | SYSTEM | PLANNER:RECENTRE_MOVE | BEGIN | verify pose 120+150 mm along approach (camera live, pre-grasp un-mute window)
+[orchestrator] 2026-10-20T12:20:33.646Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | recenter verify pose: trajectory complete
+[orchestrator] 2026-10-20T12:20:33.646Z | SYSTEM | PLANNER:RECENTRE_MOVE | SUCCESS | at verify pose — re-segmenting
+[orchestrator] 2026-10-20T12:20:33.648Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[camera-gst-streamer] 2026-10-20 14:20:33.994 | WARNING  | __main__:start:488 - gst streamer: FPS: 13.35 / 15.00 (too slow)
+[orchestrator] 2026-10-20T12:20:34.222Z | WORKFLOW | RECENTER | SUCCESS | no-op: no pen cloud within 50 mm of the predicted 397 mm depth (0 pts in the window < 25)
+[orchestrator] 2026-10-20T12:20:34.222Z | WORKFLOW | EXECUTE_GRASP | BEGIN | goalset=20/20 accepted
+[orchestrator] 2026-10-20T12:20:34.222Z | SYSTEM | PLANNER:GRASP_PLAN | BEGIN | plan_grasp goalset_size=20 standoff=120 mm lift=50.0 mm (world+Z) + 200 mm (−approach retract)
+[orchestrator] 2026-10-20T12:20:35.580Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[orchestrator] 2026-10-20T12:20:37.173Z | SYSTEM | GRIPPER:OPEN | SUCCESS | pre-grasp open (state=2)
+[orchestrator] 2026-10-20T12:20:40.665Z | SYSTEM | GRIPPER:CLOSE | SUCCESS | close (force=1): gripper close complete
+[orchestrator] 2026-10-20T12:20:44.724Z | SYSTEM | PLANNER:HELD_OBB | SUCCESS | planner.attach_held_obb('pen') size=(0.04, 0.16, 0.04) offset=(0.0, 0.0, 0.0)
+[orchestrator] 2026-10-20T12:20:44.832Z | SYSTEM | PLANNER:GRASP_PLAN | SUCCESS | chose primary (goalset_idx=14)
+[orchestrator] 2026-10-20T12:20:44.832Z | WORKFLOW | EXECUTE_GRASP | SUCCESS | pregrasp=NARROW (POSITION 150, ~35 mm) [per-object override]; chose primary (goalset_idx=14, width=85.0 mm)
+[orchestrator] 2026-10-20T12:20:44.833Z | WORKFLOW | ITEM_CHECK | SKIP | item-check skipped (disabled by operator toggle)
+[orchestrator] 2026-10-20T12:20:44.834Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution muted (1 source(s))
+[orchestrator] 2026-10-20T12:20:44.834Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | retreat to view waypoint 'left-shelve' before handover
+[orchestrator] 2026-10-20 14:20:44.860 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 1.80s move, 0.003s think (73 samples) [hits 42/42]
+[orchestrator] 2026-10-20T12:20:46.943Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a0 → retreat to view 'left-shelve': trajectory complete
+[orchestrator] 2026-10-20T12:20:46.945Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | retreated to 'left-shelve'; joints [89.5, -38.7, -10.5, -2.5, -45.0, 92.3] deg
+[orchestrator] 2026-10-20T12:20:46.945Z | WORKFLOW | HANDOVER_TRANSIT | BEGIN | transit through 'idle' before handover
+[orchestrator] 2026-10-20 14:20:46.950 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 8.28s move, 0.005s think (332 samples) [hits 43/43]
+[orchestrator] 2026-10-20T12:20:56.327Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12a → transit to 'idle': trajectory complete
+[orchestrator] 2026-10-20T12:20:56.327Z | WORKFLOW | HANDOVER_TRANSIT | SUCCESS | arrived at 'idle'; joints [-63.0, -66.1, -59.4, -72.1, -0.3, 165.3] deg
+[orchestrator] 2026-10-20T12:20:56.327Z | WORKFLOW | HANDOVER_MOVE | BEGIN | move to handover waypoint 'handover'
+[orchestrator] 2026-10-20 14:20:56.329 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 0.90s move, 0.003s think (37 samples) [hits 44/44]
+[orchestrator] 2026-10-20T12:20:57.567Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12b → 'handover': trajectory complete
+[orchestrator] 2026-10-20T12:20:57.567Z | WORKFLOW | HANDOVER_MOVE | SUCCESS | arrived at 'handover'; joints [-67.9, -58.2, -52.4, -85.2, 16.1, 173.4] deg
+[orchestrator] 2026-10-20T12:21:00.386Z | SYSTEM | EXECUTOR:PRESENT | SKIP | no person seen — retreating to the handover-fallback waypoint
+[orchestrator] 2026-10-20T12:21:00.386Z | SYSTEM | EXECUTOR:PRESENT | FALLBACK | no recipient found — retreating to 'handover-fallback' to await pickup
+[orchestrator] 2026-10-20 14:21:00.388 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 2.23s move, 0.002s think (90 samples) [hits 45/45]
+[orchestrator] 2026-10-20T12:21:02.943Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | present → handover-fallback 'handover-fallback': trajectory complete
+[orchestrator] 2026-10-20T12:21:02.943Z | WORKFLOW | HANDOVER_RELEASE | BEGIN | release object (open gripper)
+[orchestrator] 2026-10-20T12:21:03.953Z | SYSTEM | GRIPPER:OPEN | SUCCESS | gripper opened (manual)
+[orchestrator] 2026-10-20T12:21:04.954Z | WORKFLOW | HANDOVER_RELEASE | SUCCESS | gripper opened (release_reason=manual)
+[orchestrator] 2026-10-20T12:21:04.973Z | WORKFLOW | HANDOVER_RETURN | BEGIN | return to 'idle'
+[orchestrator] 2026-10-20 14:21:04.976 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 2.65s move, 0.003s think (107 samples) [hits 46/46]
+[orchestrator] 2026-10-20T12:21:07.991Z | SYSTEM | EXECUTOR:TRAJECTORY | SUCCESS | stage 12d → 'idle': trajectory complete
+[orchestrator] 2026-10-20T12:21:07.991Z | WORKFLOW | HANDOVER_RETURN | SUCCESS | returned to 'idle'; ready for next cycle
+[orchestrator] 2026-10-20 14:21:08.093 | WARNING  | grocery_bot.planning.curobo_adapter:_lerp_reapply_envelope:3937 - LERP envelope ABOVE VALIDATED 1.0x: v×1.50 (ceiling cycle end; operator v×1.50 a×1.00 j×1.00) — peak now v<=[29 29 43 43 43 43]°/s a<=[240 240 360 360 360 360]°/s² j<=[720 720 1080 1080 1080 1080]°/s³; accel/jerk beyond 1.0x were never validated against the CRX contact-stop (docs/motion.md F44) — watch for phantom stops
+[orchestrator] 2026-10-20T12:21:08.094Z | WORKFLOW | CYCLE | SUCCESS | cycle 1 complete
+[orchestrator] 2026-10-20T12:21:08.098Z | SYSTEM | VOXELS:D415_MUTE | SUCCESS | D415 voxel contribution unmuted (1 source(s))
+[orchestrator] 2026-10-20T12:21:08.098Z | WORKFLOW | IDLE | BEGIN | idle behaviour begins (awaiting wheel spin via D415 attentive-watch)
+[orchestrator] 2026-10-20 14:21:08.134 | INFO     | grocery_bot.planning.curobo_adapter:plan_to_joint_configuration:1338 - plan=LERP: 0.03s move, 0.003s think (2 samples) [hits 47/47]
+[orchestrator] 2026-10-20T12:21:14.882Z | WORKFLOW | IDLE | BEGIN | tick #37: kind=bob (Δq_deg=[0.0, 0.0, 0.0, 0.0, 1.5, -3.2])

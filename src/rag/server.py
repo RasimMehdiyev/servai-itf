@@ -30,10 +30,49 @@ from fastapi.middleware.cors import CORSMiddleware
 ROOT = Path(__file__).resolve().parent.parent.parent
 load_dotenv(ROOT / ".env")
 
-ORDERS_FILE = ROOT / "data" / "orders.json"
-CACHE_DIR = ROOT / "data" / "cache" / "captions"
-FAISS_PATH = ROOT / "data" / "rag_index.faiss"
-CHAT_LOG_FILE = ROOT / "data" / "rag_chat.log"
+# DATA_DIR mirrors the relay server (ws-test-server.js): point both at the same folder to
+# run against a copy of the data (tests, replay demos) instead of data/.
+DATA_DIR = Path(os.environ.get("DATA_DIR") or ROOT / "data")
+# Each robot has its own orders file (src/robots/robots.json). The UI says which robot a request is
+# about with the X-Robot header; the middleware below stores it per request.
+import contextvars
+import robot_profiles as rp
+ROBOTS = json.loads((ROOT / "src" / "robots" / "robots.json").read_text(encoding="utf-8"))
+DEFAULT_ROBOT = ROBOTS["default"]
+_current_robot = contextvars.ContextVar("robot", default=DEFAULT_ROBOT)
+
+
+def current_robot() -> str:
+    return _current_robot.get()
+
+
+def profile(robot=None) -> dict:
+    """The vocabulary (items, phases, prompts, wording) of the robot the current request is about."""
+    return rp.get(robot or current_robot(), DEFAULT_ROBOT)
+
+
+def orders_file(robot=None) -> Path:
+    robot = robot or current_robot()
+    return DATA_DIR / ROBOTS["robots"].get(robot, ROBOTS["robots"][DEFAULT_ROBOT])["ordersFile"]
+
+
+ORDERS_FILE = orders_file(DEFAULT_ROBOT)   # the default robot's file (kept for the old name)
+CACHE_DIR = DATA_DIR / "cache" / "captions"
+
+
+def faiss_path(robot=None) -> Path:
+    robot = robot or current_robot()
+    return DATA_DIR / ("rag_index.faiss" if robot == DEFAULT_ROBOT else f"rag_index_{robot}.faiss")
+
+
+def chat_log_file(robot=None) -> Path:
+    """One chat log per robot, so a question about drinks never lands in the grocery log."""
+    robot = robot or current_robot()
+    return DATA_DIR / ("rag_chat.log" if robot == DEFAULT_ROBOT else f"rag_chat_{robot}.log")
+
+
+FAISS_PATH = faiss_path(DEFAULT_ROBOT)        # the default robot's files (kept for the old names)
+CHAT_LOG_FILE = chat_log_file(DEFAULT_ROBOT)
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -47,7 +86,8 @@ def chat_log(entry: dict):
     """
     try:
         entry.setdefault("ts", datetime.now(timezone.utc).isoformat())
-        with CHAT_LOG_FILE.open("a", encoding="utf-8") as f:
+        entry.setdefault("robot", current_robot())
+        with chat_log_file().open("a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except Exception as e:
         # Never let logging break a request.
@@ -62,7 +102,7 @@ LLM_API_KEY = os.environ.get("LLM_API_KEY", "ollama")
 LLM_MODEL = os.environ.get("LLM_MODEL", "gemma3")
 VISION_MODEL = os.environ.get("VISION_MODEL", "gemma3")
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "nomic-embed-text")
-IMAGES_DIR = ROOT / "data" / "images"
+IMAGES_DIR = DATA_DIR / "images"
 
 llm = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 
@@ -93,6 +133,9 @@ TERMS = {
     "search-sweep": "Search sweep",
     "zenoh": "Zenoh",
     "d415": "Intel D415",
+    "ai-judge": "AI Judge",
+    "arm-fault": "arm_fault",
+    "item-not-held": "item_not_held",
     # ── Failure reasons (must match orders.json failure.reason values).
     # Name is the snake_case form the LLM is likely to produce; wrap_terms
     # canonicalises it to the slug.
@@ -119,6 +162,14 @@ TERMS = {
 TERM_SLUGS = list(TERMS.keys())
 
 
+def active_terms() -> dict:
+    """The glossary links this robot's answers may contain (the front end has a popover for each)."""
+    slugs = profile().get("term_slugs")
+    if slugs is None:
+        return TERMS
+    return {k: v for k, v in TERMS.items() if k in slugs}
+
+
 def wrap_terms(text: str) -> str:
     """Deterministic post-processor: wrap first mention of each known term in [[slug]]
     AND clean up any [[unknown-slug]] the LLM invented so it doesn't leak as
@@ -131,13 +182,15 @@ def wrap_terms(text: str) -> str:
     keep the readable text inside.
     """
     # 1) Normalise / strip any [[...]] the model already produced
+    terms = active_terms()
+
     def _normalise(m: re.Match) -> str:
         inner = m.group(1).strip()
         norm = re.sub(r"[\s_]+", "-", inner.lower())
-        if norm in TERMS:
+        if norm in terms:
             return f"[[{norm}]]"
         # Try matching by name too (e.g. "[[Gripper]]" → [[gripper]])
-        for slug, name in TERMS.items():
+        for slug, name in terms.items():
             if name.lower() == inner.lower():
                 return f"[[{slug}]]"
         # Unknown slug — keep the inner text without brackets so the UI shows
@@ -150,7 +203,7 @@ def wrap_terms(text: str) -> str:
     #    already wrapped. For terms whose canonical "name" is the snake_case
     #    form (like search_exhausted), we also tolerate the LLM writing it in
     #    single/double quotes and strip those quotes when wrapping.
-    for slug, name in TERMS.items():
+    for slug, name in terms.items():
         if f"[[{slug}]]" in text:
             continue
         # Try the bare form first (handles snake_case failure reasons / phases).
@@ -168,11 +221,94 @@ def wrap_terms(text: str) -> str:
 
 # ── Data access ──────────────────────────────────────────────────────────────
 
-def read_orders():
+_last_good_orders: dict = {}   # robot -> last orders that parsed
+
+
+def _relay_url(robot: str) -> str:
+    """Where this robot's relay answers (its own port, src/robots/robots.json)."""
+    spec = ROBOTS["robots"].get(robot, ROBOTS["robots"][DEFAULT_ROBOT])
+    host = os.environ.get(f"RELAY_HOST_{robot.upper()}") or os.environ.get("RELAY_HOST") or "127.0.0.1"
+    base = os.environ.get(f"RELAY_URL_{robot.upper()}") or f"http://{host}:{spec['port']}"
+    return base.rstrip("/")
+
+
+def _orders_from_relay(robot: str):
+    """The robot's orders straight from its relay, or None when the relay is not running.
+
+    The relay is what the History page shows, so asking it means the chat can never disagree with
+    the page: it does not matter which DATA_DIR the relay writes to (a replay keeps its own copy under
+    data/replay/<robot>/, a live relay writes data/). Each robot has its own relay and port."""
+    if os.environ.get("RAG_ORDERS_SOURCE", "").lower() == "file":
+        return None
+    import urllib.request
     try:
-        return json.loads(ORDERS_FILE.read_text(encoding="utf-8"))
+        with urllib.request.urlopen(_relay_url(robot) + "/api/orders", timeout=1.5) as r:
+            data = json.loads(r.read().decode("utf-8"))
+        if isinstance(data, list):
+            return data
     except Exception:
+        pass
+    return None
+
+
+def _order_file_candidates(robot: str) -> list:
+    """Where the robot's orders may be on disk: DATA_DIR first, then the replay copy."""
+    name = orders_file(robot).name
+    seen, out = set(), []
+    replay_dir = Path(os.environ.get("RAG_REPLAY_DIR") or ROOT / "data" / "replay")
+    for p in (orders_file(robot), replay_dir / robot / name):
+        if p not in seen and p.exists():
+            seen.add(p)
+            out.append(p)
+    return out
+
+
+def orders_source(robot=None) -> dict:
+    """Where read_orders() gets the robot's orders from right now (shown by /api/rag/health)."""
+    robot = robot or current_robot()
+    relay = _orders_from_relay(robot)
+    if relay is not None:
+        return {"source": "relay", "where": _relay_url(robot), "orders": len(relay)}
+    files = _order_file_candidates(robot)
+    if files:
+        newest = max(files, key=lambda p: p.stat().st_mtime)
+        return {"source": "file", "where": str(newest), "orders": None}
+    return {"source": "none", "where": str(orders_file(robot)), "orders": 0}
+
+
+def read_orders(robot=None):
+    """The current robot's orders.
+
+    1. The robot's relay (its /api/orders), because that is exactly what the dashboard shows.
+    2. Otherwise its orders file: DATA_DIR/<ordersFile>, or the replay copy in data/replay/<robot>/ when
+       that is newer. The relay rewrites the file after every order, so a read can land mid-write; retry
+       briefly, then serve the last good copy and say so on stderr.
+    A robot with no relay and no file has no orders: [] (never another robot's orders).
+    """
+    robot = robot or current_robot()
+    relay = _orders_from_relay(robot)
+    if relay is not None:
+        _last_good_orders[robot] = relay
+        return relay
+    files = _order_file_candidates(robot)
+    if not files:
         return []
+    path = max(files, key=lambda p: p.stat().st_mtime)
+    last_err = None
+    for _ in range(5):
+        try:
+            orders = json.loads(path.read_text(encoding="utf-8"))
+            _last_good_orders[robot] = orders
+            return orders
+        except FileNotFoundError:
+            return []
+        except Exception as e:
+            last_err = e
+            time.sleep(0.05)
+    last = _last_good_orders.get(robot, [])
+    print(f"[RAG] read_orders: {path} unreadable after retries ({last_err!r}); "
+          f"serving the last good copy ({len(last)} orders)", file=sys.stderr)
+    return last
 
 
 def filter_by_date(orders, start, end):
@@ -188,6 +324,14 @@ def week_ago_str():
 
 
 # ── Deterministic stats (numbers NEVER come from the LLM) ───────────────────
+
+def item_label(o: dict) -> str:
+    """What an order is "of": the grocery item, or for the bar the rack bottle ("Bottle 2")."""
+    if current_robot() == "bar":
+        b = o.get("bottle")
+        return f"Bottle {b + 1}" if isinstance(b, int) else "Bottle"
+    return o.get("item") or "unknown"
+
 
 def compute_stats(orders):
     total = len(orders)
@@ -205,7 +349,7 @@ def compute_stats(orders):
 
     items = {}
     for o in orders:
-        item = o.get("item", "unknown")
+        item = item_label(o)
         items[item] = items.get(item, 0) + 1
     item_ranking = sorted(items.items(), key=lambda x: -x[1])
 
@@ -249,10 +393,14 @@ try:
 except ImportError:
     HAS_FAISS = False
 
-faiss_index = None
-faiss_docs = []
-faiss_orders = []   # raw order dicts, aligned with faiss_docs/faiss_index rows
+# One index per robot: a question about drinks must never retrieve grocery orders (or the reverse).
+_indexes: dict = {}   # robot -> {"index", "docs", "orders", "rebuilt"}
 last_rebuilt = None
+
+
+def _ix(robot=None) -> dict:
+    return _indexes.setdefault(robot or current_robot(), {"index": None, "docs": [], "orders": [], "rebuilt": None})
+
 
 # ═════════════════════════════════════════════════════════════════════════════
 # INTENT — the structured representation of a user's chat question.
@@ -274,77 +422,8 @@ last_rebuilt = None
 from dataclasses import dataclass, field, asdict
 from datetime import date as date_cls
 
-# Items the robot knows about, plus common spelling/pluralisation aliases.
-# Map keys are what the user might type, values are the canonical item label
-# used in orders.json.
-ITEM_ALIASES = {
-    "pen": "pen", "pens": "pen", "ballpoint pen": "pen", "ballpoint pens": "pen",
-    "ball": "ball", "balls": "ball",
-    "sock": "sock", "socks": "sock",
-    "towel": "towel", "towels": "towel",
-    "t-shirt": "t-shirt", "t-shirts": "t-shirt", "tshirt": "t-shirt",
-    "tshirts": "t-shirt", "t shirt": "t-shirt", "t shirts": "t-shirt", "shirt": "t-shirt",
-    "water bottle": "water bottle", "water bottles": "water bottle",
-    "bottle": "water bottle", "bottles": "water bottle",
-    "phone holder": "phone holder", "phone holders": "phone holder",
-    "coffee mug": "coffee mug", "coffee mugs": "coffee mug",
-    "mug": "coffee mug", "mugs": "coffee mug",
-}
-
-# Phases (must match orders.json failure.at_phase values).
-KNOWN_PHASES = [
-    "scene_scan", "searching", "anchor_select", "closeup_move",
-    "analyzing", "grasping", "bringing_over", "handing_over", "returning",
-]
-# Friendly phase synonyms users might say.
-PHASE_ALIASES = {
-    "scan": "scene_scan", "scene scan": "scene_scan", "scanning": "scene_scan",
-    "search": "searching", "searching": "searching",
-    "anchor": "anchor_select", "target": "anchor_select", "selecting target": "anchor_select",
-    "moving closer": "closeup_move", "closeup": "closeup_move", "close-up": "closeup_move",
-    "analyze": "analyzing", "analysis": "analyzing", "analysing": "analyzing",
-    "grasp": "grasping", "grasping": "grasping", "picking": "grasping", "pickup": "grasping",
-    "transit": "bringing_over", "bringing over": "bringing_over", "moving": "bringing_over",
-    "handover": "handing_over", "handing over": "handing_over", "release": "handing_over",
-    "return": "returning", "returning": "returning",
-}
-
-# Known failure reasons.
-KNOWN_FAILURE_REASONS = [
-    "search_exhausted", "reachability_failed", "no_valid_depth",
-    "handover_failed", "user_cancelled", "gripper_failed",
-    "e_stopped", "timeout", "operator_abort", "bridge_fault",
-]
-
-# Term explanations for the `explain` kind. Mirrors the frontend slugs from
-# `src/lib/terms.js` so chat answers about "what is X" match the dashboard.
-TERM_DEFINITIONS = {
-    "gripper": "The Gripper is ROBI's hand — the two-finger end-effector that closes around an item to pick it up.",
-    "sam3": "SAM3 (Segment Anything 3) is the vision model that draws an outline around the item ROBI is searching for, so the planner knows exactly which pixels are 'the towel' or 'the pen'.",
-    "molmo": "Molmo is the vision-language model that picks a single grasp point on an item — like saying 'aim for the center of the topmost bundle'.",
-    "grasp-synthesis": "Grasp synthesis is the step where ROBI plans how to close its fingers around an item — picking the angle, width, and approach.",
-    "trajectory": "A trajectory is a planned arm motion — a series of joint positions over time that get the gripper from one pose to another.",
-    "anchor": "An anchor is a point in 3D space ROBI uses to aim its close-up view — typically the centre of a detected item cluster.",
-    "depth-offset": "Depth offset is a small forward correction ROBI applies so the gripper actually contacts the item, not the air in front of it.",
-    "standoff": "Standoff is the safe distance ROBI keeps before reaching in — it approaches the standoff first, then closes the last few centimetres.",
-    "handover": "Handover is the step where ROBI extends the item toward the customer and waits for them to take it.",
-    "e-stop": "Emergency stop. A safety button (physical or software) that immediately freezes the robot until manually reset.",
-    "close-up": "The close-up view is ROBI's second look at an item from a closer distance — used to refine the grasp after the initial detection.",
-    "detection": "A detection is the vision system spotting a candidate item on a shelf. Each detection has a score; a 'cluster' groups detections that look like the same object.",
-    "fanuc": "FANUC CRX-10iA/L — the collaborative robot arm ROBI uses, capable of safely working near humans.",
-    "curobo": "cuRobo is the GPU-accelerated motion planner ROBI uses to find collision-free arm trajectories quickly.",
-    "intervention": "An intervention is when a human (you!) tells ROBI what to do — usually after a failure, e.g. 'I'll restock the shelf' or 'cancel this order'.",
-    "voxels": "Voxels are 3D pixels — small cubes that map the world around ROBI so the planner knows what's empty and what's an obstacle.",
-    "waypoint": "A waypoint is a named arm pose ROBI moves between — e.g. 'top-shelve', 'handover', 'clothes-rack'.",
-    "goalset": "A goalset is a bundle of candidate end-effector poses that all achieve the same goal — the planner picks whichever one is reachable.",
-    "reachability": "Reachability is whether the arm can physically reach a target pose without hitting itself or an obstacle.",
-    "scene-scan": "The scene scan is ROBI's initial sweep of its surroundings — building a fresh voxel map before each pick cycle.",
-    "retry": "A retry is when ROBI moves to a different viewpoint and tries the grasp again after the first attempt failed.",
-    "search-sweep": "The search sweep is ROBI's pattern of checking multiple waypoints (top shelf, bottom shelf, etc.) when looking for an item.",
-    "zenoh": "Zenoh is the message bus the cameras, planner, and robot bridge use to talk to each other in real time.",
-    "d415": "Intel D415 — the depth camera mounted on ROBI's wrist. It produces colour + depth images used to find and measure items.",
-}
-
+# What an Intent may be about (items, phases, failure reasons, glossary terms) differs per robot and
+# lives in robot_profiles.py; profile() returns the one for the request's robot.
 
 @dataclass
 class Intent:
@@ -454,13 +533,13 @@ PARSE_SYSTEM_PROMPT_TMPL = """You translate user questions about a robot order d
   "kind": one of ["count", "list", "existence", "lookup", "rank", "aggregate", "compare", "reason", "explain", "greeting", "unknown"],
   "status": "failed" | "warning" | "success" | null,
   "not_status": "failed" | "warning" | "success" | null,
-  "item": one of ["pen", "ball", "sock", "towel", "t-shirt", "water bottle", "phone holder", "coffee mug"] or null,
-  "not_item": same options or null,
+  "item": {item_enum},
+  "not_item": {not_item_enum},
   "date_from": "YYYY-MM-DD" or null,
   "date_to": "YYYY-MM-DD" or null,
   "date_label": short human label like "today", "this week", "May 2026", "last month" or null,
-  "phase": one of ["scene_scan", "searching", "anchor_select", "closeup_move", "analyzing", "grasping", "bringing_over", "handing_over", "returning"] or null,
-  "failure_reason": one of ["search_exhausted", "reachability_failed", "no_valid_depth", "handover_failed", "user_cancelled", "gripper_failed", "e_stopped", "timeout", "operator_abort", "bridge_fault"] or null,
+  "phase": {phase_enum},
+  "failure_reason": {reason_enum},
   "min_duration_s": integer or null,
   "max_duration_s": integer or null,
   "min_retries": integer or null,
@@ -471,7 +550,7 @@ PARSE_SYSTEM_PROMPT_TMPL = """You translate user questions about a robot order d
   "limit": integer or null,
   "agg_metric": "avg" | "median" | "sum" | "min" | "max" | "count" | null,
   "agg_field": "duration" | "robot_time" | "retries" | "collisions" | null,
-  "agg_group_by": "item" | "status" | "phase" | "failure_reason" | "day" | null,
+  "agg_group_by": {group_enum},
   "term": term slug or null
 }}
 
@@ -499,41 +578,35 @@ Last month: {last_month_start} to {last_month_end}
 # RULES
 1. Output ONLY the JSON object. No code fences, no explanation, no trailing text.
 2. Use null for fields that don't apply — never omit fields.
-3. "delivered with warnings" is status="warning", NOT "failed".
+3. "{warning_words}" is status="warning", NOT "failed".
 4. "failed" means the cycle did not complete: status="failed", NOT "warning".
 5. If the user follows up with a partial question (e.g. "what about yesterday?"), carry the previous filters over and only change the dimension the user mentioned.
 6. Resolve "today", "this week", etc. to ISO dates using the DATE CONTEXT above.
-7. For "top failed item" / "most common failure reason" set kind="rank", rank_by="frequency", rank_order="desc", and pick agg_group_by from the question (item / failure_reason / phase / day). Default to "item".
+7. For "top failed {group_noun}" / "most common failure reason" set kind="rank", rank_by="frequency", rank_order="desc", and pick agg_group_by from the question ({group_choices}). Default to "{default_group}".
 8. If you're unsure, set kind="unknown" and confidence low — never invent filters.
-
+{robot_rules}
 # EXAMPLES
-User: "how many failed sock orders today?"
-Output: {{"kind":"count","status":"failed","item":"sock","date_from":"{today}","date_to":"{today}","date_label":"today","not_status":null,"not_item":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
-
-User: "show me the slowest order this week"
-Output: {{"kind":"rank","status":null,"item":null,"date_from":"{this_week_start}","date_to":"{this_week_end}","date_label":"this week","rank_by":"duration","rank_order":"desc","limit":1,"not_status":null,"not_item":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
-
-User: "what is the top failed item?"
-Output: {{"kind":"rank","status":"failed","rank_by":"frequency","rank_order":"desc","limit":1,"agg_group_by":"item","item":null,"not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"agg_metric":null,"agg_field":null,"term":null}}
-
-User: "average fetch time by item"
-Output: {{"kind":"aggregate","agg_metric":"avg","agg_field":"duration","agg_group_by":"item","status":null,"item":null,"not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"term":null}}
-
-User: "any towels that failed yesterday?"
-Output: {{"kind":"existence","status":"failed","item":"towel","date_from":"{yesterday}","date_to":"{yesterday}","date_label":"yesterday","not_status":null,"not_item":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
-
-User: "tell me about order 42"
-Output: {{"kind":"lookup","order_id":42,"status":null,"item":null,"not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
-
-User: "what is the gripper?"
-Output: {{"kind":"explain","term":"gripper","status":null,"item":null,"not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null}}
-
-User: "why do sock orders fail so often?"
-Output: {{"kind":"reason","status":"failed","item":"sock","not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
-
-User: "hi"
-Output: {{"kind":"greeting","status":null,"item":null,"not_status":null,"not_item":null,"date_from":null,"date_to":null,"date_label":null,"phase":null,"failure_reason":null,"min_duration_s":null,"max_duration_s":null,"min_retries":null,"has_collisions":null,"order_id":null,"rank_by":null,"rank_order":null,"limit":null,"agg_metric":null,"agg_field":null,"agg_group_by":null,"term":null}}
+{examples}
 """
+
+
+def build_parse_prompt(ctx: dict) -> str:
+    """The intent-parser system prompt for the current robot: its own values, rules and examples."""
+    p = profile()
+    fmt = dict(ctx)
+    fmt.update(rp.enum_lines(p))
+    fmt["examples"] = "@@EXAMPLES@@"
+    fmt["warning_words"] = "delivered with warnings" if current_robot() != "bar" else "poured, but needs attention"
+    fmt["group_noun"] = "item" if current_robot() != "bar" else "bottle"
+    fmt["robot_rules"] = "" if current_robot() != "bar" else (
+        "9. This robot pours drinks: every order is a drink, so item and not_item are ALWAYS null — "
+        "\"bottle 2\" or \"the second bottle\" is agg_group_by=\"bottle\", never an item.\n"
+        "10. status=\"warning\" means the drink was poured but needs a person (usually the rack is empty); "
+        "\"needed attention\" / \"needs a refill\" are warnings, not failures.\n"
+    )
+    text = PARSE_SYSTEM_PROMPT_TMPL.format(**fmt)
+    # the examples hold literal braces, so they go in after the template is filled
+    return text.replace("@@EXAMPLES@@", rp.render_examples(p, ctx))
 
 
 _INTENT_FIELDS = {
@@ -610,6 +683,20 @@ def _format_history(messages: list, max_turns: int = 3) -> str:
     return "\n".join(turns) if turns else "(empty)"
 
 
+def sanitise_intent(intent: Intent) -> Intent:
+    """Drop values that do not exist for the current robot (they would filter everything away)."""
+    p = profile()
+    if not p["items"]:
+        intent.item = intent.not_item = None
+    if intent.phase and intent.phase not in p["phases"]:
+        intent.phase = p["phase_aliases"].get(str(intent.phase).lower())
+    if intent.failure_reason and intent.failure_reason not in p["reasons"]:
+        intent.failure_reason = None
+    if intent.agg_group_by and intent.agg_group_by not in p["group_by"]:
+        intent.agg_group_by = p["default_group"] if intent.agg_group_by == "item" else None
+    return intent
+
+
 def parse_intent_via_llm(query: str, history_messages: list) -> tuple[Intent, dict]:
     """Ask the LLM to translate `query` into a JSON Intent.
 
@@ -621,7 +708,7 @@ def parse_intent_via_llm(query: str, history_messages: list) -> tuple[Intent, di
         return Intent(kind="unknown", confidence=0.0), debug
 
     ctx = _date_context_for_llm()
-    system_prompt = PARSE_SYSTEM_PROMPT_TMPL.format(**ctx)
+    system_prompt = adapt_prompt(build_parse_prompt(ctx))
     history_text = _format_history(history_messages)
 
     user_block = (
@@ -658,6 +745,7 @@ def parse_intent_via_llm(query: str, history_messages: list) -> tuple[Intent, di
         data = _extract_json_object(raw2)
 
     intent = _intent_from_dict(data) if data else Intent(kind="unknown", confidence=0.2)
+    sanitise_intent(intent)
     debug["parsed_intent"] = intent.to_dict()
     if not data:
         debug["parse_failure"] = True
@@ -676,21 +764,28 @@ def parse_intent_via_llm(query: str, history_messages: list) -> tuple[Intent, di
 # replaces the hand-templated strings the handlers produce, giving more
 # conversational responses while preserving correctness.
 
-RENDER_SYSTEM_PROMPT = """You are ROBI's assistant — a robot that picks grocery items off shelves.
+RENDER_SYSTEM_PROMPT = """@@INTRO@@
 
 You write a 1-3 sentence natural-language answer to the user's question, grounded in the verified data below.
 
 CRITICAL RULES (never break these):
 1. The "verified_total" and "matched_ids" in the VERIFIED DATA block are the SOURCE OF TRUTH. Quote those exact numbers and IDs verbatim. Never invent, change, or guess a number.
 2. Cite specific orders as [cite:N], using only IDs that appear in "matched_ids". Do not invent IDs.
-3. Plain English, friendly tone. Refer to the robot as "ROBI".
+3. Plain English, friendly tone. @@NAME_RULE@@
 4. Use past tense when the question is about a specific past period (today, yesterday, this week, etc.). Present tense for general / unbounded queries.
-5. If verified_total is 0, say so plainly ("No, there were no failed sock orders today.").
+5. If verified_total is 0, say so plainly @@ZERO_EXAMPLE@@.
 6. If the user asked a "why" or "compare" question, you may interpret the sample orders to explain — but never invent statistics that aren't in the verified data.
 7. Wrap technical terms in [[double brackets]] only if they appear in the term list. If unsure, leave them as plain text.
 8. Don't repeat the user's question. Get straight to the answer.
 9. Don't say "the data shows" or "according to the database" — just give the answer.
 """
+
+
+def render_system_prompt() -> str:
+    p = profile()
+    return (RENDER_SYSTEM_PROMPT.replace("@@INTRO@@", p["render_intro"])
+            .replace("@@NAME_RULE@@", p["render_name_rule"])
+            .replace("@@ZERO_EXAMPLE@@", p["render_zero_example"]))
 
 
 def _filter_description(intent: Intent) -> str:
@@ -718,9 +813,14 @@ def _build_render_user_block(intent: Intent, deterministic_text: str, matched_or
     sample = matched_orders[:6]
 
     def brief(o: dict):
+        extra = {}
+        if current_robot() == "bar":
+            extra = {"bottle": item_label(o), "poured_ml": round((o.get("poured") or 0) * 1000) if o.get("poured") is not None else None,
+                     "glass_filled": o.get("glasses_filled"), "shake_skipped": bool(o.get("shake_unsafe"))}
         return {
             "id": o.get("id"),
-            "item": o.get("item"),
+            **({"item": o.get("item")} if current_robot() != "bar" else {}),
+            **extra,
             "status": o.get("status"),
             "failure_reason": ((o.get("failure") or {}).get("reason")),
             "at_phase": ((o.get("failure") or {}).get("at_phase")),
@@ -758,7 +858,7 @@ def render_answer_via_llm(intent: Intent, deterministic_text: str, matched_order
         resp = llm.chat.completions.create(
             model=LLM_MODEL,
             messages=[
-                {"role": "system", "content": RENDER_SYSTEM_PROMPT},
+                {"role": "system", "content": adapt_prompt(render_system_prompt())},
                 {"role": "user", "content": user_block},
             ],
             temperature=0.3,
@@ -814,12 +914,13 @@ def apply_intent_filter(orders: list, intent: Intent) -> list:
                 continue
             if intent.not_status == "failed" and st == "failed":
                 continue
-        # item / not_item
+        # item / not_item (robots with a single kind of item have nothing to filter by)
         item_l = (o.get("item") or "").lower()
-        if intent.item and intent.item not in item_l:
-            continue
-        if intent.not_item and intent.not_item in item_l:
-            continue
+        if ROBOTS["robots"][current_robot()].get("itemFilter", True):
+            if intent.item and intent.item not in item_l:
+                continue
+            if intent.not_item and intent.not_item in item_l:
+                continue
         # dates
         if intent.date_from or intent.date_to:
             started = (o.get("started_at") or "")[:10]
@@ -870,11 +971,8 @@ def apply_intent_filter(orders: list, intent: Intent) -> list:
 # ── Render helpers ──────────────────────────────────────────────────────────
 
 def _status_phrase(intent: Intent) -> str:
-    s = intent.status
-    if s == "failed": return "failed"
-    if s == "warning": return "delivered-with-warnings"
-    if s == "success": return "successfully delivered"
-    return ""
+    words = profile()["status_words"]
+    return words.get(intent.status or "", "") if intent.status != "failed" else words["failed"]
 
 
 def _filter_label(intent: Intent, plural: bool = True) -> str:
@@ -884,10 +982,11 @@ def _filter_label(intent: Intent, plural: bool = True) -> str:
         bits.append("non-failed")
     elif intent.status:
         bits.append(_status_phrase(intent))
-    if intent.not_item:
-        bits.append(f"non-{intent.not_item}")
-    elif intent.item:
-        bits.append(intent.item)
+    if profile()["items"]:
+        if intent.not_item:
+            bits.append(f"non-{intent.not_item}")
+        elif intent.item:
+            bits.append(intent.item)
     if intent.failure_reason:
         bits.append(f"{intent.failure_reason.replace('_', ' ')}")
     if intent.phase:
@@ -901,7 +1000,8 @@ def _filter_label(intent: Intent, plural: bool = True) -> str:
     if intent.has_collisions:
         bits.append("with collisions")
     head = " ".join(bits)
-    return f"{head + ' ' if head else ''}order{'s' if plural else ''}"
+    noun = profile()["noun"]
+    return f"{head + ' ' if head else ''}{noun}{'s' if plural else ''}"
 
 
 def _scope_phrase(intent: Intent) -> str:
@@ -910,7 +1010,7 @@ def _scope_phrase(intent: Intent) -> str:
 
 def _format_order_brief(o: dict) -> str:
     oid = o.get("id")
-    item = o.get("item") or "unknown"
+    item = item_label(o)
     status = o.get("status", "")
     reason = ((o.get("failure") or {}).get("reason") or "").replace("_", " ") if status in ("failed", "warning") else ""
     secs = o.get("total_seconds") or 0
@@ -923,8 +1023,31 @@ def _format_order_brief(o: dict) -> str:
     return text
 
 
+def _format_drink_long(o: dict) -> str:
+    """The Barista's counterpart of _format_order_long."""
+    oid = o.get("id")
+    st = o.get("status", "unknown")
+    started = (o.get("started_at") or "")[:16].replace("T", " ")
+    secs = o.get("total_seconds") or 0
+    poured = o.get("poured")
+    pour_txt = f"{round(poured * 1000)} ml poured" if poured is not None else "no pour recorded"
+    glass = f"glass {o.get('glasses_filled') or 0} of {o.get('glasses') or 0} filled"
+    lines = [
+        f"Drink [cite:{oid}] from {item_label(o)}: {st}",
+        f"  Started {started}, took {secs}s in total. {pour_txt}, {glass}.",
+    ]
+    if o.get("shake_unsafe"):
+        lines.append("  The AI Judge thought it was not safe to shake the bottle, so the shake was skipped.")
+    fail = o.get("failure") or {}
+    if fail:
+        lines.append(f"  Needs attention: {fail.get('reason', 'unknown').replace('_', ' ')} at {fail.get('at_phase') or 'unknown phase'} — {fail.get('detail') or ''}")
+    return "\n".join(lines)
+
+
 def _format_order_long(o: dict) -> str:
     """Multi-line full description of a single order — used by lookup."""
+    if current_robot() == "bar":
+        return _format_drink_long(o)
     oid = o.get("id")
     item = o.get("item") or "unknown"
     st = o.get("status", "unknown")
@@ -1097,13 +1220,13 @@ def handle_rank(intent: Intent, orders: list) -> tuple[str, dict]:
         scope = _scope_phrase(intent)
         return (
             f"The {adj} {_filter_label(intent, plural=False)}{scope} is [cite:{oid}]: "
-            f"a {o.get('item') or 'unknown'}, {val}{unit}.",
+            f"{'a drink from ' + item_label(o) if current_robot() == 'bar' else 'a ' + (o.get('item') or 'unknown')}, {val}{unit}.",
             {"matched_ids": ids},
         )
 
     head = f"Top {limit} {_filter_label(intent)}{_scope_phrase(intent)} by {key}:"
     body = "; ".join(
-        f"#{i+1} [cite:{o.get('id')}] ({o.get('item') or 'unknown'}, {sortfn(o)}{'s' if key=='duration' else ''})"
+        f"#{i+1} [cite:{o.get('id')}] ({item_label(o)}, {sortfn(o)}{'s' if key=='duration' else ''})"
         for i, o in enumerate(top)
     )
     return f"{head} {body}.", {"matched_ids": ids}
@@ -1118,7 +1241,7 @@ def _agg_value(o: dict, field_name: str) -> float:
 
 
 def _agg_group_key(o: dict, group_by: str) -> str:
-    if group_by == "item":   return o.get("item") or "unknown"
+    if group_by in ("item", "bottle"): return item_label(o)
     if group_by == "status": return o.get("status") or "unknown"
     if group_by == "day":    return (o.get("started_at") or "")[:10] or "unknown"
     if group_by == "phase":  return ((o.get("failure") or {}).get("at_phase")) or "none"
@@ -1164,19 +1287,39 @@ def handle_aggregate(intent: Intent, orders: list) -> tuple[str, dict]:
 
 
 def handle_explain(intent: Intent, orders: list) -> tuple[str, dict]:
-    if intent.term and intent.term in TERM_DEFINITIONS:
-        return TERM_DEFINITIONS[intent.term], {"term": intent.term}
+    terms = profile()["terms"]
+    if intent.term and intent.term in terms:
+        return terms[intent.term], {"term": intent.term}
     return ("I don't have a definition for that term. Try one of: "
-            + ", ".join(sorted(TERM_DEFINITIONS.keys())[:10]) + ", …",
+            + ", ".join(sorted(terms.keys())[:10]) + ", …",
             {"term": None})
 
 
 def handle_greeting(intent: Intent, orders: list) -> tuple[str, dict]:
-    return ("Hi! I'm ROBI's assistant. Ask me things like 'how many failed orders today', "
-            "'slowest sock order this week', 'why do towel orders fail', or 'tell me about order 42'."), {}
+    return profile()["greeting"], {}
+
+
+def drink_to_text(o):
+    st = o.get("status", "unknown")
+    fail = (o.get("failure") or {})
+    if st in ("success", "ok"):
+        status = "poured"
+    elif st == "warning":
+        status = f"poured, needs attention ({fail.get('reason', 'unknown')})"
+    else:
+        status = f"failed ({fail.get('reason', 'unknown')})"
+    steps = ", ".join(s.get("friendly_name", s.get("phase", "?")) for s in (o.get("steps") or []))
+    poured = o.get("poured")
+    extra = f", {round(poured * 1000)} ml poured" if poured is not None else ""
+    if o.get("shake_unsafe"):
+        extra += ", shake skipped"
+    return (f"Drink #{o.get('id')}: {item_label(o)}, {status}, {o.get('total_seconds', 0)}s total{extra}, "
+            f"started {(o.get('started_at') or '?')[:16]}. Steps: {steps}")
 
 
 def order_to_text(o):
+    if current_robot() == "bar":
+        return drink_to_text(o)
     st = o.get("status", "unknown")
     if st in ("success", "ok"):
         status = "delivered"
@@ -1195,6 +1338,11 @@ def order_to_text(o):
         extra += f", searched {len(waypoints)} waypoints ({', '.join(waypoints)})"
     if collisions > 0:
         extra += f", {collisions} collision warnings"
+    judge = (o.get("critic") or {}).get("verdict")
+    if judge == "holding":
+        extra += ", AI Judge confirmed the grip"
+    elif judge == "not_holding":
+        extra += ", AI Judge did not see the item in the gripper"
     return (
         f"Order #{o.get('id')}: {o.get('item')}, {status}, "
         f"{o.get('total_seconds', 0)}s total, {o.get('robot_seconds', 0)}s robot{extra}, "
@@ -1211,39 +1359,52 @@ def embed_texts(texts):
         return None
 
 
-def rebuild_index():
-    global faiss_index, faiss_docs, faiss_orders, last_rebuilt
+def rebuild_index(robot=None):
+    """(Re)build the FAISS index of one robot's orders."""
+    global last_rebuilt
     if not HAS_FAISS:
         return
-    orders = read_orders()
-    if not orders:
-        return
-    texts = [order_to_text(o) for o in orders]
-    # nomic-embed-text was trained with task prefixes — using them improves
-    # retrieval quality noticeably (~+2 NDCG@10). Documents get
-    # "search_document:", queries get "search_query:".
-    vectors = embed_texts([f"search_document: {t}" for t in texts])
-    if vectors is None:
-        return
-    dim = len(vectors[0])
-    index = faiss.IndexFlatIP(dim)
-    mat = np.stack(vectors)
-    faiss.normalize_L2(mat)
-    index.add(mat)
-    faiss_index = index
-    faiss_docs = texts
-    faiss_orders = orders   # aligned row-for-row with faiss_docs
-    last_rebuilt = datetime.now(timezone.utc).isoformat()
-    # Persist
+    robot = robot or current_robot()
+    token = _current_robot.set(robot)
     try:
-        faiss.write_index(index, str(FAISS_PATH))
-    except Exception:
-        pass
-    print(f"[RAG] FAISS index rebuilt: {len(texts)} docs, dim={dim}")
+        orders = read_orders(robot)
+        if not orders:
+            return
+        texts = [order_to_text(o) for o in orders]
+        # nomic-embed-text was trained with task prefixes — using them improves
+        # retrieval quality noticeably (~+2 NDCG@10). Documents get
+        # "search_document:", queries get "search_query:".
+        vectors = embed_texts([f"search_document: {t}" for t in texts])
+        if vectors is None:
+            return
+        dim = len(vectors[0])
+        index = faiss.IndexFlatIP(dim)
+        mat = np.stack(vectors)
+        faiss.normalize_L2(mat)
+        index.add(mat)
+        st = _ix(robot)
+        st.update({"index": index, "docs": texts, "orders": orders, "rebuilt": datetime.now(timezone.utc).isoformat()})
+        last_rebuilt = st["rebuilt"]
+        # Persist
+        try:
+            faiss.write_index(index, str(faiss_path(robot)))
+        except Exception:
+            pass
+        print(f"[RAG] FAISS index rebuilt for {robot}: {len(texts)} docs, dim={dim}")
+    finally:
+        _current_robot.reset(token)
+
+
+def rebuild_all_indexes():
+    for robot in ROBOTS["robots"]:
+        try:
+            rebuild_index(robot)
+        except Exception as e:
+            print(f"[RAG] index rebuild for {robot} failed: {e}", file=sys.stderr)
 
 
 def retrieve(query, k=6, intent=None):
-    """Retrieve order summaries relevant to `query`.
+    """Retrieve order summaries relevant to `query`, from the current robot's index only.
 
     If `intent` carries a structured filter (e.g. {"status": "failed"}),
     we pre-filter the index by metadata FIRST, then rank the survivors by
@@ -1252,6 +1413,8 @@ def retrieve(query, k=6, intent=None):
 
     Returns (texts, matched_total) so the caller can show an exact count.
     """
+    st = _ix()
+    faiss_index, faiss_docs, faiss_orders = st["index"], st["docs"], st["orders"]
     if faiss_index is None or not faiss_docs:
         return [], 0
 
@@ -1523,10 +1686,30 @@ def check_embed_reachable():
         return False
 
 
+def robot_note() -> str:
+    return profile()["note"]
+
+
+def swap_text(text: str) -> str:
+    """The shared prompts were written for the grocery robot; for another robot its identity words are swapped."""
+    for old, new in profile()["swaps"]:
+        text = text.replace(old, new)
+    text = re.sub(r"(^|[.!?:]\s+|\n)the Barista", lambda m: m.group(1) + "The Barista", text)
+    if current_robot() == "bar":
+        # the glossary slugs the grocery prompt lists are not this robot's
+        text = text.replace(", ".join(TERM_SLUGS), ", ".join(profile()["term_slugs"]))
+    return text
+
+
+def adapt_prompt(text: str) -> str:
+    return swap_text(text) + robot_note()
+
+
 def call_llm(system, user_msg, max_tokens=400):
+    system = adapt_prompt(system)
     messages = [{"role": "system", "content": system}]
     if isinstance(user_msg, str):
-        messages.append({"role": "user", "content": user_msg})
+        messages.append({"role": "user", "content": swap_text(user_msg)})
     elif isinstance(user_msg, list):
         messages.extend(user_msg)
 
@@ -1543,12 +1726,12 @@ def call_llm(system, user_msg, max_tokens=400):
         return {"text": text, "citations": citations}
     except Exception as e:
         print(f"[RAG] LLM error: {e}", file=sys.stderr)
-        return {"text": "_ROBI's report is unavailable right now — local AI is offline._", "citations": []}
+        return {"text": f"_{profile()['name']}'s report is unavailable right now — local AI is offline._", "citations": []}
 
 
 # ── Vision analysis (gemma3) ────────────────────────────────────────────────
 
-VISION_CACHE_DIR = ROOT / "data" / "cache" / "vision"
+VISION_CACHE_DIR = DATA_DIR / "cache" / "vision"
 VISION_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 import base64
@@ -1673,7 +1856,10 @@ CACHE_TTL_LIVE = {
 
 
 def cache_key(surface, scope):
-    h = hashlib.md5(json.dumps({"surface": surface, "scope": scope}, sort_keys=True).encode()).hexdigest()[:12]
+    key = {"surface": surface, "scope": scope}
+    if current_robot() != DEFAULT_ROBOT:
+        key["robot"] = current_robot()   # the default robot keeps its existing cache keys
+    h = hashlib.md5(json.dumps(key, sort_keys=True).encode()).hexdigest()[:12]
     return f"{surface}_{h}.json"
 
 
@@ -1701,7 +1887,7 @@ def read_cache(surface, scope):
 
 
 def write_cache(surface, scope, result):
-    entry = {**result, "surface": surface, "scope": scope, "generated_at": datetime.now(timezone.utc).isoformat()}
+    entry = {**result, "surface": surface, "scope": scope, "robot": current_robot(), "generated_at": datetime.now(timezone.utc).isoformat()}
     path = CACHE_DIR / cache_key(surface, scope)
     try:
         path.write_text(json.dumps(entry, indent=2), encoding="utf-8")
@@ -1764,14 +1950,19 @@ def _refresh_weekly_loop():
         time.sleep(30 * 60)  # 30 min
         try:
             # Force regenerate by clearing cache first
-            path = CACHE_DIR / cache_key("weekly", {})
-            if path.exists():
+            for robot in ROBOTS["robots"]:
+                token = _current_robot.set(robot)
                 try:
-                    path.unlink()
-                except Exception:
-                    pass
-            generate_caption("weekly", {}, force=True)
-            print("[RAG] Weekly summary refreshed in background")
+                    path = CACHE_DIR / cache_key("weekly", {})
+                    if path.exists():
+                        try:
+                            path.unlink()
+                        except Exception:
+                            pass
+                    generate_caption("weekly", {}, force=True)
+                    print(f"[RAG] Weekly summary refreshed in background ({robot})")
+                finally:
+                    _current_robot.reset(token)
         except Exception as e:
             print(f"[RAG] Background refresh error: {e}", file=sys.stderr)
 
@@ -1788,9 +1979,23 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def robot_middleware(request, call_next):
+    robot = request.headers.get("x-robot") or request.query_params.get("robot") or DEFAULT_ROBOT
+    if robot not in ROBOTS["robots"]:
+        robot = DEFAULT_ROBOT
+    token = _current_robot.set(robot)
+    try:
+        response = await call_next(request)
+        response.headers["X-Robot"] = robot      # which robot's data answered
+        return response
+    finally:
+        _current_robot.reset(token)
+
+
 @app.on_event("startup")
 def startup():
-    threading.Thread(target=rebuild_index, daemon=True).start()
+    threading.Thread(target=rebuild_all_indexes, daemon=True).start()
     threading.Thread(target=_refresh_weekly_loop, daemon=True).start()
 
 
@@ -1800,13 +2005,17 @@ def startup():
 def health():
     llm_ok = check_llm_reachable()
     embed_ok = check_embed_reachable()
+    st = _ix()
     return {
         "ok": llm_ok and embed_ok,
+        "robot": current_robot(),
         "llm_reachable": llm_ok,
         "llm_model": LLM_MODEL,
         "embed_reachable": embed_ok,
-        "index_size": faiss_index.ntotal if faiss_index is not None else 0,
-        "last_rebuilt": last_rebuilt,
+        "index_size": st["index"].ntotal if st["index"] is not None else 0,
+        "last_rebuilt": st["rebuilt"],
+        # where each robot's orders come from right now (relay = what the dashboard shows)
+        "orders": {r: orders_source(r) for r in ROBOTS["robots"]},
     }
 
 
@@ -2013,24 +2222,33 @@ def rag_parse(q: str = Query(..., description="The chat query to parse")):
 # ── Cache management endpoint ───────────────────────────────────────────────
 
 @app.delete("/api/rag/cache")
-def rag_cache_clear(include_chat_log: bool = Query(True, description="Also clear data/rag_chat.log")):
-    """Clear all caches (caption, vision, FAISS, chat log) and rebuild FAISS.
+def rag_cache_clear(include_chat_log: bool = Query(True, description="Also clear this robot's chat log")):
+    """Clear the current robot's caches (caption, vision, FAISS, chat log) and rebuild its FAISS index.
 
-    Use after orders.json changes shape, after switching LLMs, or any time a
-    cached answer looks wrong. Returns counts so you can verify.
+    The robot comes from the X-Robot header: clearing the Barista's caches leaves the grocery robot's alone.
+    Use after orders change shape, after switching LLMs, or any time a cached answer looks wrong.
     """
+    robot = current_robot()
     captions_removed = 0
     vision_removed = 0
+
+    def mine(path) -> bool:
+        try:
+            return (json.loads(path.read_text(encoding="utf-8")).get("robot") or DEFAULT_ROBOT) == robot
+        except Exception:
+            return robot == DEFAULT_ROBOT
+
     try:
         for p in CACHE_DIR.glob("*.json"):
             try:
-                p.unlink(); captions_removed += 1
+                if mine(p):
+                    p.unlink(); captions_removed += 1
             except Exception:
                 pass
     except Exception:
         pass
-    vision_dir = ROOT / "data" / "cache" / "vision"
-    if vision_dir.exists():
+    vision_dir = DATA_DIR / "cache" / "vision"
+    if vision_dir.exists() and robot == DEFAULT_ROBOT:   # vision results are keyed by image, not by robot
         for p in vision_dir.glob("*.json"):
             try:
                 p.unlink(); vision_removed += 1
@@ -2038,25 +2256,26 @@ def rag_cache_clear(include_chat_log: bool = Query(True, description="Also clear
                 pass
     faiss_removed = False
     try:
-        if FAISS_PATH.exists():
-            FAISS_PATH.unlink(); faiss_removed = True
+        if faiss_path().exists():
+            faiss_path().unlink(); faiss_removed = True
     except Exception:
         pass
     chat_log_removed = False
     if include_chat_log:
         try:
-            if CHAT_LOG_FILE.exists():
-                CHAT_LOG_FILE.unlink(); chat_log_removed = True
+            if chat_log_file().exists():
+                chat_log_file().unlink(); chat_log_removed = True
         except Exception:
             pass
     # Trigger an in-process rebuild so chat keeps working without restart.
     try:
         rebuild_index()
     except Exception as e:
-        return {"captions_removed": captions_removed, "vision_removed": vision_removed,
+        return {"robot": robot, "captions_removed": captions_removed, "vision_removed": vision_removed,
                 "faiss_removed": faiss_removed, "chat_log_removed": chat_log_removed,
                 "rebuild_error": str(e)}
     return {
+        "robot": robot,
         "captions_removed": captions_removed,
         "vision_removed": vision_removed,
         "faiss_removed": faiss_removed,

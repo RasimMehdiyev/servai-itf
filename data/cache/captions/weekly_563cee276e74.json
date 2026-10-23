@@ -1,0 +1,8 @@
+{
+  "text": "The Barista\u2019s activity spanned from 2026-10-17 to 2026-10-23, resulting in a total of 94 drinks poured. The average drink time was 47 seconds, with a median of 47 seconds, and the Barista spent an average of 46 seconds on the robot work itself. Bottle 1 was handled 48 times and Bottle 2 was handled 46 times during this period.\n\nNotably, all 94 drinks resulted in a bottles_empty failure, with a total of 0 retries across all orders. There were no collision warnings or any orders requiring retries, indicating a smooth operation throughout the week. The busiest day was 2026-10-22, with 87 orders completed, and order #1 took the longest at 48 seconds.",
+  "citations": [],
+  "surface": "weekly",
+  "scope": {},
+  "robot": "bar",
+  "generated_at": "2026-10-23T18:00:45.166028+00:00"
+}

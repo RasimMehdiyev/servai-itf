@@ -46,8 +46,8 @@ export const PHASES = [
   {
     phase: 'bringing_over',
     friendly_name: 'Bringing it over',
-    components: ['HANDOVER_TRANSIT', 'HANDOVER_MOVE'],
-    description: 'Transits through a safe waypoint and moves to the handover desk.',
+    components: ['ITEM_CHECK', 'HANDOVER_TRANSIT', 'HANDOVER_MOVE'],
+    description: 'Carries the item past the AI Judge, which checks that it is really held, then transits through a safe waypoint to the handover desk.',
   },
   {
     phase: 'handing_over',
@@ -73,6 +73,8 @@ export const FAILURE_REASONS = [
   'gripper_failed',
   'e_stopped',
   'timeout',
+  'arm_fault',
+  'item_not_held',
 ]
 
 const _componentToPhase = {}
